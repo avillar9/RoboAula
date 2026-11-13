@@ -701,7 +701,7 @@ function repairJson(t) {
     }
     if (ch === '"') { inStr = true; o += ch; continue; }
     if (ch === "{" || ch === "[") { st.push(ch); o += ch; continue; }
-    if (ch === "}" || ch === "]") { if (!st.length) break; o += st.pop() === "{" ? "}" : "]"; if (!st.length) return o; continue; }
+    if (ch === "}" || ch === "]") { if (!st.length) break; o = o.replace(/,\s*$/, ""); o += st.pop() === "{" ? "}" : "]"; if (!st.length) return o; continue; }
     o += ch;
   }
   if (inStr) o += '"';
