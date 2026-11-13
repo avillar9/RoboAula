@@ -684,6 +684,19 @@ const ERR = {
 
 const WORKER_URL = "https://roboaula.avillar9.workers.dev";
 function gLoad() {}
+function repairJson(t) {
+  let inStr = false, esc = false; const st = [];
+  for (let i = 0; i < t.length; i++) {
+    const ch = t[i];
+    if (inStr) { if (esc) esc = false; else if (ch === "\\") esc = true; else if (ch === '"') inStr = false; continue; }
+    if (ch === '"') inStr = true; else if (ch === "{" || ch === "[") st.push(ch); else if (ch === "}" || ch === "]") st.pop();
+  }
+  let o = t; if (inStr) o += '"';
+  o = o.replace(/[,:\s]+$/, "");
+  if (/"[^"]*"\s*:$/.test(o)) o += "null";
+  while (st.length) o += st.pop() === "{" ? "}" : "]";
+  return o;
+}
 async function geminiJson(prompt, opts) {
   opts = opts || {};
   if (/POSA-AQUI/.test(WORKER_URL)) throw { code: "no_key" };
@@ -702,24 +715,27 @@ async function geminiJson(prompt, opts) {
     let det = ""; try { const j = await resp.json(); det = String(j.error && j.error.message || j.error || "").slice(0, 160); } catch (e) {}
     throw { code: resp.status === 429 ? "rate_limited" : "upstream_error", detail: det };
   }
-  const rd = resp.body.getReader(), dec = new TextDecoder(); let buf = "", text = "";
+  const rd = resp.body.getReader(), dec = new TextDecoder(); let buf = "", text = "", fin = "";
   try {
     for (;;) {
-      const r = await rd.read(); if (r.done) break; arm(45000); ic._got = true;
+      const r = await rd.read(); if (r.done) break; arm(45000);
       buf += dec.decode(r.value, { stream: true });
       let i; while ((i = buf.indexOf("\n")) >= 0) {
         const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
         if (!line.startsWith("data:")) continue;
-        try { const j = JSON.parse(line.slice(5)); const c = j.candidates && j.candidates[0]; if (c && c.content && c.content.parts) c.content.parts.forEach((p) => { if (p.text) text += p.text; });
+        try { const j = JSON.parse(line.slice(5)); if (j.error) throw { code: Number(j.error.code) === 429 ? "rate_limited" : "upstream_error", detail: String(j.error.message || "").slice(0, 160) }; const c = j.candidates && j.candidates[0]; if (c && c.finishReason) fin = c.finishReason; if (c && c.content && c.content.parts) c.content.parts.forEach((p) => { if (p.text) text += p.text; });
           if (j.promptFeedback && j.promptFeedback.blockReason) throw { code: "refused" }; } catch (e) { if (e && e.code) throw e; }
-        if (opts.onText) opts.onText({ text });
+        if (text) ic._got = true; if (opts.onText) opts.onText({ text });
       }
     }
   } catch (e) { end(); if (ic._to) throw { code: "timeout" }; if (e && e.name === "AbortError") throw { code: "cancelled" }; if (e && e.code) throw e; throw { code: "upstream_error" }; }
   end();
   if (!text.trim()) throw { code: "empty_completion" };
   const clean = text.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
-  try { return JSON.parse(clean); } catch (e) { throw { code: "invalid_json" }; }
+  window._gem = { fin: fin || "?", len: text.length, end: clean.slice(-40) };
+  try { return JSON.parse(clean); } catch (e) {}
+  try { const d = JSON.parse(repairJson(clean)); if (d && typeof d === "object") return d; } catch (e) {}
+  throw { code: "invalid_json", detail: "motiu: " + (fin || "?") + ", " + text.length + " caràcters, acaba en: " + clean.slice(-40) };
 }
 function browserSave(o) {
   return new Promise((ok, ko) => {
@@ -742,6 +758,13 @@ async function ensureCapsOld() {
     if (!downloads && window.claude && window.claude.use) downloads = await window.claude.use("downloads");
   } catch (e) { /* sense capacitats */ }
 }
+function unwrapAct(d) {
+  if (Array.isArray(d)) d = d[0] || {};
+  const low = (o) => { const r = {}; Object.keys(o).forEach((k) => { r[k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")] = o[k]; }); return r; };
+  let o = low(d);
+  if (!o.objectius && !o.sessions) { const v = Object.values(o).find((x) => x && typeof x === "object" && !Array.isArray(x) && (low(x).objectius || low(x).sessions)); if (v) o = low(v); }
+  return o;
+}
 async function generate() {
   const f = readForm();
   if (!validate(f)) return;
@@ -756,9 +779,10 @@ async function generate() {
       signal: ctl.signal, cache: false,
       onText: (u) => { state.progress = Math.min(95, Math.round(u.text.length / 110)); const bar = document.querySelector(".progress i"); if (bar) bar.style.width = Math.max(4, state.progress) + "%"; const lab = $("busyLabel"); if (lab) lab.textContent = "Escrivint l'activitat…"; }
     });
-    if (!data || typeof data !== "object") throw { code: "invalid_json" };
-    const act = normalize(data, f);
-    if (!act.objectius.length && !act.sessions.length) throw { code: "invalid_json" };
+    if (!data || typeof data !== "object") throw { code: "invalid_json", detail: "no és un objecte" };
+    const gi = window._gem ? "motiu: " + window._gem.fin + ", " + window._gem.len + " caràcters" : "";
+    const act = normalize(unwrapAct(data), f);
+    if (!act.objectius.length && !act.sessions.length) throw { code: "invalid_json", detail: gi + ", claus rebudes: " + Object.keys(Array.isArray(data) ? (data[0] || {}) : data).slice(0, 8).join(", ") };
     state.current = act; state.source = "generada"; state.tab = "proposta"; state.busy = false;
     renderResult(); scrollToResult();
     checkArea(act);
