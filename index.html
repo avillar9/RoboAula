@@ -1,0 +1,1470 @@
+<!doctype html>
+<html lang="ca"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RoboAula Primària</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: capçalera amb pestanyes; al generador, formulari a l'esquerra i dossier a la dreta (en columna al mòbil). */
+:root {
+  --bg: #F3F7F6;
+  --surface: #FFFFFF;
+  --ink: #12262A;
+  --muted: #4F6468;
+  --line: #D3DEDC;
+  --accent: #0B7A66;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #DCF1EB;
+  --signal: #E9A800;
+  --danger: #B3261E;
+  --warn-bg: #FFF3D4;
+  --warn-ink: #5E4200;
+  --a-mates: #2457C5;
+  --a-llengua: #B83A2E;
+  --a-medi: #2C7A31;
+  --a-artistica: #8A3AA3;
+  --a-angles: #96590A;
+  --a-computacional: #00758A;
+  --a-valors: #BC1A5A;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-kid: "Atkinson Hyperlegible", Verdana, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1A1D; --surface: #152428; --ink: #E6F0EE; --muted: #9FB5B8; --line: #2A3F44;
+    --accent: #3FC4A8; --accent-ink: #072620; --accent-soft: #17352F; --signal: #F2B93B;
+    --danger: #FF8A80; --warn-bg: #3A2F12; --warn-ink: #F6DFA0;
+    --a-mates: #8DB0FF; --a-llengua: #FF9486; --a-medi: #86D68F; --a-artistica: #D9A3EC;
+    --a-angles: #F2B866; --a-computacional: #62CFDD; --a-valors: #F592B8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1A1D; --surface: #152428; --ink: #E6F0EE; --muted: #9FB5B8; --line: #2A3F44;
+  --accent: #3FC4A8; --accent-ink: #072620; --accent-soft: #17352F; --signal: #F2B93B;
+  --danger: #FF8A80; --warn-bg: #3A2F12; --warn-ink: #F6DFA0;
+  --a-mates: #8DB0FF; --a-llengua: #FF9486; --a-medi: #86D68F; --a-artistica: #D9A3EC;
+  --a-angles: #F2B866; --a-computacional: #62CFDD; --a-valors: #F592B8;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.2; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+.hero { background: linear-gradient(110deg, color-mix(in srgb, var(--accent) 22%, var(--bg)), color-mix(in srgb, var(--signal) 14%, var(--bg))); border-bottom: 1px solid var(--line); overflow: hidden; }
+.hero-in { display: flex; align-items: center; justify-content: space-between; gap: 8px 32px; flex-wrap: wrap; padding-block: 20px; --c: var(--accent); }
+.hero-tx { flex: 1 1 320px; min-width: 0; }
+.hero-tx h2 { font-size: clamp(22px, 4vw, 34px); line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; margin-bottom: 8px; }
+.hero-tx p { color: var(--muted); max-width: 52ch; }
+.hero-art { flex: 1 1 300px; max-width: 520px; min-width: 0; }
+.hero-art svg { display: block; width: 100%; height: auto; }
+header.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+header.top .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 14px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark { width: 38px; height: 38px; border-radius: 10px; background: var(--accent); display: grid; place-items: center; flex: none; }
+.brand-mark svg { width: 24px; height: 24px; }
+.brand h1 { font-size: 20px; letter-spacing: -0.01em; }
+.brand small { display: block; color: var(--muted); font-size: 12px; }
+nav.tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+nav.tabs button { background: none; border: 0; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 500; color: var(--muted); }
+nav.tabs button:hover { color: var(--ink); background: var(--bg); }
+nav.tabs button[aria-current="page"] { color: var(--accent-ink); background: var(--accent); }
+
+main { padding-block: 24px 48px; }
+.view[hidden] { display: none; }
+.gen-grid { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 960px) { .gen-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.panel + .panel { margin-top: 16px; }
+.form-panel { position: sticky; top: 12px; }
+@media (max-width: 960px) { .form-panel { position: static; } }
+.panel h2 { font-size: 17px; margin-bottom: 4px; }
+.lead { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; min-width: 0; }
+.field > label, .field > .lbl { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.field .req { color: var(--danger); }
+input[type="text"], select, textarea { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; }
+textarea { resize: vertical; min-height: 64px; }
+.hint { font-size: 12.5px; color: var(--muted); }
+.invalid { border-color: var(--danger) !important; }
+.errmsg { color: var(--danger); font-size: 12.5px; }
+
+.robots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.robot-opt { position: relative; }
+.robot-opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.robot-opt span { display: block; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--bg); height: 100%; }
+.robot-opt b { display: block; font-size: 13px; font-weight: 600; }
+.robot-opt em { font-style: normal; font-size: 11.5px; color: var(--muted); }
+.robot-opt input:checked + span { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.robot-opt input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.seg .robot-opt span { text-align: center; }
+.checks { display: flex; flex-direction: column; gap: 6px; }
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; }
+.check input { margin-top: 3px; accent-color: var(--accent); }
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 480px) { .row2 { grid-template-columns: minmax(0, 1fr); } }
+details.adv { margin-bottom: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+details.adv summary { cursor: pointer; font-weight: 600; font-size: 13px; margin-bottom: 12px; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 9px 14px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); width: 100%; padding: 12px 14px; font-size: 15px; }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+.btn.danger { color: var(--danger); }
+.btn.sm { padding: 6px 10px; font-size: 13px; }
+
+.banner { border-radius: 10px; padding: 12px 14px; font-size: 13.5px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; }
+.banner.info { background: var(--accent-soft); }
+.banner.warn { background: var(--warn-bg); color: var(--warn-ink); }
+.banner.err { background: var(--warn-bg); color: var(--warn-ink); border: 1px solid var(--danger); }
+.banner ul { margin: 6px 0 0; padding-left: 18px; }
+
+.progress { height: 8px; background: var(--bg); border-radius: 99px; overflow: hidden; margin-top: 10px; }
+.progress i { display: block; height: 100%; width: 4%; background: var(--accent); transition: width .4s ease; }
+.busy-box { text-align: center; padding: 36px 16px; }
+.busy-box p { color: var(--muted); font-size: 13.5px; margin-top: 6px; }
+
+.dossier-head { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.dossier-head h2 { font-size: 26px; letter-spacing: -0.015em; margin-bottom: 4px; }
+.dossier-head .sub { color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; }
+.chip { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); }
+.chip.area { --c: var(--accent); color: var(--c); border-color: color-mix(in srgb, var(--c) 40%, transparent); background: color-mix(in srgb, var(--c) 12%, var(--surface)); }
+.area-mates { --c: var(--a-mates); } .area-llengua { --c: var(--a-llengua); } .area-medi { --c: var(--a-medi); }
+.area-artistica { --c: var(--a-artistica); } .area-angles { --c: var(--a-angles); } .area-computacional { --c: var(--a-computacional); } .area-valors { --c: var(--a-valors); }
+
+.dtabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 20px; overflow-x: auto; }
+.dtabs button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 10px 14px; cursor: pointer; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.dtabs button.hl { background: var(--accent-soft); color: var(--accent); border-radius: 8px 8px 0 0; }
+.dtabs button.hl[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-bottom-color: var(--accent); }
+.cta-eval { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-top: 22px; padding: 14px 16px; border-radius: 12px; background: var(--accent-soft); border: 1px solid var(--accent); }
+.cta-eval p { margin: 0; min-width: 0; flex: 1 1 240px; }
+.dtabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+.sec { margin-bottom: 26px; }
+.sec h3 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 10px; }
+.sec ul.plain { margin: 0; padding-left: 20px; }
+.sec ul.plain li { margin-bottom: 4px; }
+.callout { background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; }
+.cols2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 700px) { .cols2 { grid-template-columns: minmax(0, 1fr); } }
+
+.session { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+.session h4 { font-size: 16px; margin-bottom: 10px; }
+.phase { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 4px 14px; padding: 8px 0; border-top: 1px dashed var(--line); }
+.phase:first-of-type { border-top: 0; }
+.phase b { font-size: 13px; }
+.phase .min { display: block; color: var(--muted); font-weight: 400; font-size: 12px; }
+@media (max-width: 520px) { .phase { grid-template-columns: minmax(0, 1fr); } }
+
+.reptes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 900px) { .reptes { grid-template-columns: minmax(0, 1fr); } }
+.repte { border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.repte .lvl { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
+.cmds { display: flex; flex-wrap: wrap; gap: 4px; }
+.cmd { font-family: var(--font-kid); font-size: 12.5px; background: var(--bg); border: 1px solid var(--line); padding: 2px 8px; border-radius: 6px; }
+
+.cut-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.cut { border: 2px dashed var(--muted); border-radius: 10px; padding: 12px; font-family: var(--font-kid); background: var(--surface); display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cut .n { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.cut .big { font-size: 22px; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+.cut .small { font-size: 13.5px; }
+.cut .sol { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 6px; margin-top: auto; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+.tile { border: 2px solid var(--ink); border-radius: 6px; padding: 10px; text-align: center; font-family: var(--font-kid); min-height: 96px; display: flex; flex-direction: column; justify-content: center; gap: 4px; background: var(--surface); }
+.tile .big { font-size: 26px; font-weight: 700; overflow-wrap: anywhere; line-height: 1.15; }
+.tile .small { font-size: 12px; color: var(--muted); }
+
+.table-scroll { overflow-x: auto; }
+table.rub { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 13.5px; }
+table.rub th, table.rub td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+table.rub th { background: var(--bg); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+
+.lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.lib-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.lib-card h3 { font-size: 16px; }
+.lib-card .meta { color: var(--muted); font-size: 12.5px; }
+.lib-card .actions { margin-top: auto; }
+.empty { text-align: center; padding: 48px 16px; color: var(--muted); }
+.empty h3 { color: var(--ink); margin-bottom: 6px; }
+
+.robot-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.robot-card h3 { font-size: 18px; }
+.robot-card h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 6px 0 4px; }
+.robot-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; }
+.robot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-size: 13.5px; z-index: 20; max-width: calc(100% - 32px); }
+footer.foot { color: var(--muted); font-size: 12.5px; padding-block: 8px 28px; }
+@media (prefers-reduced-motion: reduce) { .progress i { transition: none; } }
+.mat-head { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: flex-end; margin-bottom: 16px; }
+.mat-set-head { display: flex; flex-wrap: wrap; gap: 8px 12px; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.mat-set-head h3 { font-size: 17px; }
+.mat-wrap { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; }
+.mat-svg { display: block; width: 100%; height: auto; }
+.fx .ln { border-bottom: 1.5px solid var(--line); height: 26px; }
+.fx .dbox { border: 2px dashed var(--line); border-radius: 10px; height: 110px; display: flex; align-items: flex-end; justify-content: flex-end; padding: 6px 10px; font-size: 12px; color: var(--muted); margin-top: 8px; }
+.fx .chk { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 6px; }
+.fx table { margin-top: 8px; }
+details.prev summary { cursor: pointer; font-weight: 600; font-size: 13px; margin-bottom: 12px; }
+.solu { margin: 0; padding-left: 22px; font-size: 14px; }
+.solu li { margin-bottom: 6px; }
+.solu small { display: block; color: var(--muted); }
+.pv-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+.pv-tile { aspect-ratio: 1; border-radius: 14px; border: 3px solid var(--c); background: color-mix(in srgb, var(--c) 11%, var(--surface)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px; text-align: center; font-family: var(--font-kid); min-width: 0; }
+.pv-tile .ic { width: 34%; max-width: 46px; }
+.pv-tile .big { font-size: 34px; font-weight: 700; line-height: 1.1; overflow-wrap: anywhere; }
+.pv-tile .small { font-size: 12px; color: var(--muted); }
+.cut-grid.wide { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.pv-card { border-radius: 14px; overflow: hidden; border: 2px dashed var(--muted); background: var(--surface); font-family: var(--font-kid); display: flex; flex-direction: column; min-width: 0; }
+.pv-card .hd { display: flex; justify-content: space-between; gap: 8px; padding: 6px 12px; color: #fff; font-size: 12.5px; font-weight: 700; background: var(--dc, var(--c)); }
+.pv-card .bd { display: flex; gap: 10px; padding: 12px; align-items: flex-start; }
+.pv-card .tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.pv-card .big { font-size: 22px; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
+.pv-card .small { font-size: 14px; color: var(--muted); }
+.pv-card > .bd > .ic { width: 46px; flex: none; }
+.pv-role .av { width: 92px; flex: none; border-radius: 50%; background: color-mix(in srgb, var(--dc) 16%, #fff); }
+.pv-role .av .ic { width: 100%; display: block; }
+table.pv-reg th { background: var(--c); color: #fff; }
+.solu li::marker { color: var(--c); font-weight: 700; }
+body{margin:0}
+.keybox{margin:0 0 14px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}.keybox label{font-weight:600;font-size:13px;display:block;margin-bottom:4px}.keybox input{margin-bottom:8px}.keybox small{color:var(--muted);display:block}
+</style></head><body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3.6" r="1"/><circle cx="9.3" cy="13" r="1.1" fill="#fff"/><circle cx="14.7" cy="13" r="1.1" fill="#fff"/><path d="M9.5 16.3h5"/></svg>
+      </div>
+      <div><h1>RoboAula Primària</h1><small>Activitats de robòtica per a mestres</small></div>
+    </div>
+    <nav class="tabs" aria-label="Seccions">
+      <button type="button" data-view="generador">Generador</button>
+      <button type="button" data-view="materials">Materials</button>
+      <button type="button" data-view="biblioteca">La meva biblioteca <span id="libCount"></span></button>
+      <button type="button" data-view="robots">Guia de robots</button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" aria-label="Presentació"><div class="wrap hero-in"><div class="hero-tx"><h2>Robòtica a l'aula, amb idees noves cada dia</h2><p>Genera activitats, circuits i materials per imprimir per a Primària, amb el robot que tens a l'escola.</p></div><div class="hero-art" id="heroArt" aria-hidden="true"></div></div></section>
+
+<main class="wrap">
+  <section class="view" id="view-generador" aria-label="Generador d'activitats">
+    <div class="gen-grid">
+      <form class="panel form-panel" id="form" novalidate>
+        <h2>Nova activitat</h2>
+        <p class="lead">Cada activitat es genera de zero amb només el que indiques aquí. No arrossega res de les anteriors.</p>
+
+        <div class="field">
+          <span class="lbl" id="lblRobot">Robot</span>
+          <div class="robots" role="radiogroup" aria-labelledby="lblRobot" id="robotList"></div>
+          <p class="hint" id="robotHint"></p>
+        </div>
+
+        <div class="field">
+          <span class="lbl" id="lblCycle">Cicle</span>
+          <div class="seg" role="radiogroup" aria-labelledby="lblCycle" id="cycleList"></div>
+        </div>
+
+        <div class="field">
+          <label for="area">Àrea curricular <span class="req">*</span></label>
+          <select id="area"></select>
+          <p class="errmsg" id="areaErr" hidden>Tria l'àrea: és el que evita que es barregin continguts.</p>
+          <p class="hint" id="areaHint">Tot el contingut curricular de l'activitat serà d'aquesta àrea.</p>
+        </div>
+
+        <div class="field">
+          <label for="topic">Contingut concret <span class="req">*</span></label>
+          <input type="text" id="topic" maxlength="200" placeholder="Ex.: sumes fins al 20, el cicle de l'aigua, lectura de paraules amb «ll»…">
+          <p class="errmsg" id="topicErr" hidden>Escriu el contingut que vols treballar.</p>
+        </div>
+
+        <div class="field">
+          <span class="lbl">Materials que teniu</span>
+          <div class="checks" id="matList"></div>
+          <textarea id="extraMats" rows="2" placeholder="Altres materials de l'aula (opcional): cintes, figures, targetes…" aria-label="Altres materials"></textarea>
+          <p class="hint">Només es proposaran els materials marcats, més material bàsic d'aula (paper, cartolina, cinta de carrosser, tisores, retoladors).</p>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label for="duration">Durada</label>
+            <select id="duration">
+              <option>1 sessió de 50 minuts</option>
+              <option selected>2 sessions de 50 minuts</option>
+              <option>3 sessions de 50 minuts</option>
+              <option>Racó de robòtica (30 minuts)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="org">Organització</label>
+            <select id="org">
+              <option selected>Grups de 3 o 4 alumnes</option>
+              <option>Parelles</option>
+              <option>Racons rotatius</option>
+              <option>Grup classe</option>
+            </select>
+          </div>
+        </div>
+
+        <details class="adv">
+          <summary>Més opcions</summary>
+          <div class="field">
+            <label for="level">Nivell dins del cicle</label>
+            <select id="level">
+              <option value="Iniciació">Iniciació</option>
+              <option value="Consolidació" selected>Consolidació</option>
+              <option value="Ampliació">Ampliació</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="area2">Àrea secundària (opcional)</label>
+            <select id="area2"></select>
+            <p class="hint">Només si vols una activitat interdisciplinària a propòsit. Si ho deixes en blanc, no es barreja res.</p>
+          </div>
+          <div class="checks">
+            <label class="check"><input type="checkbox" id="dua" checked> Adaptacions DUA</label>
+            <label class="check"><input type="checkbox" id="rubric" checked> Rúbrica d'avaluació</label>
+          </div>
+        </details>
+
+        
+        <button type="submit" class="btn primary" id="genBtn">Genera l'activitat</button>
+        <p class="errmsg" id="availMsg" hidden></p>
+      </form>
+
+      <div id="result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-materials" aria-label="Materials" hidden></section>
+  <section class="view" id="view-biblioteca" aria-label="Biblioteca" hidden></section>
+  <section class="view" id="view-robots" aria-label="Guia de robots" hidden></section>
+  <footer class="foot">Revisa sempre l'activitat abans de portar-la a l'aula: el contingut el genera una IA.</footer>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+"use strict";
+
+/* ---------- Dades ---------- */
+const CYCLES = [
+  { id: "inicial", label: "Inicial", sub: "1r i 2n · 6-8 anys" },
+  { id: "mitja", label: "Mitjà", sub: "3r i 4t · 8-10 anys" },
+  { id: "superior", label: "Superior", sub: "5è i 6è · 10-12 anys" }
+];
+const CYCLE_NAME = { inicial: "Cicle Inicial (1r i 2n)", mitja: "Cicle Mitjà (3r i 4t)", superior: "Cicle Superior (5è i 6è)" };
+
+const AREAS = [
+  { id: "mates", label: "Matemàtiques", scope: "numeració i càlcul, mesura, geometria i espai, estadística i probabilitat, resolució de problemes matemàtics" },
+  { id: "llengua", label: "Llengua catalana i literatura", scope: "comprensió i expressió oral, lectura, escriptura, ortografia, gramàtica, vocabulari, literatura" },
+  { id: "medi", label: "Coneixement del medi natural, social i cultural", scope: "ciències naturals (éssers vius, matèria, energia, el cos humà, l'aigua, l'espai), ciències socials, història, geografia, patrimoni cultural" },
+  { id: "artistica", label: "Educació artística (plàstica i música)", scope: "expressió plàstica i visual, música, ritme, melodia, dansa i dramatització" },
+  { id: "angles", label: "Llengua estrangera (anglès)", scope: "vocabulari i estructures bàsiques d'anglès, comprensió i expressió oral i escrita en anglès" },
+  { id: "computacional", label: "Pensament computacional i robòtica", scope: "algorismes, seqüències, bucles, condicionals, depuració d'errors, descomposició de problemes i ús dels sensors i actuadors del robot" },
+  { id: "valors", label: "Educació en valors cívics i ètics", scope: "emocions, convivència, respecte, cooperació, drets i deures, sostenibilitat, ciutadania" }
+];
+
+const ROBOTS = [
+  { id: "beebot", name: "Bee-Bot / Blue-Bot", brand: "TTS Group", cycles: ["infantil", "inicial"], pas: 15, app: "Botons físics (i app Bluetooth per a Blue-Bot)",
+    sensors: ["Sensor de pas de 15 cm calibrat"],
+    actuators: ["Motors pas a pas de 15 cm i gir exacte de 90°", "Ulls parpellejants", "Bip d'alerta a cada moviment"],
+    acc: ["Tapissos transparents amb butxaques de 15x15 cm", "Barra de programació tàctil TacTile (Blue-Bot)", "Targetes de comandaments direccionals"],
+    desc: "L'abella robòtica clàssica a les escoles catalanes. Moviments constants de 15 cm que encaixen amb la mesura i la lateralitat.",
+    tip: "Utilitza tapissos de plàstic transparent amb butxaques per inserir targetes personalitzades de vocabulari, sumes o paisatges segons el projecte de l'aula." },
+  { id: "tale-bot", name: "Tale-Bot Pro", brand: "Matatalab", cycles: ["infantil", "inicial"], pas: 10, app: "Sense pantalles (físic directe)",
+    sensors: ["Lector òptic OID a la base per a tapissos interactius", "Micròfon per a enregistrament de veu"],
+    actuators: ["Altaveu integrat de veu i música", "Ulls LED expressius", "Motors pas a pas de 10 cm per moviment", "Ales articulades i orifici central per a retoladors"],
+    acc: ["Tapís interactiu oficial o tapís quadriculat de 10x10 cm", "Targetes de comandament físiques", "Retoladors rentables per dibuixar recorreguts", "Peces d'aparença i disfresses"],
+    desc: "Robot sense pantalles amb botons direccionals a la closca. Permet enregistrar la veu de l'infant a cada pas i traçar formes amb un retolador al mig.",
+    tip: "Fomenta la narració oral i la comprensió lectora: fes que els infants enregistrin diàlegs del conte abans que el robot avanci." },
+  { id: "matatalab", name: "Matatalab Coding Set", brand: "Matatalab", cycles: ["infantil", "inicial"], pas: 10, app: "Sense pantalles (fitxes físiques de codi)",
+    sensors: ["Torre de lectura òptica per reconèixer blocs físics"],
+    actuators: ["Robot mòbil rodó amb ulls", "Mòdul de música i melodies", "Braços i orifici per a retolador"],
+    acc: ["Blocs físics de moviment, bucles numèrics i funcions", "Tapís quadriculat de 10x10 cm", "Targetes de repte d'angles i música"],
+    desc: "Els infants col·loquen fitxes de plàstic (moviment, bucles, funcions) sobre un tauler de control. La torre escaneja el programa i el transmet al robot per Bluetooth.",
+    tip: "Ideal per introduir el concepte de «bucle» de forma manipulativa abans de passar a pantalles." },
+  { id: "dash", name: "Dash & Dot", brand: "Wonder Workshop", cycles: ["inicial", "mitja"], app: "Blockly, Wonder, Path (tauletes iOS/Android)",
+    sensors: ["3 sensors d'ultrasons per detecció d'obstacles", "Sensors de so (micròfons direccionals)", "Sensors d'inclinació i xoc"],
+    actuators: ["Cap motoritzat independent (gira i mira amunt/avall)", "Dues rodes motrius i roda boja", "Ull central amb 12 LEDs RGB i llums d'orelles", "Altaveu de veus i gravacions"],
+    acc: ["Xilòfon musical per a Dash", "Llançador de pilotes (Launcher)", "Accessori pinça/pala per empènyer objectes", "Disfressa de conill/orelles"],
+    desc: "Robot carismàtic amb cap independent. Ideal per a projectes de mesura, coordenades polars, teatre de titelles i circuits interactius.",
+    tip: "Aprofita el cap mòbil per fer que Dash «saludi», «negui» o «cerqui» elements girant el cap abans de desplaçar-se." },
+  { id: "edison", name: "Robot Edison (v2.0 / v3)", brand: "Meet Edison", cycles: ["inicial", "mitja", "superior"], app: "EdBlocks (Inicial), EdScratch (Mitjà), EdPy (Superior) i codis de barres",
+    sensors: ["Sensor de línia inferior (infraroig)", "Sensors d'obstacles frontals per infrarojos", "Sensors de llum LDR duals", "Sensor de so (aplaudiments)", "Receptor i transmissor IR"],
+    actuators: ["2 motors pas a pas amb tracció diferencial", "2 LEDs vermells frontals", "Brunzidor piezoelèctric (tons, bips i notes)"],
+    acc: ["Peces LEGO i LEGO Technic (compatibles)", "Targetes i fulls de codis de barres impresos", "Retolador escolar adaptat al suport central", "Full de calibratge EdMat o pista de cinta aïllant negra", "Cable EdComm per a la transferència de programes"],
+    desc: "Robot robust i de baix cost, compatible amb peces LEGO. Permet una progressió: codis de barres en paper a Cicle Inicial, EdBlocks i EdScratch a Cicle Mitjà, Python (EdPy) a Cicle Superior.",
+    tip: "A Cicle Inicial, imprimeix les targetes de codis de barres: els infants posen el robot a sobre i premen el botó de lectura. A Mitjà i Superior, combina dos Edison i peces LEGO Technic." },
+  { id: "codey-rocky", name: "Codey Rocky", brand: "Makeblock", cycles: ["mitja", "superior"], app: "mBlock 5 (web, tauletes i PC)",
+    sensors: ["Sensor de color i llum", "Seguidor de línies dual", "Giroscopi de 6 eixos", "Sensor de volum/so", "Sensor de llum ambiental", "Receptor i emissor d'infrarojos", "Potenciòmetre manual"],
+    actuators: ["Matriu LED 16x8 (emocions, text, xifres)", "Altaveu de so i efectes", "Llums LED RGB", "Motors de tracció contínua"],
+    acc: ["Cinta aïllant negra per a circuits de línia", "Mòduls mBuild", "Tapís quadriculat de 15x15 cm o lliure"],
+    desc: "Dues peces: el controlador Codey (pantalla matriu i botons A/B/C) i el xassís mòbil Rocky. Versàtil per a geometria, música, seguiment de línies i animacions.",
+    tip: "El comandament Codey es pot desacoblar i programar com a comandament a distància d'un altre robot mitjançant infrarojos." },
+  { id: "lego-spike", name: "LEGO SPIKE Prime / Essential", brand: "LEGO Education", cycles: ["mitja", "superior"], app: "LEGO Education SPIKE App (tauletes i PC)",
+    sensors: ["Sensor de color i llum", "Sensor de distància per ultrasons", "Sensor de força / polsador", "Giroscopi de 6 eixos al Hub"],
+    actuators: ["Matriu 5x5 de LEDs", "Motors angulars amb encoder", "Altaveu per a tons i alertes"],
+    acc: ["Engranatges, politges i eixos LEGO Technic", "Peces de construcció modulars", "Pista de reptes de terra"],
+    desc: "Combina la construcció mecànica de LEGO amb enginyeria i programació basada en Scratch. Des de vehicles autònoms fins a braços classificadors.",
+    tip: "Demana a l'alumnat que primer calculi la relació de transmissió dels engranatges abans de programar la velocitat dels motors." },
+  { id: "microbit", name: "BBC micro:bit (+ Cutebot / Maqueen)", brand: "Micro:bit Educational Foundation", cycles: ["mitja", "superior"], app: "MakeCode (web / app offline)",
+    sensors: ["Matriu 5x5 de LEDs (i sensor de llum)", "2 botons programables (A i B) i logotip tàctil", "Acceleròmetre i brúixola", "Sensor de temperatura", "Micròfon (micro:bit v2)", "Sensors d'infrarojos i ultrasons (xassís Cutebot)"],
+    actuators: ["Altaveu/brunzidor", "Ràdio 2.4 GHz entre plaques", "Motors i fars RGB (xassís Cutebot)", "Pins d'expansió per a servos i sensors"],
+    acc: ["Xassís mòbil Cutebot o Maqueen", "Sensor de distància HC-SR04", "Servomotors de 180° i 360°", "Kit de cables cocodril"],
+    desc: "Placa microcontroladora de baix cost. Amb un xassís com Cutebot es converteix en un vehicle autònom amb control per ràdio entre dues plaques.",
+    tip: "Fes servir dues plaques: una al robot com a receptor i l'altra com a comandament gestual amb l'acceleròmetre i la ràdio." }
+];
+
+/* ---------- Estat ---------- */
+const LIB_KEY = "roboaula.biblioteca.v1";
+const state = {
+  view: "generador", robotId: "beebot", cycle: "inicial", mats: new Set(),
+  current: null, source: "exemple", tab: "proposta", busy: false, progress: 0,
+  guard: null, error: null, lib: []
+};
+let sample = null, downloads = null, ctl = null, guardToken = 0, memLib = [];
+
+/* ---------- Utilitats ---------- */
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const arr = (x) => (Array.isArray(x) ? x : []);
+const str = (x) => (x == null ? "" : String(x));
+const robotById = (id) => ROBOTS.find((r) => r.id === id) || ROBOTS[0];
+const areaById = (id) => AREAS.find((a) => a.id === id);
+let toastTimer = null;
+function toast(msg) {
+  const t = $("toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 3200);
+}
+function loadLib() {
+  try { const raw = localStorage.getItem(LIB_KEY); state.lib = raw ? JSON.parse(raw) : []; } catch (e) { state.lib = memLib; }
+  if (!Array.isArray(state.lib)) state.lib = [];
+}
+function saveLib() {
+  memLib = state.lib;
+  try { localStorage.setItem(LIB_KEY, JSON.stringify(state.lib)); } catch (e) { toast("No s'ha pogut desar al navegador. L'activitat queda només mentre tingueu la pàgina oberta."); }
+  $("libCount").textContent = state.lib.length ? "(" + state.lib.length + ")" : "";
+}
+
+/* ---------- Activitat d'exemple ---------- */
+const EXAMPLE = {
+  meta: { robotId: "beebot", cycle: "inicial", area: "mates", area2: "", topic: "Sumes amb resultat fins al 10", duration: "2 sessions de 50 minuts", org: "Grups de 3 o 4 alumnes" },
+  titol: "La Bee-Bot salta a la recta del 10",
+  mida_cm: 15,
+  subtitol: "Sumes amb resultat fins al 10 sobre una recta numèrica a terra",
+  dinamica: "Recta numèrica de l'0 al 10 feta amb 11 cartolines de 15 × 15 cm col·locades en fila. Cada casella és un pas de la Bee-Bot.",
+  rol_robot: "La Bee-Bot avança 15 cm cada cop que es prem «endavant», o sigui una casella. L'alumnat col·loca el robot al primer sumand i programa tants passos com valgui el segon sumand: on s'atura hi ha el resultat.",
+  competencies: ["Resoldre problemes de suma amb materials manipulatius i representacions.", "Comunicar el raonament amb llenguatge matemàtic bàsic."],
+  objectius: ["Representar una suma com un desplaçament sobre la recta numèrica.", "Calcular sumes amb resultat fins al 10 i comprovar-les amb el robot.", "Programar una seqüència d'ordres «endavant» i detectar si s'ha equivocat.", "Explicar en veu alta com han trobat el resultat."],
+  materials: ["1 Bee-Bot per grup", "11 cartolines de 15 × 15 cm numerades de l'0 al 10 (imprimibles a la pestanya Materials)", "Targetes d'operació (imprimibles)", "Cinta de carrosser per fixar la recta", "1 full de registre i llapis per grup"],
+  sessions: [
+    { titol: "Sessió 1: La recta numèrica i els salts", fases: [
+      { fase: "Inici", minuts: 10, descripcio: "Es presenta la Bee-Bot i es munta la recta entre tots. Es demana quants passos caldran per anar del 0 al 4 i es comprova." },
+      { fase: "Desenvolupament", minuts: 30, descripcio: "Cada grup rep tres targetes fàcils (per exemple 3 + 4). Col·loquen el robot al primer número, predicen el resultat i programen els passos del segon. Comproven si el robot s'atura on havien dit." },
+      { fase: "Tancament", minuts: 10, descripcio: "Cada grup explica una suma: «Hem començat al… i hem fet… passos, per això hem arribat al…»." }
+    ] },
+    { titol: "Sessió 2: Reptes i comprovació", fases: [
+      { fase: "Inici", minuts: 10, descripcio: "Repàs ràpid: es mostra una targeta i l'alumnat aixeca la mà per dir quants passos farà la Bee-Bot." },
+      { fase: "Desenvolupament", minuts: 30, descripcio: "Targetes de nivell mitjà i de repte, incloent-hi la que té un sumand amagat. Cada grup anota a la fitxa la predicció i el resultat real." },
+      { fase: "Tancament", minuts: 10, descripcio: "Es comenten els errors més freqüents (per exemple, comptar la casella de sortida) i com s'han corregit." }
+    ] }
+  ],
+  reptes: [
+    { nivell: "Bàsic", titol: "Del 3 al 7", enunciat: "Posa la Bee-Bot al 3. Quants passos ha de fer per arribar al 7? Programa-ho i comprova-ho.", ordres: ["Endavant", "Endavant", "Endavant", "Endavant", "GO"] },
+    { nivell: "Intermedi", titol: "Quin és el resultat?", enunciat: "Agafa una targeta, digues el resultat abans de moure el robot i després comprova-ho.", ordres: ["Endavant × el segon sumand", "GO"] },
+    { nivell: "Repte", titol: "El sumand amagat", enunciat: "4 + ? = 9. Posa la Bee-Bot al 4 i troba quants passos ha de fer per arribar al 9.", ordres: ["Endavant × ?", "GO"] }
+  ],
+  targetes: [
+    { text: "3 + 4", pista: "Comença al 3 i fes 4 passos.", solucio: "7", dificultat: "Fàcil", ordres: "4 × Endavant" },
+    { text: "5 + 2", pista: "Comença al 5 i fes 2 passos.", solucio: "7", dificultat: "Fàcil", ordres: "2 × Endavant" },
+    { text: "6 + 3", pista: "Comença al 6 i fes 3 passos.", solucio: "9", dificultat: "Fàcil", ordres: "3 × Endavant" },
+    { text: "4 + 4", pista: "És un doble.", solucio: "8", dificultat: "Mitjà", ordres: "4 × Endavant" },
+    { text: "2 + 7", pista: "Pots començar pel número més gran?", solucio: "9", dificultat: "Mitjà", ordres: "7 × Endavant (o començar al 7 i fer 2 passos)" },
+    { text: "8 + 2", pista: "Quants passos falten per arribar al 10?", solucio: "10", dificultat: "Mitjà", ordres: "2 × Endavant" },
+    { text: "1 + 3 + 5", pista: "Fes dos programes seguits.", solucio: "9", dificultat: "Repte", ordres: "3 × Endavant, GO; després 5 × Endavant, GO" },
+    { text: "4 + ? = 9", pista: "Quants passos falten del 4 al 9?", solucio: "5", dificultat: "Repte", ordres: "5 × Endavant" }
+  ],
+  caselles: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => ({ etiqueta: String(n), pista: n === 0 ? "Sortida" : n === 10 ? "Meta" : "", icona: n === 0 ? "flag" : n === 10 ? "star" : "" })),
+  dua: [
+    { dimensio: "Representació", estrategies: "Recta numèrica amb números grans i colors alterns; material manipulatiu de comptar (fitxes) a disposició." },
+    { dimensio: "Acció i expressió", estrategies: "L'alumnat pot respondre amb el robot, amb fitxes o dient el resultat; es permet assenyalar la casella." },
+    { dimensio: "Implicació", estrategies: "Rols rotatius (programador, comprovador, secretari) cada targeta; reptes graduats per triar." }
+  ],
+  rubrica: [
+    { criteri: "Càlcul de sumes fins al 10", insuficient: "No relaciona la suma amb els passos del robot.", suficient: "Resol sumes fàcils amb ajuda.", notable: "Resol sumes de forma autònoma i les comprova.", excellent: "Resol també sumes de tres números o amb sumand amagat." },
+    { criteri: "Programació de la seqüència", insuficient: "Necessita ajuda per introduir els passos.", suficient: "Programa seqüències curtes.", notable: "Programa i corregeix errors sol.", excellent: "Anticipa errors i proposa estratègies més curtes." },
+    { criteri: "Treball en equip", insuficient: "Monopolitza el robot o no participa.", suficient: "Respecta els torns amb recordatoris.", notable: "Assumeix el seu rol i escolta.", excellent: "Ajuda els companys sense donar la resposta." }
+  ]
+};
+
+/* ---------- Formulari ---------- */
+function renderForm() {
+  $("robotList").innerHTML = ROBOTS.map((r) =>
+    '<label class="robot-opt"><input type="radio" name="robot" value="' + esc(r.id) + '"' + (r.id === state.robotId ? " checked" : "") + '><span><b>' + esc(r.name) + '</b><em>' + esc(r.brand) + '</em></span></label>').join("");
+  $("cycleList").innerHTML = CYCLES.map((c) =>
+    '<label class="robot-opt"><input type="radio" name="cycle" value="' + c.id + '"' + (c.id === state.cycle ? " checked" : "") + '><span><b>' + c.label + '</b><em>' + c.sub + '</em></span></label>').join("");
+  $("area").innerHTML = '<option value="">Tria una àrea…</option>' + AREAS.map((a) => '<option value="' + a.id + '">' + esc(a.label) + '</option>').join("");
+  $("area2").innerHTML = '<option value="">Cap (només una àrea)</option>' + AREAS.map((a) => '<option value="' + a.id + '">' + esc(a.label) + '</option>').join("");
+  $("area").value = "mates"; $("topic").value = "Sumes amb resultat fins al 10";
+  renderMats(); updateHints();
+}
+function renderMats() {
+  const r = robotById(state.robotId); state.mats = new Set();
+  $("matList").innerHTML = r.acc.map((m, i) =>
+    '<label class="check"><input type="checkbox" data-mat="' + i + '"> <span>' + esc(m) + '</span></label>').join("");
+}
+function updateHints() {
+  const r = robotById(state.robotId);
+  const ok = r.cycles.indexOf(state.cycle) >= 0;
+  $("robotHint").textContent = r.app + (ok ? "" : " · Es fa servir sobretot en altres cicles; pots continuar igualment.");
+  const a = areaById($("area").value);
+  $("areaHint").textContent = a ? "Abast: " + a.scope + "." : "Tot el contingut curricular de l'activitat serà d'aquesta àrea.";
+}
+function readForm() {
+  const matsChecked = Array.from(document.querySelectorAll("#matList input:checked")).map((el) => robotById(state.robotId).acc[Number(el.dataset.mat)]);
+  return {
+    robotId: state.robotId, cycle: state.cycle, area: $("area").value, area2: $("area2").value,
+    topic: $("topic").value.trim(), mats: matsChecked, extra: $("extraMats").value.trim(),
+    duration: $("duration").value, org: $("org").value, level: $("level").value,
+    dua: $("dua").checked, rubric: $("rubric").checked
+  };
+}
+function validate(f) {
+  let ok = true;
+  const aEl = $("area"), tEl = $("topic");
+  aEl.classList.toggle("invalid", !f.area); $("areaErr").hidden = !!f.area; if (!f.area) ok = false;
+  tEl.classList.toggle("invalid", !f.topic); $("topicErr").hidden = !!f.topic; if (!f.topic) ok = false;
+  if (!ok) (f.area ? tEl : aEl).focus();
+  return ok;
+}
+
+/* ---------- Prompt (sense memòria: tot surt del formulari) ---------- */
+function buildPrompt(f) {
+  const r = robotById(f.robotId), a = areaById(f.area), a2 = f.area2 && f.area2 !== f.area ? areaById(f.area2) : null;
+  const others = AREAS.filter((x) => x.id !== f.area && (!a2 || x.id !== a2.id)).map((x) => x.label).join("; ");
+  const mats = f.mats.length ? f.mats.map((m) => "- " + m).join("\n") : "- (cap complement especial)";
+  const lines = [];
+  lines.push("Ets assessor de robòtica educativa per a mestres de primària de Catalunya. Dissenya UNA activitat nova a partir només de les dades d'aquest encàrrec. No existeix cap activitat ni conversa anterior: no n'aprofitis cap contingut.");
+  lines.push("");
+  lines.push("ÀREA CURRICULAR ÚNICA: " + a.label);
+  lines.push("Continguts propis d'aquesta àrea: " + a.scope + ".");
+  if (f.area === "computacional") {
+    lines.push("Aquí el contingut és el propi pensament computacional i el funcionament del robot.");
+  } else {
+    lines.push("El contingut curricular de TOT l'activitat (objectius, competències, targetes, reptes, caselles, rúbrica) ha de ser d'aquesta àrea i del tema indicat. El pensament computacional (seqüències, bucles, depuració) és només l'eina per programar el robot, no un contingut afegit.");
+  }
+  if (a2) {
+    lines.push("Àrea secundària demanada expressament pel mestre: " + a2.label + " (" + a2.scope + "). Només aquesta es pot combinar amb l'àrea principal, i l'àrea principal ha de pesar més.");
+  } else {
+    lines.push("PROHIBIT incloure continguts curriculars d'aquestes àrees: " + others + ". Si el tema toca de lluny una altra àrea, ignora aquest vessant.");
+  }
+  lines.push("");
+  lines.push("TEMA CONCRET: " + f.topic);
+  lines.push("CICLE: " + CYCLE_NAME[f.cycle] + ". Adapta la dificultat, la lectoescriptura i els números a aquesta edat.");
+  lines.push("NIVELL DINS DEL CICLE: " + f.level);
+  lines.push("DURADA: " + f.duration + ". ORGANITZACIÓ: " + f.org + ".");
+  lines.push("");
+  lines.push("ROBOT: " + r.name + " (" + r.brand + "). Programació: " + r.app + ".");
+  lines.push("Sensors reals: " + r.sensors.join("; ") + ".");
+  lines.push("Actuadors reals: " + r.actuators.join("; ") + ".");
+  lines.push("Només pots demanar al robot accions possibles amb aquests sensors i actuadors i amb aquest sistema de programació. No inventis funcions, mesures ni botons.");
+  lines.push("");
+  lines.push("MATERIALS DE ROBÒTICA DISPONIBLES:\n" + mats);
+  if (f.extra) lines.push("Altres materials de l'aula indicats pel mestre: " + f.extra);
+  lines.push("A més pots comptar amb material bàsic d'aula: paper, cartolina, cinta de carrosser, tisores, retoladors, regle. No demanis cap altre material.");
+  lines.push("");
+  lines.push("ICONES: a cada casella, estació del tapís i targeta pots posar una icona decorativa (camp icona) triada d'aquesta llista: " + Object.keys(ICONS).join(", ") + ". Tria la que s'associï amb el contingut de l'element i varia-les; si cap hi encaixa, escriu none.");
+  lines.push("");
+  if (r.pas) {
+    lines.push("MIDA DE LES CASELLES: " + r.pas + " cm de costat exactament (és el pas del robot, que es mou per caselles). Si en algun text esmentes la mida de les caselles, ha de ser aquesta. El camp tapis ha de ser null.");
+  } else {
+    lines.push("MATERIAL SENSE QUADRÍCULA: aquest robot NO es mou per passos fixos, així que NO has de plantejar l'activitat sobre caselles quadrades ni quadrícules. Dissenya un TAPÍS O CIRCUIT LLIURE al camp tapis. Només tries el tipus, la mida i les estacions; el programa dibuixa la forma. Tipus possibles: circuit (recorregut tancat, estacions al llarg del camí), cami (recorregut serpentejant d'inici a final), mapa (estacions disperses unides per camins), radial (centre amb camins en estrella i cercles de distància), diana (cercles concentrics amb zones). Tria el que millor encaixi amb el tema i amb els sensors del robot i varia'l. ample_cm entre 30 i 57, alt_cm entre 20 i 55. De 4 a 8 estacions ordenades: són els llocs on el robot s'atura o fa una acció, i el seu contingut (etiqueta curta de màxim 3 paraules) ha de ser de l'àrea i el tema. A instruccions explica en 1 o 2 frases com es munta i com es fa servir el tapís (per exemple si cal cinta o retolador), sense demanar res que el robot no pugui fer. El camp caselles només serveix per a peces soltes (objectes o targetes per col·locar sobre el tapís): deixa-ho buit si no calen. mida_caselles_cm és el costat d'aquestes peces (entre 8 i 12).");
+  }
+  lines.push("");
+  lines.push("FORMAT D'ACTIVITAT: tria UN format que encaixi amb el tema, el cicle i el robot, i escriu-ne el nom (2 a 5 paraules) a format_activitat. Opcions, neutres respecte a l'àrea: gimcana d'estacions; missió sobre un mapa; escape room de reptes; taller on l'alumnat dissenya el seu propi circuit; investigació amb mesures i registre de dades; representació o teatre amb el robot de protagonista; joc de cartes i recorregut; relleu o competició cooperativa entre equips; gimcana de preguntes que donen pistes per obrir un cadenat o una caixa; narració d'una història per escenes amb moviments, sons, llums o emocions del robot; laberint o recorregut a seguir o evitar línies; dibuix de figures amb recorreguts; el robot com a eina manipulativa per representar quantitats o idees; comunicació entre dos robots o plaques (només si el robot ho permet). Els formats són només una guia d'estructura: el contingut ha de ser sempre de l'àrea i del tema triats. No triïs sempre el més previsible. A fitxes inclou 3 o 4 fitxes de treball de tipus diferents (escriu, dibuixa, taula, marca) que s'adaptin a l'àrea i al format.");
+  lines.push("");
+  lines.push("CRITERIS DE DISSENY (inspirats en els recursos d'aula del Departament d'Educació, l'XTEC, Meet Edison i LEGO Education): activitats en sessions curtes amb preguntes guia per al mestre; reptes graduats per nivell de complexitat; progressió de l'ús desendollat al programat quan el robot ho permet; l'alumnat prediu, programa, comprova i depura; treball cooperatiu amb rols; avaluació competencial. " + (r.id === "edison" ? "Amb Edison, si encaixa, aprofita la programació per codis de barres, el seguiment de línia i el full de calibratge o EdMat. " : "") + (r.id === "lego-spike" ? "Amb LEGO SPIKE, estructura les sessions amb una fase d'exploració, una de construcció o programació, una de reflexió i una d'ampliació. " : "") + "No citis aquestes fonts ni en copiïs continguts: fes una activitat original.");
+  lines.push("");
+  lines.push("QUALITAT: comprova que tot càlcul, resposta o dada de les targetes i solucions és correcte. Els enunciats per a l'alumnat són frases curtes i clares per a l'edat. El català ha de ser correcte i natural. No citis codis de competències ni articles de decret. Escriu el resultat com si el mestre l'hagués de fer servir demà.");
+  lines.push("");
+  lines.push("FORMAT: respon NOMÉS amb un objecte JSON vàlid (sense markdown ni comentaris), amb exactament aquestes claus. Els textos entre < > expliquen què cal posar; no els copiïs:");
+  lines.push(JSON.stringify({
+    titol: "<títol breu i atractiu>", subtitol: "<una frase>",
+    dinamica: "<una o dues frases: com s'organitza l'espai i la dinàmica>",
+    format_activitat: "<nom del format triat>",
+    mida_caselles_cm: "<número: costat en cm de cada casella o peça quadrada>",
+    rol_robot: "<com participa el robot, segons els seus sensors i actuadors reals>",
+    competencies: ["<2 o 3 competències específiques de l'àrea, en llenguatge clar>"],
+    objectius: ["<3 o 4 objectius d'aprenentatge observables>"],
+    materials: ["<material amb quantitat>"],
+    sessions: [{ titol: "<títol de la sessió>", fases: [{ fase: "Inici", minuts: 10, descripcio: "<què fan>" }, { fase: "Desenvolupament", minuts: 30, descripcio: "<què fan>" }, { fase: "Tancament", minuts: 10, descripcio: "<què fan>" }] }],
+    reptes: [{ nivell: "Bàsic | Intermedi | Repte", titol: "<títol>", enunciat: "<text per a l'alumnat>", ordres: ["<ordre del robot>"] }],
+    targetes: [{ text: "<enunciat curt per a l'alumne>", pista: "<ajuda>", solucio: "<resposta correcta>", dificultat: "Fàcil | Mitjà | Repte", ordres: "<seqüència suggerida per al robot>", icona: "<id d'icona o none>" }],
+    caselles: [{ etiqueta: "<text curt o número gran>", pista: "<pista breu o buit>", icona: "<id d'icona o none>" }],
+    tapis: r.pas ? null : { tipus: "circuit | cami | mapa | radial | diana", titol: "<nom del tapís>", ample_cm: "<número>", alt_cm: "<número>", instruccions: "<com es munta i s'usa>", estacions: [{ etiqueta: "<màxim 3 paraules>", pista: "<què cal fer en aquesta estació>", icona: "<id d'icona o none>" }] },
+    fitxes: [{ tipus: "escriu | dibuixa | taula | marca", titol: "<títol>", enunciat: "<consigna per a l'alumne>", columnes: ["<capçalera, només si tipus és taula>"], opcions: ["<opció, només si tipus és marca>"] }],
+    dua: f.dua ? [{ dimensio: "Representació | Acció i expressió | Implicació", estrategies: "<estratègies concretes>" }] : [],
+    rubrica: f.rubric ? [{ criteri: "<criteri>", insuficient: "<descriptor>", suficient: "<descriptor>", notable: "<descriptor>", excellent: "<descriptor>" }] : []
+  }, null, 1));
+  lines.push("Quantitats: 2 o 3 sessions segons la durada, 3 reptes (un per nivell), 8 targetes, 3 o 4 fitxes de treball, " + (r.pas ? "entre 8 i 12 caselles (elements per imprimir, retallar i col·locar a terra o a la taula, adequats al tema; si el tema no en necessita, deixa-ho buit), " : "tapis amb 4 a 8 estacions i entre 0 i 6 peces soltes a caselles, ") + (f.dua ? "3 estratègies DUA, " : "dua buit, ") + (f.rubric ? "3 o 4 criteris de rúbrica." : "rubrica buida."));
+  return lines.join("\n");
+}
+
+function cellCm(v, robotId) {
+  const pas = robotById(robotId).pas, n = Number(String(v).replace(",", "."));
+  if (pas) return pas;
+  return isFinite(n) && n >= 5 && n <= 18 ? Math.round(n * 2) / 2 : 15;
+}
+function activityCm(a) { return a.mida_cm || robotById(a.meta.robotId).pas || 15; }
+const TAPIS_TIPUS = { circuit: "Circuit", cami: "Camí", mapa: "Mapa", radial: "Radial", diana: "Diana" };
+const FITXA_TIPUS = { escriu: "Escriu", dibuixa: "Dibuixa", taula: "Completa la taula", marca: "Marca" };
+function clampNum(v, lo, hi, def) { const n = Number(String(v).replace(",", ".")); return isFinite(n) && n > 0 ? Math.min(hi, Math.max(lo, Math.round(n))) : def; }
+function normTapis(t, f) {
+  if (robotById(f.robotId).pas || !t || typeof t !== "object") return null;
+  const s = (x) => str(x).trim();
+  const est = arr(t.estacions).map((x) => ({ etiqueta: s(x && x.etiqueta).slice(0, 40), pista: s(x && x.pista), icona: ICONS[s(x && x.icona)] ? s(x && x.icona) : "" })).filter((x) => x.etiqueta).slice(0, 8);
+  if (est.length < 2) return null;
+  const tp = s(t.tipus).toLowerCase();
+  const tipus = TAPIS_TIPUS[tp] ? tp : "circuit", round = tipus === "radial" || tipus === "diana", lo = round ? 45 : 40, lo2 = round ? 45 : 34;
+  return { tipus, titol: s(t.titol), instruccions: s(t.instruccions), ample_cm: clampNum(t.ample_cm, lo, 57, 50), alt_cm: clampNum(t.alt_cm, lo2, 55, round ? 50 : 35), estacions: est };
+}
+function normFitxes(list) {
+  const s = (x) => str(x).trim();
+  return arr(list).map((x) => {
+    let tp = s(x && x.tipus).toLowerCase(); const cols = arr(x && x.columnes).map(s).filter(Boolean).slice(0, 4), ops = arr(x && x.opcions).map(s).filter(Boolean).slice(0, 6);
+    if (!FITXA_TIPUS[tp] || (tp === "taula" && cols.length < 2) || (tp === "marca" && ops.length < 2)) tp = tp === "dibuixa" ? "dibuixa" : "escriu";
+    return { tipus: tp, titol: s(x && x.titol), enunciat: s(x && x.enunciat), columnes: tp === "taula" ? cols : [], opcions: tp === "marca" ? ops : [] };
+  }).filter((x) => x.enunciat || x.titol).slice(0, 4);
+}
+function normalize(d, f) {
+  const s = (x) => str(x).trim();
+  return {
+    format: s(d.format_activitat).slice(0, 60), tapis: normTapis(d.tapis, f), fitxes: normFitxes(d.fitxes),
+    meta: { robotId: f.robotId, cycle: f.cycle, area: f.area, area2: f.area2, topic: f.topic, duration: f.duration, org: f.org },
+    titol: s(d.titol) || "Activitat de robòtica", subtitol: s(d.subtitol), dinamica: s(d.dinamica), rol_robot: s(d.rol_robot), mida_cm: cellCm(d.mida_caselles_cm, f.robotId),
+    competencies: arr(d.competencies).map(s).filter(Boolean),
+    objectius: arr(d.objectius).map(s).filter(Boolean),
+    materials: arr(d.materials).map(s).filter(Boolean),
+    sessions: arr(d.sessions).map((x) => ({ titol: s(x && x.titol), fases: arr(x && x.fases).map((p) => ({ fase: s(p && p.fase), minuts: Number(p && p.minuts) || 0, descripcio: s(p && p.descripcio) })) })),
+    reptes: arr(d.reptes).map((x) => ({ nivell: s(x && x.nivell), titol: s(x && x.titol), enunciat: s(x && x.enunciat), ordres: arr(x && x.ordres).map(s).filter(Boolean) })),
+    targetes: arr(d.targetes).map((x) => ({ text: s(x && x.text), pista: s(x && x.pista), solucio: s(x && x.solucio), dificultat: s(x && x.dificultat), ordres: s(x && x.ordres), icona: ICONS[s(x && x.icona)] ? s(x && x.icona) : "" })).filter((x) => x.text),
+    caselles: arr(d.caselles).map((x) => ({ etiqueta: s(x && x.etiqueta), pista: s(x && x.pista), icona: ICONS[s(x && x.icona)] ? s(x && x.icona) : "" })).filter((x) => x.etiqueta),
+    dua: arr(d.dua).map((x) => ({ dimensio: s(x && x.dimensio), estrategies: s(x && x.estrategies) })).filter((x) => x.estrategies),
+    rubrica: arr(d.rubrica).map((x) => ({ criteri: s(x && x.criteri), insuficient: s(x && x.insuficient), suficient: s(x && x.suficient), notable: s(x && x.notable), excellent: s(x && x.excellent) })).filter((x) => x.criteri)
+  };
+}
+
+/* ---------- Generació ---------- */
+const ERR = {
+  timeout: "El model no ha respost a temps. Torna-ho a provar; si es repeteix, prova un altre model al camp Model.",
+  no_key: "Falta posar l'adreça del servidor (WORKER_URL) dins del fitxer index.html.",
+  bad_key: "La clau de Gemini no és vàlida o no té permís. Revisa-la.",
+  bad_model: "No es troba aquest model. Revisa el nom al camp Model.",
+  not_granted: "No s'ha pogut utilitzar l'assistent.",
+  sampling_disabled: "L'assistent no està disponible.",
+  rate_limited: "S'han fet massa peticions o has arribat al límit d'ús. Torna-ho a provar d'aquí a una estona.",
+  session_expired: "Cal tornar a iniciar la sessió.",
+  refused: "L'assistent no ha pogut generar aquesta activitat. Prova de reformular el contingut concret.",
+  invalid_json: "La resposta ha arribat incompleta. Torna a prémer «Genera l'activitat».",
+  empty_completion: "No s'ha rebut cap resposta. Torna-ho a provar.",
+  upstream_error: "S'ha interromput la connexió. Torna-ho a provar."
+};
+
+const WORKER_URL = "roboaula.avillar9.workers.dev";
+function gLoad() {}
+async function geminiJson(prompt, opts) {
+  opts = opts || {};
+  if (/POSA-AQUI/.test(WORKER_URL)) throw { code: "no_key" };
+  const ic = new AbortController(); let timer;
+  const arm = (ms) => { clearTimeout(timer); timer = setTimeout(() => { ic._to = true; ic.abort(); }, ms); };
+  if (opts.signal) { if (opts.signal.aborted) throw { code: "cancelled" }; opts.signal.addEventListener("abort", () => ic.abort()); }
+  arm(90000);
+  const t0 = Date.now(), tick = setInterval(() => { const l = $("busyLabel"); if (l && !ic._got) l.textContent = "Esperant l'assistent… " + Math.round((Date.now() - t0) / 1000) + " s"; }, 1000);
+  const end = () => { clearTimeout(timer); clearInterval(tick); };
+  let resp;
+  try {
+    resp = await fetch(WORKER_URL, { method: "POST", signal: ic.signal, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt }) });
+  } catch (e) { end(); if (ic._to) throw { code: "timeout" }; if (e && e.name === "AbortError") throw { code: "cancelled" }; throw { code: "upstream_error" }; }
+  if (!resp.ok) {
+    end();
+    let det = ""; try { const j = await resp.json(); det = String(j.error && j.error.message || j.error || "").slice(0, 160); } catch (e) {}
+    throw { code: resp.status === 429 ? "rate_limited" : "upstream_error", detail: det };
+  }
+  const rd = resp.body.getReader(), dec = new TextDecoder(); let buf = "", text = "";
+  try {
+    for (;;) {
+      const r = await rd.read(); if (r.done) break; arm(45000); ic._got = true;
+      buf += dec.decode(r.value, { stream: true });
+      let i; while ((i = buf.indexOf("\n")) >= 0) {
+        const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+        if (!line.startsWith("data:")) continue;
+        try { const j = JSON.parse(line.slice(5)); const c = j.candidates && j.candidates[0]; if (c && c.content && c.content.parts) c.content.parts.forEach((p) => { if (p.text) text += p.text; });
+          if (j.promptFeedback && j.promptFeedback.blockReason) throw { code: "refused" }; } catch (e) { if (e && e.code) throw e; }
+        if (opts.onText) opts.onText({ text });
+      }
+    }
+  } catch (e) { end(); if (ic._to) throw { code: "timeout" }; if (e && e.name === "AbortError") throw { code: "cancelled" }; if (e && e.code) throw e; throw { code: "upstream_error" }; }
+  end();
+  if (!text.trim()) throw { code: "empty_completion" };
+  const clean = text.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
+  try { return JSON.parse(clean); } catch (e) { throw { code: "invalid_json" }; }
+}
+function browserSave(o) {
+  return new Promise((ok, ko) => {
+    try {
+      const blob = new Blob([o.data], { type: /\.pdf$/.test(o.filename) ? "application/pdf" : "text/html" });
+      const u = URL.createObjectURL(blob), a = document.createElement("a");
+      a.href = u; a.download = o.filename; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(u), 4000); ok({ status: "saved" });
+    } catch (e) { ko({ code: "unavailable" }); }
+  });
+}
+
+async function ensureCaps() {
+  if (!sample) { sample = { json: geminiJson }; downloads = { save: browserSave }; gLoad(); return; }
+  return;
+}
+async function ensureCapsOld() {
+  try {
+    if (!sample && window.claude && window.claude.use) sample = await window.claude.use("sample");
+    if (!downloads && window.claude && window.claude.use) downloads = await window.claude.use("downloads");
+  } catch (e) { /* sense capacitats */ }
+}
+async function generate() {
+  const f = readForm();
+  if (!validate(f)) return;
+  await ensureCaps();
+  if (!sample) { const m = $("availMsg"); m.textContent = "Aquesta vista no pot generar activitats. Obre l'app des de Claude per poder-ne crear de noves."; m.hidden = false; return; }
+  $("availMsg").hidden = true;
+  ctl = new AbortController();
+  state.busy = true; state.progress = 0; state.error = null; state.guard = null; guardToken++;
+  renderResult(); scrollToResult();
+  try {
+    const data = await sample.json(buildPrompt(f), {
+      signal: ctl.signal, cache: false,
+      onText: (u) => { state.progress = Math.min(95, Math.round(u.text.length / 110)); const bar = document.querySelector(".progress i"); if (bar) bar.style.width = Math.max(4, state.progress) + "%"; const lab = $("busyLabel"); if (lab) lab.textContent = "Escrivint l'activitat…"; }
+    });
+    if (!data || typeof data !== "object") throw { code: "invalid_json" };
+    const act = normalize(data, f);
+    if (!act.objectius.length && !act.sessions.length) throw { code: "invalid_json" };
+    state.current = act; state.source = "generada"; state.tab = "proposta"; state.busy = false;
+    renderResult(); scrollToResult();
+    checkArea(act);
+  } catch (e) {
+    state.busy = false;
+    if (e && e.code === "cancelled") { state.error = null; }
+    else { state.error = (ERR[e && e.code] || ERR.upstream_error) + (e && e.detail ? " (" + e.detail + ")" : ""); }
+    renderResult();
+  } finally { ctl = null; }
+}
+function scrollToResult() { if (window.matchMedia("(max-width: 960px)").matches) $("result").scrollIntoView({ behavior: "smooth", block: "start" }); }
+
+async function checkArea(act) {
+  const token = ++guardToken; const m = act.meta;
+  const a = areaById(m.area), a2 = m.area2 && m.area2 !== m.area ? areaById(m.area2) : null;
+  state.guard = { status: "checking" }; renderGuard();
+  const resum = [
+    "OBJECTIUS: " + act.objectius.join(" | "), "COMPETÈNCIES: " + act.competencies.join(" | "),
+    "REPTES: " + act.reptes.map((x) => x.titol + ": " + x.enunciat).join(" | "),
+    "TARGETES: " + act.targetes.map((x) => x.text).join(" | "),
+    "CASELLES: " + act.caselles.map((x) => x.etiqueta + (x.pista ? " (" + x.pista + ")" : "")).join(" | "),
+    "SESSIONS: " + act.sessions.map((s) => s.fases.map((p) => p.descripcio).join(" ")).join(" | ")
+  ].join("\n");
+  const p = "Ets revisor curricular. L'activitat següent s'ha encarregat per a l'àrea «" + a.label + "» (" + a.scope + ")" + (a2 ? ", amb l'àrea secundària permesa «" + a2.label + "»" : ", sense cap altra àrea") + ", sobre el tema «" + m.topic + "».\nIndica si algun element treballa contingut curricular d'una altra àrea no permesa. El pensament computacional necessari per programar el robot NO compta com a àrea aliena (llevat que l'àrea sigui aquesta mateixa).\nRespon només amb JSON: {\"coherent\": true|false, \"fora_d_area\": [\"<element concret i a quina àrea pertany>\"]} amb un màxim de 4 elements.\n\n" + resum;
+  try {
+    const r = await sample.json(p, { modelTier: "quick" });
+    if (token !== guardToken) return;
+    state.guard = r && r.coherent === false && arr(r.fora_d_area).length ? { status: "warn", items: arr(r.fora_d_area).map(str).slice(0, 4) } : { status: "ok" };
+  } catch (e) { if (token !== guardToken) return; state.guard = null; }
+  renderGuard();
+}
+
+/* ---------- Dossier ---------- */
+function areaChip(id) { const a = areaById(id); return a ? '<span class="chip area area-' + a.id + '">' + esc(a.label) + '</span>' : ""; }
+function listUl(items) { return items.length ? '<ul class="plain">' + items.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul>" : ""; }
+function renderGuard() {
+  const el = $("guardSlot"); if (!el) return; const g = state.guard;
+  if (!g || state.source !== "generada") { el.innerHTML = ""; return; }
+  if (g.status === "checking") el.innerHTML = '<div class="banner info">Comprovant que tot el contingut és de l\'àrea triada…</div>';
+  else if (g.status === "ok") el.innerHTML = '<div class="banner info">Comprovat: tot el contingut és de l\'àrea triada.</div>';
+  else el.innerHTML = '<div class="banner warn"><div><b>Possibles continguts d\'una altra àrea.</b> Revisa abans d\'usar-ho:<ul>' + g.items.map((x) => "<li>" + esc(x) + "</li>").join("") + '</ul></div><button type="button" class="btn sm" data-act="regen">Torna a generar</button></div>';
+}
+function dossierProposta(a) {
+  const s = [];
+  if (a.dinamica) s.push('<div class="sec"><h3>Dinàmica</h3><p>' + esc(a.dinamica) + "</p></div>");
+  if (a.rol_robot) s.push('<div class="sec"><h3>Paper del robot</h3><div class="callout">' + esc(a.rol_robot) + "</div></div>");
+  if (a.competencies.length || a.objectius.length) s.push('<div class="sec cols2"><div><h3>Competències</h3>' + listUl(a.competencies) + "</div><div><h3>Objectius</h3>" + listUl(a.objectius) + "</div></div>");
+  if (a.materials.length) s.push('<div class="sec"><h3>Materials</h3>' + listUl(a.materials) + "</div>");
+  if (a.sessions.length) s.push('<div class="sec"><h3>Sessions</h3>' + a.sessions.map((x) => '<div class="session"><h4>' + esc(x.titol) + "</h4>" + x.fases.map((p) => '<div class="phase"><b>' + esc(p.fase) + (p.minuts ? '<span class="min">' + p.minuts + " min</span>" : "") + "</b><span>" + esc(p.descripcio) + "</span></div>").join("") + "</div>").join("") + "</div>");
+  if (a.reptes.length) s.push('<div class="sec"><h3>Reptes per a l\'alumnat</h3><div class="reptes">' + a.reptes.map((x) => '<div class="repte"><span class="lvl">' + esc(x.nivell) + "</span><h4>" + esc(x.titol) + "</h4><p>" + esc(x.enunciat) + "</p>" + (x.ordres.length ? '<div class="cmds">' + x.ordres.map((o) => '<span class="cmd">' + esc(o) + "</span>").join("") + "</div>" : "") + "</div>").join("") + "</div></div>");
+  return s.join("");
+}
+function dossierMaterials(a) {
+  const s = [];
+  s.push('<div class="banner info"><span>Tot el que hi ha aquí es pot imprimir i retallar. A la secció Materials el tens en PDF.</span><button type="button" class="btn sm" data-view="materials" data-cur="1">Obre a Materials</button></div>');
+  if (a.tapis) s.push('<div class="sec"><h3>' + esc(a.tapis.titol || "Tapís lliure") + '</h3><p class="hint" style="margin-bottom:10px">' + esc(a.tapis.instruccions) + " Mida real: " + a.tapis.ample_cm + " × " + a.tapis.alt_cm + " cm.</p>" + tapisSVG(a) + "</div>");
+  if (a.fitxes && a.fitxes.length) s.push('<div class="sec"><h3>Fitxes de treball</h3><div class="cut-grid wide">' + a.fitxes.map((x, i) => fitxaHTML(x, i, a)).join("") + "</div></div>");
+  if (a.caselles.length) s.push('<div class="sec"><h3>' + (robotById(a.meta.robotId).pas ? "Caselles per al terra o la taula" : "Peces soltes") + "</h3>" + '<p class="hint" style="margin-bottom:10px">Mida real de cada casella: ' + activityCm(a) + " × " + activityCm(a) + " cm. " + esc(a.dinamica || "") + "</p>" + '<div class="tiles">' + a.caselles.map((c) => '<div class="tile"><span class="big">' + esc(c.etiqueta) + "</span>" + (c.pista ? '<span class="small">' + esc(c.pista) + "</span>" : "") + "</div>").join("") + "</div></div>");
+  if (a.targetes.length) s.push('<div class="sec"><h3>Targetes de repte</h3><div class="cut-grid">' + a.targetes.map((c, i) => '<div class="cut"><div class="n"><span>Targeta ' + (i + 1) + "</span><span>" + esc(c.dificultat) + '</span></div><div class="big">' + esc(c.text) + "</div>" + (c.pista ? '<div class="small">' + esc(c.pista) + "</div>" : "") + (c.solucio || c.ordres ? '<div class="sol">' + (c.solucio ? "<b>Solució:</b> " + esc(c.solucio) : "") + (c.ordres ? "<br>" + esc(c.ordres) : "") + "</div>" : "") + "</div>").join("") + "</div></div>");
+  if (!a.caselles.length && !a.targetes.length && !a.tapis && !(a.fitxes && a.fitxes.length)) s.push('<div class="empty">Aquesta activitat no té materials per imprimir.</div>');
+  return s.join("");
+}
+function dossierAvaluacio(a) {
+  const s = [];
+  if (a.rubrica.length) s.push('<div class="sec"><h3>Rúbrica</h3><div class="table-scroll"><table class="rub"><thead><tr><th>Criteri</th><th>Insuficient</th><th>Suficient</th><th>Notable</th><th>Excel·lent</th></tr></thead><tbody>' + a.rubrica.map((r) => "<tr><td><b>" + esc(r.criteri) + "</b></td><td>" + esc(r.insuficient) + "</td><td>" + esc(r.suficient) + "</td><td>" + esc(r.notable) + "</td><td>" + esc(r.excellent) + "</td></tr>").join("") + "</tbody></table></div></div>");
+  if (a.dua.length) s.push('<div class="sec"><h3>Adaptacions DUA</h3><div class="cols2">' + a.dua.map((d) => '<div class="callout"><b>' + esc(d.dimensio) + "</b><p>" + esc(d.estrategies) + "</p></div>").join("") + "</div></div>");
+  return s.length ? s.join("") : '<div class="empty">No s\'ha inclòs rúbrica ni adaptacions DUA en aquesta activitat.</div>';
+}
+function evalCta(a) { return (a.rubrica.length || a.dua.length) ? '<div class="cta-eval"><p><b>Rúbrica i adaptacions DUA.</b> Ja tens els criteris d\'avaluació i les adaptacions per a l\'alumnat preparats.</p><button type="button" class="btn" data-tab="avaluacio">Veure avaluació i DUA</button></div>' : ""; }
+function renderResult() {
+  const root = $("result");
+  if (state.busy) {
+    root.innerHTML = '<div class="panel busy-box"><h2 id="busyLabel">Pensant l\'activitat…</h2><p>Pot trigar entre un i dos minuts. Es genera de zero només amb les dades del formulari.</p><div class="progress" aria-hidden="true"><i style="width:' + Math.max(4, state.progress) + '%"></i></div><p style="margin-top:16px"><button type="button" class="btn sm" data-act="stop">Atura</button></p></div>';
+    $("genBtn").disabled = true; return;
+  }
+  $("genBtn").disabled = false;
+  const a = state.current; if (!a) { root.innerHTML = ""; return; }
+  const r = robotById(a.meta.robotId);
+  const saved = state.lib.some((x) => x.id === a.id);
+  const top = [];
+  if (state.error) top.push('<div class="banner err"><span>' + esc(state.error) + "</span></div>");
+  if (state.source === "exemple") top.push('<div class="banner info"><span><b>Exemple.</b> Mira com queda una activitat i després genera la teva amb el formulari.</span></div>');
+  root.innerHTML = top.join("") + '<div id="guardSlot"></div><article class="panel"><div class="dossier-head"><div><h2>' + esc(a.titol) + '</h2><p class="sub">' + esc(a.subtitol) + '</p><div class="chips">' + areaChip(a.meta.area) + (a.meta.area2 ? areaChip(a.meta.area2) : "") + (a.format ? '<span class="chip">' + esc(a.format) + "</span>" : "") + '<span class="chip">' + esc(r.name) + '</span><span class="chip">' + esc(CYCLE_NAME[a.meta.cycle] || "") + '</span><span class="chip">' + esc(a.meta.duration) + '</span><span class="chip">' + esc(a.meta.org) + '</span></div></div><div class="actions"><button type="button" class="btn" data-act="save">' + (saved ? "Desada" : "Desa a la biblioteca") + '</button><button type="button" class="btn" data-act="download">Descarrega la proposta</button></div></div><div class="dtabs" role="tablist"><button type="button" role="tab" data-tab="proposta" aria-selected="' + (state.tab === "proposta") + '">Proposta</button><button type="button" role="tab" data-tab="materials" aria-selected="' + (state.tab === "materials") + '">Materials per imprimir</button><button type="button" role="tab" class="hl" data-tab="avaluacio" aria-selected="' + (state.tab === "avaluacio") + '">★ Avaluació i DUA</button></div><div role="tabpanel">' + (state.tab === "proposta" ? dossierProposta(a) + evalCta(a) : state.tab === "materials" ? dossierMaterials(a) + evalCta(a) : dossierAvaluacio(a)) + "</div></article>";
+  renderGuard();
+}
+
+/* ---------- Descàrrega imprimible ---------- */
+function printableHTML(a) {
+  const r = robotById(a.meta.robotId), ar = areaById(a.meta.area);
+  const cm = activityCm(a);
+  const sec = (t, b) => b ? "<h2>" + esc(t) + "</h2>" + b : "";
+  const ul = (x) => x.length ? "<ul>" + x.map((i) => "<li>" + esc(i) + "</li>").join("") + "</ul>" : "";
+  const css = "body{font-family:'Atkinson Hyperlegible',Verdana,Arial,sans-serif;color:#111;max-width:820px;margin:24px auto;padding:0 20px;line-height:1.45}h1{font-size:26px;margin:0 0 4px}h2{font-size:17px;border-bottom:2px solid #111;padding-bottom:3px;margin:26px 0 10px}h3{font-size:15px;margin:12px 0 4px}.sub{color:#444;margin:0 0 8px}.meta{font-size:13px;color:#333}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.cut{border:2px dashed #555;border-radius:8px;padding:10px;break-inside:avoid}.cut b.big{font-size:24px;display:block;margin:6px 0}.tiles{display:flex;flex-wrap:wrap;gap:6px}.tile{box-sizing:border-box;width:" + cm + "cm;height:" + cm + "cm;border:2px dashed #111;border-radius:6px;padding:8px;text-align:center;display:flex;flex-direction:column;justify-content:center;break-inside:avoid}.tile b{font-size:64px;display:block}.tile span{font-size:12px}table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border:1px solid #777;padding:5px 7px;vertical-align:top;text-align:left}.pb{break-before:page}.sol{font-size:12px;color:#444;border-top:1px solid #aaa;margin-top:6px;padding-top:4px}@media print{body{margin:0}}";
+  const ses = a.sessions.map((s) => "<h3>" + esc(s.titol) + "</h3>" + s.fases.map((p) => "<p><b>" + esc(p.fase) + (p.minuts ? " (" + p.minuts + " min)" : "") + ".</b> " + esc(p.descripcio) + "</p>").join("")).join("");
+  const rep = a.reptes.map((x) => "<h3>" + esc(x.nivell) + ": " + esc(x.titol) + "</h3><p>" + esc(x.enunciat) + "</p>" + (x.ordres.length ? "<p><i>" + x.ordres.map(esc).join(" · ") + "</i></p>" : "")).join("");
+  const til = a.caselles.length ? '<div class="tiles">' + a.caselles.map((c) => '<div class="tile"><b>' + esc(c.etiqueta) + "</b>" + (c.pista ? "<span>" + esc(c.pista) + "</span>" : "") + "</div>").join("") + "</div>" : "";
+  const car = a.targetes.length ? '<div class="grid">' + a.targetes.map((c, i) => '<div class="cut"><small>Targeta ' + (i + 1) + " · " + esc(c.dificultat) + '</small><b class="big">' + esc(c.text) + "</b>" + (c.pista ? "<div>" + esc(c.pista) + "</div>" : "") + (c.solucio ? '<div class="sol">Solució: ' + esc(c.solucio) + (c.ordres ? " · " + esc(c.ordres) : "") + "</div>" : "") + "</div>").join("") + "</div>" : "";
+  const rub = a.rubrica.length ? "<table><tr><th>Criteri</th><th>Insuficient</th><th>Suficient</th><th>Notable</th><th>Excel·lent</th></tr>" + a.rubrica.map((x) => "<tr><td><b>" + esc(x.criteri) + "</b></td><td>" + esc(x.insuficient) + "</td><td>" + esc(x.suficient) + "</td><td>" + esc(x.notable) + "</td><td>" + esc(x.excellent) + "</td></tr>").join("") + "</table>" : "";
+  const dua = a.dua.map((d) => "<p><b>" + esc(d.dimensio) + ".</b> " + esc(d.estrategies) + "</p>").join("");
+  return '<!doctype html><html lang="ca"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(a.titol) + "</title><style>" + css + "</style></head><body><h1>" + esc(a.titol) + '</h1><p class="sub">' + esc(a.subtitol) + '</p><p class="meta">' + esc(ar ? ar.label : "") + " · " + esc(r.name) + " · " + esc(CYCLE_NAME[a.meta.cycle] || "") + " · " + esc(a.meta.duration) + " · " + esc(a.meta.org) + "</p>" +
+    sec("Dinàmica", a.dinamica ? "<p>" + esc(a.dinamica) + "</p>" : "") + sec("Paper del robot", a.rol_robot ? "<p>" + esc(a.rol_robot) + "</p>" : "") + sec("Competències", ul(a.competencies)) + sec("Objectius", ul(a.objectius)) + sec("Materials", ul(a.materials)) + sec("Sessions", ses) + sec("Reptes per a l'alumnat", rep) +
+    (til ? '<div class="pb"></div>' + sec("Caselles per retallar (mida real " + cm + " × " + cm + " cm; imprimeix al 100%)", til) : "") + (car ? '<div class="pb"></div>' + sec("Targetes de repte", car) : "") + (rub || dua ? '<div class="pb"></div>' + sec("Rúbrica", rub) + sec("Adaptacions DUA", dua) : "") + "</body></html>";
+}
+async function downloadActivity() {
+  await ensureCaps();
+  if (!downloads) { toast("Aquesta vista no permet descarregar fitxers."); return; }
+  const a = state.current; const name = (a.titol || "activitat").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "activitat";
+  try { await downloads.save({ filename: name + ".html", data: printableHTML(a) }); toast("Document descarregat. Obre'l i imprimeix-lo des del navegador."); }
+  catch (e) { if (!e || e.code !== "declined") toast("No s'ha pogut descarregar el fitxer."); }
+}
+
+/* ---------- Biblioteca i robots ---------- */
+function saveCurrent() {
+  const a = state.current; if (!a) return;
+  if (!a.id) a.id = "a" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  if (state.lib.some((x) => x.id === a.id)) { toast("Aquesta activitat ja és a la biblioteca."); return; }
+  state.lib.unshift({ id: a.id, savedAt: new Date().toISOString(), activity: a }); saveLib(); renderResult(); toast("Activitat desada a la biblioteca.");
+}
+function renderLibrary() {
+  const el = $("view-biblioteca");
+  if (!state.lib.length) { el.innerHTML = '<div class="panel empty"><h3>Encara no tens cap activitat desada</h3><p>Genera una activitat i prem «Desa a la biblioteca». Es guarda en aquest navegador.</p><p style="margin-top:14px"><button type="button" class="btn" data-view="generador">Anar al generador</button></p></div>'; return; }
+  el.innerHTML = '<p class="lead">Les activitats es guarden només en aquest navegador i aquest dispositiu. Descarrega\'n una còpia si la vols conservar o compartir.</p><div class="lib-grid">' + state.lib.map((x) => {
+    const a = x.activity, r = robotById(a.meta.robotId), d = new Date(x.savedAt);
+    return '<div class="lib-card"><div class="chips" style="margin:0">' + areaChip(a.meta.area) + '</div><h3>' + esc(a.titol) + '</h3><p class="meta">' + esc(r.name) + " · " + esc(CYCLE_NAME[a.meta.cycle] || "") + " · " + (isNaN(d) ? "" : d.toLocaleDateString("ca-ES")) + '</p><p>' + esc(a.subtitol) + '</p><div class="actions"><button type="button" class="btn sm" data-open="' + esc(x.id) + '">Obre</button><button type="button" class="btn sm danger" data-del="' + esc(x.id) + '">Elimina</button></div></div>';
+  }).join("") + "</div>";
+}
+function renderRobots() {
+  $("view-robots").innerHTML = '<p class="lead">Dades dels robots que fa servir el generador. Si alguna dada no és correcta per al vostre model, digues-m\'ho i la corregim.</p><div class="robot-grid">' + ROBOTS.map((r) =>
+    '<div class="robot-card"><div><h3>' + esc(r.name) + '</h3><p class="hint">' + esc(r.brand) + " · " + esc(r.app) + '</p></div><p>' + esc(r.desc) + '</p><div><h4>Sensors</h4><ul>' + r.sensors.map((x) => "<li>" + esc(x) + "</li>").join("") + '</ul><h4>Actuadors</h4><ul>' + r.actuators.map((x) => "<li>" + esc(x) + "</li>").join("") + '</ul><h4>Complements habituals</h4><ul>' + r.acc.map((x) => "<li>" + esc(x) + "</li>").join("") + '</ul></div><div class="callout"><b>Consell d\'aula.</b> ' + esc(r.tip) + '</div><button type="button" class="btn sm" data-robot-go="' + esc(r.id) + '">Crear activitat amb aquest robot</button></div>').join("") + "</div>";
+}
+
+/* ---------- Materials ---------- */
+let matSel = "current";
+function slug(t) { return (t || "activitat").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "activitat"; }
+function materialSets(a) {
+  const s = [];
+  const sq = !!robotById(a.meta.robotId).pas;
+  if (a.tapis) {
+    const pg = Math.ceil(a.tapis.ample_cm * 10 / 190) * Math.ceil(a.tapis.alt_cm * 10 / 277);
+    s.push({ id: "tapis-real", title: a.tapis.titol || "Tapís lliure", desc: a.tapis.ample_cm + " × " + a.tapis.alt_cm + " cm a mida real, en " + pg + " pàgines A4 per enganxar." });
+    s.push({ id: "tapis", title: "Tapís en una sola pàgina", desc: "Versió reduïda en un full (no és a escala), per consultar o com a plantilla." });
+  }
+  if (a.caselles.length) s.push({ id: "caselles", title: sq ? "Caselles per al terra o la taula" : "Peces soltes per retallar", desc: a.caselles.length + (sq ? " caselles" : " peces") + " de " + activityCm(a) + " × " + activityCm(a) + " cm (mida real al PDF), per retallar i col·locar." });
+  if (a.fitxes && a.fitxes.length) s.push({ id: "fitxes", title: "Fitxes de treball", desc: a.fitxes.length + " fitxes de tipus diferents (escriure, dibuixar, taula, marcar)." });
+  if (a.targetes.length) {
+    s.push({ id: "targetes", title: "Targetes de repte", desc: a.targetes.length + " targetes per a l'alumnat, sense solució." });
+    s.push({ id: "registre", title: "Fitxa de registre del grup", desc: "Taula per anotar la predicció i el resultat de cada targeta." });
+    s.push({ id: "solucionari", title: "Solucionari per al mestre", desc: "Solucions i seqüències suggerides per al robot." });
+  }
+  if (a.reptes.length) s.push({ id: "reptes", title: "Fitxes de reptes graduats", desc: a.reptes.length + " reptes, un per nivell." });
+  s.push({ id: "rols", title: "Rols de l'equip", desc: "4 rols en dues còpies, per a dos equips." });
+  return s;
+}
+/* ---------- Il·lustracions vectorials (les mateixes formes serveixen per a la vista prèvia i per al PDF) ---------- */
+const AREA_HEX = { mates: "#2457C5", llengua: "#B83A2E", medi: "#2C7A31", artistica: "#8A3AA3", angles: "#96590A", computacional: "#00758A", valors: "#BC1A5A" };
+const AREA_ICON = { mates: "numbers", llengua: "letters", medi: "tree", artistica: "note", angles: "letters", computacional: "rocket", valors: "heart" };
+const areaHex = (id) => AREA_HEX[id] || "#0B7A66";
+const PAL = { D: "#1D2B2F", W: "#FFFFFF", Y: "#FFC83D", G: "#3FAE6A", R: "#E4574B", B: "#4C8DF6", K: "#A3B0B4", S: "#F2C9A0", P: "#F4A6A0" };
+function polyStar(cx, cy, R, r) {
+  const p = [];
+  for (let i = 0; i < 10; i++) { const an = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; p.push([cx + rr * Math.cos(an), cy + rr * Math.sin(an)]); }
+  return p;
+}
+const SUN_RAYS = Array.from({ length: 8 }, (_, i) => { const an = i * Math.PI / 4; return ["l", [[50 + 28 * Math.cos(an), 50 + 28 * Math.sin(an)], [50 + 42 * Math.cos(an), 50 + 42 * Math.sin(an)]], "Y", 6]; });
+const PETALS = Array.from({ length: 5 }, (_, i) => { const an = -Math.PI / 2 + i * 2 * Math.PI / 5; return ["c", 50 + 19 * Math.cos(an), 38 + 19 * Math.sin(an), 12, "#F28CB1"]; });
+const RING = Array.from({ length: 33 }, (_, i) => { const t = i / 32 * 2 * Math.PI, x = 40 * Math.cos(t), y = 11 * Math.sin(t), c = Math.cos(-0.35), s = Math.sin(-0.35); return [50 + x * c - y * s, 52 + x * s + y * c]; });
+const ICONS = {
+  star: [["p", polyStar(50, 54, 42, 18), "Y"]],
+  heart: [["c", 34, 38, 18, "R"], ["c", 66, 38, 18, "R"], ["p", [[17, 46], [83, 46], [50, 86]], "R"]],
+  flag: [["r", 24, 10, 6, 82, 3, "D"], ["p", [[30, 14], [82, 30], [30, 48]], "R"]],
+  house: [["r", 20, 46, 60, 42, 3, "Y"], ["p", [[12, 50], [50, 14], [88, 50]], "R"], ["r", 43, 62, 15, 26, 2, "D"], ["r", 26, 56, 12, 12, 2, "B"], ["r", 64, 56, 10, 12, 2, "B"]],
+  tree: [["r", 43, 58, 14, 32, 3, "#8A5A3B"], ["c", 50, 36, 26, "G"], ["c", 32, 52, 17, "G"], ["c", 68, 52, 17, "G"]],
+  sun: SUN_RAYS.concat([["c", 50, 50, 20, "Y"]]),
+  planet: [["c", 50, 50, 23, "#7B6CF6"], ["l", RING, "Y", 4]],
+  cloud: [["c", 32, 60, 15, "#BFD9F2"], ["c", 52, 48, 22, "#BFD9F2"], ["c", 72, 60, 15, "#BFD9F2"], ["r", 24, 58, 56, 17, 8, "#BFD9F2"]],
+  drop: [["c", 50, 64, 24, "B"], ["p", [[50, 10], [27, 56], [73, 56]], "B"], ["c", 42, 60, 5, "#9CC4FF"]],
+  flower: [["r", 48, 52, 4, 38, 2, "G"], ["p", [[50, 76], [70, 64], [56, 82]], "G"]].concat(PETALS, [["c", 50, 38, 9, "Y"]]),
+  apple: [["c", 40, 60, 22, "R"], ["c", 60, 60, 22, "R"], ["r", 47, 22, 5, 18, 2, "#8A5A3B"], ["p", [[53, 28], [72, 18], [67, 35]], "G"]],
+  book: [["r", 16, 26, 68, 52, 5, "B"], ["r", 22, 31, 56, 42, 3, "W"], ["l", [[50, 31], [50, 73]], "K", 2], ["l", [[28, 42], [44, 42]], "K", 2], ["l", [[28, 50], [44, 50]], "K", 2], ["l", [[56, 42], [72, 42]], "K", 2], ["l", [[56, 50], [72, 50]], "K", 2]],
+  note: [["c", 34, 74, 11, "D"], ["c", 68, 66, 11, "D"], ["r", 42, 24, 5, 52, 1, "D"], ["r", 76, 16, 5, 52, 1, "D"], ["p", [[42, 24], [81, 16], [81, 29], [42, 37]], "D"]],
+  rocket: [["p", [[34, 70], [18, 90], [40, 82]], "R"], ["p", [[66, 70], [82, 90], [60, 82]], "R"], ["e", 50, 48, 17, 34, "D"], ["e", 50, 48, 14.5, 31.5, "W"], ["p", [[35, 30], [50, 6], [65, 30]], "R"], ["c", 50, 46, 7, "B"], ["p", [[43, 78], [50, 97], [57, 78]], "Y"]],
+  fish: [["p", [[64, 50], [88, 32], [88, 68]], "#F2994A"], ["e", 44, 50, 28, 18, "#F2994A"], ["c", 32, 46, 3.4, "D"], ["l", [[52, 38], [56, 50], [52, 62]], "#D97A2B", 2.5]],
+  letters: [["r", 14, 14, 72, 72, 14, "A"], ["t", 50, 66, 38, "Aa", "W"]],
+  numbers: [["r", 14, 14, 72, 72, 14, "A"], ["t", 50, 65, 30, "123", "W"]]
+};
+const ART = {
+  mascot: [["l", [[50, 16], [50, 25]], "D", 2.6], ["c", 50, 13, 5, "Y"], ["r", 8, 40, 9, 20, 3, "D"], ["r", 83, 40, 9, 20, 3, "D"], ["r", 16, 21, 68, 56, 16, "D"], ["r", 20, 25, 60, 48, 13, "W"],
+    ["c", 37, 46, 7, "A"], ["c", 63, 46, 7, "A"], ["c", 39, 44, 2.2, "W"], ["c", 65, 44, 2.2, "W"], ["l", [[38, 62], [44, 66], [56, 66], [62, 62]], "D", 3]],
+  bulb: [["c", 50, 40, 24, "Y"], ["r", 40, 62, 20, 10, 3, "K"], ["r", 43, 72, 14, 8, 3, "K"]]
+};
+function avatar(skin, hair, shirt, props) {
+  return [
+    ["r", 24, 64, 52, 34, 14, shirt], ["r", 44, 56, 12, 12, 3, skin], ["c", 50, 40, 20, skin],
+    ["p", [[30, 38], [32, 25], [42, 18], [58, 18], [68, 25], [70, 38], [62, 31], [50, 29], [38, 31]], hair],
+    ["c", 43, 42, 2.6, "D"], ["c", 57, 42, 2.6, "D"], ["l", [[43, 50], [46, 53], [54, 53], [57, 50]], "D", 2],
+    ["c", 37, 48, 3.2, "P"], ["c", 63, 48, 3.2, "P"], ["l", [[50, 19], [50, 10]], "D", 2.2], ["c", 50, 8.5, 3.4, "Y"]
+  ].concat(props);
+}
+const ROLES = [
+  { nom: "Programador/a", color: "#3F7CE0", text: "Introdueix les ordres al robot i les explica a l'equip abans de prémer GO.",
+    art: avatar("#F2C9A0", "#4A3426", "#3F7CE0", [["r", 30, 72, 40, 24, 5, "D"], ["p", [[50, 75], [56, 81], [44, 81]], "W"], ["c", 39, 89, 3.6, "R"], ["c", 50, 89, 3.6, "Y"], ["c", 61, 89, 3.6, "G"]]) },
+  { nom: "Comprovador/a", color: "#2FA36B", text: "Mira el robot i diu si ha fet el que s'havia previst.",
+    art: avatar("#C98F65", "#1F1F1F", "#2FA36B", [["c", 24, 78, 9, "G"], ["l", [[19.5, 78], [23, 81.5], [29, 74]], "W", 3], ["c", 66, 76, 11, "#D4E9FF"], ["o", 66, 76, 11, "D", 3.2], ["l", [[74, 84], [85, 95]], "D", 5]]) },
+  { nom: "Secretari/ària", color: "#D98A0B", text: "Anota la predicció i el resultat a la fitxa de registre.",
+    art: avatar("#F5D5B8", "#C9822B", "#D98A0B", [["r", 27, 70, 36, 26, 3, "W"], ["r", 37, 67, 16, 6, 2, "K"], ["l", [[32, 79], [58, 79]], "K", 2], ["l", [[32, 85], [58, 85]], "K", 2], ["l", [[32, 91], [48, 91]], "K", 2], ["p", [[70, 92], [82, 64], [88, 67], [75, 95]], "Y"], ["p", [[70, 92], [75, 95], [69, 98]], "D"]]) },
+  { nom: "Portaveu", color: "#D9526E", text: "Explica a la classe què han fet i com han resolt el repte.",
+    art: avatar("#8D5B3E", "#2B2B2B", "#D9526E", [["r", 52, 72, 10, 12, 2, "D"], ["p", [[62, 72], [84, 62], [84, 92], [62, 84]], "R"], ["l", [[88, 70], [91, 77], [88, 84]], "A", 2.2], ["l", [[92, 65], [97, 77], [92, 89]], "A", 2.2]]) }
+];
+function diffHex(d) {
+  const t = str(d).toLowerCase();
+  if (/f[aà]cil|b[aà]sic|inici/.test(t)) return "#2FA36B";
+  if (/mitj|interm|consol/.test(t)) return "#D98A0B";
+  return "#D9526E";
+}
+function cardIcon(c, a) { return ICONS[c.icona] ? c.icona : (AREA_ICON[a.meta.area] || "star"); }
+function svgOf(shapes, W, H, cls) {
+  const col = (k) => (k === "A" ? "var(--c,#0B7A66)" : PAL[k] || k);
+  const pts = (p) => p.map((q) => q[0].toFixed(1) + "," + q[1].toFixed(1)).join(" ");
+  const body = shapes.map((s) => {
+    const t = s[0];
+    if (t === "c") return '<circle cx="' + s[1] + '" cy="' + s[2] + '" r="' + s[3] + '" style="fill:' + col(s[4]) + '"/>';
+    if (t === "e") return '<ellipse cx="' + s[1] + '" cy="' + s[2] + '" rx="' + s[3] + '" ry="' + s[4] + '" style="fill:' + col(s[5]) + '"/>';
+    if (t === "r") return '<rect x="' + s[1] + '" y="' + s[2] + '" width="' + s[3] + '" height="' + s[4] + '" rx="' + s[5] + '" style="fill:' + col(s[6]) + '"/>';
+    if (t === "p") return '<polygon points="' + pts(s[1]) + '" style="fill:' + col(s[2]) + '"/>';
+    if (t === "l") return '<polyline points="' + pts(s[1]) + '" style="fill:none;stroke:' + col(s[2]) + ";stroke-width:" + s[3] + ';stroke-linecap:round;stroke-linejoin:round"/>';
+    if (t === "o") return '<circle cx="' + s[1] + '" cy="' + s[2] + '" r="' + s[3] + '" style="fill:none;stroke:' + col(s[4]) + ";stroke-width:" + s[5] + '"/>';
+    if (t === "t") return '<text x="' + s[1] + '" y="' + s[2] + '" text-anchor="middle" style="fill:' + col(s[5]) + ";font:700 " + s[3] + 'px Atkinson Hyperlegible,Verdana,sans-serif">' + esc(s[4]) + "</text>";
+    if (t === "s") return '<rect x="' + s[1] + '" y="' + s[2] + '" width="' + s[3] + '" height="' + s[4] + '" rx="' + s[5] + '" style="fill:none;stroke:' + col(s[6]) + ";stroke-width:" + s[7] + '"/>';
+    if (t === "d") return '<polyline points="' + pts(s[1]) + '" style="fill:none;stroke:' + col(s[2]) + ";stroke-width:" + s[3] + ";stroke-dasharray:" + s[4][0] + " " + s[4][1] + ';stroke-linejoin:round"/>';
+    return "";
+  }).join("");
+  return '<svg class="' + (cls || "ic") + '" viewBox="0 0 ' + (W || 100) + " " + (H || 100) + '" aria-hidden="true" focusable="false">' + body + "</svg>";
+}
+
+/* ---------- Tapissos lliures: el model tria tipus, mida i estacions; el programa dibuixa la forma (unitats = cm) ---------- */
+function hashStr(t) { let h = 2166136261; String(t).split("").forEach((ch) => { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }); return h >>> 0; }
+function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function chaikin(pts, n, closed) {
+  let p = pts.slice();
+  for (let k = 0; k < n; k++) {
+    const o = [], m = p.length, lim = closed ? m : m - 1;
+    if (!closed) o.push(p[0]);
+    for (let i = 0; i < lim; i++) { const a = p[i], b = p[(i + 1) % m]; o.push([0.75 * a[0] + 0.25 * b[0], 0.75 * a[1] + 0.25 * b[1]], [0.25 * a[0] + 0.75 * b[0], 0.25 * a[1] + 0.75 * b[1]]); }
+    if (!closed) o.push(p[m - 1]);
+    p = o;
+  }
+  return closed ? p.concat([p[0]]) : p;
+}
+function along(pts, n, closed) {
+  const cum = [0]; for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const L = cum[cum.length - 1], out = [];
+  for (let i = 0; i < n; i++) {
+    const tg = L * (closed ? i / n : (n === 1 ? 0 : i / (n - 1)));
+    let j = 1; while (j < cum.length - 1 && cum[j] < tg) j++;
+    const u = Math.min(1, Math.max(0, (tg - cum[j - 1]) / (cum[j] - cum[j - 1] || 1)));
+    out.push([pts[j - 1][0] + (pts[j][0] - pts[j - 1][0]) * u, pts[j - 1][1] + (pts[j][1] - pts[j - 1][1]) * u]);
+  }
+  return out;
+}
+function xf(shapes, tx, ty, sc) {
+  const P = (p) => [p[0] * sc + tx, p[1] * sc + ty];
+  return shapes.map((s) => {
+    const t = s[0];
+    if (t === "c") return ["c", s[1] * sc + tx, s[2] * sc + ty, s[3] * sc, s[4]];
+    if (t === "e") return ["e", s[1] * sc + tx, s[2] * sc + ty, s[3] * sc, s[4] * sc, s[5]];
+    if (t === "r") return ["r", s[1] * sc + tx, s[2] * sc + ty, s[3] * sc, s[4] * sc, s[5] * sc, s[6]];
+    if (t === "p") return ["p", s[1].map(P), s[2]];
+    if (t === "l") return ["l", s[1].map(P), s[2], s[3] * sc];
+    if (t === "o") return ["o", s[1] * sc + tx, s[2] * sc + ty, s[3] * sc, s[4], s[5] * sc];
+    if (t === "t") return ["t", s[1] * sc + tx, s[2] * sc + ty, s[3] * sc, s[4], s[5]];
+    return s;
+  });
+}
+function tintHex(h, p) { return "#" + mixRgb(rgb(h), p).map((v) => v.toString(16).padStart(2, "0")).join(""); }
+function stationShapes(x, y, i, e, area) {
+  const ic = ICONS[e.icona] || ICONS[AREA_ICON[area] || "star"];
+  const lab = e.etiqueta.length > 20 ? e.etiqueta.slice(0, 19) + "…" : e.etiqueta;
+  const fs = 0.95, w = lab.length * fs * 0.6 + 1.4, ly = y + 3.3;
+  return [["c", x, y, 2.9, "W"], ["o", x, y, 2.9, "A", 0.45]].concat(xf(ic, x - 1.8, y - 1.8, 0.036), [
+    ["c", x - 2.3, y - 2.3, 1.25, "A"], ["t", x - 2.3, y - 1.8, 1.5, String(i + 1), "W"],
+    ["r", x - w / 2, ly, w, 1.7, 0.85, "W"], ["s", x - w / 2, ly, w, 1.7, 0.85, "A", 0.18], ["t", x, ly + 1.27, fs, lab, "D"]]);
+}
+function roadShapes(path, wd) { return [["l", path, "#47555B", wd + 0.8], ["l", path, "#6B7A80", wd], ["d", path, "#FFFFFF", 0.28, [1.2, 1.2]]]; }
+function buildMat(t, area, ttl) {
+  const W = t.ample_cm, H = t.alt_cm, est = t.estacions, n = est.length;
+  const r = rng(hashStr(t.tipus + "|" + (t.titol || ttl) + "|" + est.map((e) => e.etiqueta).join("|")));
+  const mx = 8, top = 8.5, bot = 8, cx = W / 2, cy = (top + H - bot) / 2, hv = (H - top - bot) / 2;
+  const sh = [["r", 0, 0, W, H, 1.5, "#FBFAF3"]], st = [];
+  let pos = [];
+  if (t.tipus === "circuit") {
+    const ctrl = [], k = 8;
+    for (let i = 0; i < k; i++) { const th = 2 * Math.PI * i / k + (r() - 0.5) * 0.3, f = 0.85 + 0.15 * r(); ctrl.push([cx + (W / 2 - mx) * f * Math.cos(th), cy + hv * f * Math.sin(th)]); }
+    const path = chaikin(ctrl, 3, true); sh.push(...roadShapes(path, 5)); pos = along(path, n, true);
+  } else if (t.tipus === "cami") {
+    const rows = H >= 36 ? 4 : 3, ctrl = [];
+    for (let rr = 0; rr < rows; rr++) {
+      const y = top + (H - top - bot) * rr / (rows - 1), l = [mx + r() * 2, y], rg = [W - mx - r() * 2, y], mid = [W / 2 + (r() - 0.5) * 6, y + (r() - 0.5) * 3];
+      if (rr % 2 === 0) ctrl.push(l, mid, rg); else ctrl.push(rg, mid, l);
+    }
+    const path = chaikin(ctrl, 3, false); sh.push(...roadShapes(path, 5)); pos = along(path, n, false);
+  } else if (t.tipus === "mapa") {
+    const rp = () => [mx + r() * (W - 2 * mx), top + r() * (H - top - bot)];
+    let d = Math.sqrt((W - 2 * mx) * (H - top - bot) / n) * 0.85; const pts = [];
+    for (let tr = 0; pts.length < n && tr < 400; tr++) { const p = rp(); if (pts.every((q) => Math.hypot(p[0] - q[0], p[1] - q[1]) >= d)) pts.push(p); if (tr % 80 === 79) d *= 0.8; }
+    while (pts.length < n) pts.push(rp());
+    pts.sort((a, b) => a[0] - b[0]);
+    const rest = pts.slice(1); pos = [pts[0]];
+    while (rest.length) { const l = pos[pos.length - 1]; let bi = 0; rest.forEach((q, i) => { if (Math.hypot(q[0] - l[0], q[1] - l[1]) < Math.hypot(rest[bi][0] - l[0], rest[bi][1] - l[1])) bi = i; }); pos.push(rest.splice(bi, 1)[0]); }
+    for (let i = 0; i < 5; i++) sh.push(["e", mx + r() * (W - 2 * mx), top + r() * (H - top - bot), 5 + r() * 7, 3 + r() * 5, i % 3 === 2 ? "#DCEBF7" : "#E3F0DB"]);
+    for (let i = 0; i < n - 1; i++) {
+      const a = pos[i], b = pos[i + 1], len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1, off = (r() - 0.5) * 0.4 * len;
+      const mid = [(a[0] + b[0]) / 2 - (b[1] - a[1]) / len * off, (a[1] + b[1]) / 2 + (b[0] - a[0]) / len * off];
+      sh.push(["d", chaikin([a, mid, b], 3, false), "#8A7355", 0.9, [1.6, 1.2]]);
+    }
+  } else {
+    const R = Math.min(W / 2 - mx, hv);
+    if (t.tipus === "diana") {
+      [[1, 0.35], [0.66, 0.6], [0.33, 0.8]].forEach((z) => sh.push(["c", cx, cy, R * z[0], tintHex(areaHex(area), z[1] + 0.1)], ["o", cx, cy, R * z[0], "A", 0.3]));
+    } else {
+      [1 / 3, 2 / 3, 1].forEach((f) => { sh.push(["o", cx, cy, R * f, "#C9D3D6", 0.25], ["t", cx + 0.2, cy - R * f - 0.35, 0.8, Math.round(R * f) + " cm", "#8A979B"]); });
+    }
+    for (let i = 0; i < n; i++) {
+      const th = -Math.PI / 2 + 2 * Math.PI * i / n, rr = t.tipus === "diana" ? R * (i % 2 ? 0.5 : 0.85) : R * (i % 2 ? 0.78 : 0.97), p = [cx + rr * Math.cos(th), cy + rr * Math.sin(th)];
+      pos.push(p);
+      if (t.tipus === "radial") sh.push(["l", [[cx, cy], p], "#47555B", 3.8], ["l", [[cx, cy], p], "#6B7A80", 3], ["d", [[cx, cy], p], "#FFFFFF", 0.25, [1.1, 1.1]]);
+    }
+    sh.push(["c", cx, cy, 3.6, "W"], ["o", cx, cy, 3.6, "A", 0.5], ...xf(ART.mascot, cx - 2.6, cy - 2.6, 0.052));
+  }
+  pos.forEach((p, i) => st.push(...stationShapes(p[0], p[1], i, est[i], area)));
+  const tt = (t.titol || ttl || "Tapís").slice(0, 44), fs = Math.min(1.7, (W - 8) / (tt.length * 0.62));
+  return { W, H, shapes: sh.concat(st, [["t", W / 2, 3, fs, tt, "A"], ["s", 0.4, 0.4, W - 0.8, H - 0.8, 1.2, "A", 0.5]]) };
+}
+function tapisSVG(a) { const m = buildMat(a.tapis, a.meta.area, a.titol); return '<div class="mat-wrap" style="--c:' + areaHex(a.meta.area) + '">' + svgOf(m.shapes, m.W, m.H, "mat-svg") + "</div>"; }
+function fitxaHTML(x, i, a) {
+  let body;
+  if (x.tipus === "escriu") body = '<div class="ln"></div><div class="ln"></div><div class="ln"></div>';
+  else if (x.tipus === "dibuixa") body = '<div class="dbox">Dibuixa aquí</div>';
+  else if (x.tipus === "taula") body = '<div class="table-scroll"><table class="rub"><thead><tr>' + x.columnes.map((c) => "<th>" + esc(c) + "</th>").join("") + "</tr></thead><tbody>" + [0, 1, 2].map(() => "<tr>" + x.columnes.map(() => "<td>&nbsp;</td>").join("") + "</tr>").join("") + "</tbody></table></div>";
+  else body = '<ul class="chk">' + x.opcions.map((o) => "<li>☐ " + esc(o) + "</li>").join("") + "</ul>";
+  return '<div class="pv-card" style="--dc:' + areaHex(a.meta.area) + '"><div class="hd"><span>Fitxa ' + (i + 1) + "</span><span>" + esc(FITXA_TIPUS[x.tipus]) + '</span></div><div class="bd"><div class="tx fx"><div class="big">' + esc(x.titol) + '</div><div class="small">' + esc(x.enunciat) + "</div>" + body + "</div></div></div>";
+}
+
+function setPreview(id, a) {
+  if (id === "tapis-real") return '<p class="hint" style="margin-bottom:10px">' + esc(a.tapis.instruccions) + " Mida real: " + a.tapis.ample_cm + " × " + a.tapis.alt_cm + " cm.</p>" + tapisSVG(a);
+  if (id === "fitxes") return '<div class="cut-grid wide">' + a.fitxes.map((x, i) => fitxaHTML(x, i, a)).join("") + "</div>";
+  if (id === "caselles") return '<p class="hint" style="margin-bottom:10px">Al PDF cada casella fa ' + activityCm(a) + " × " + activityCm(a) + ' cm reals. Aquesta vista prèvia està reduïda.</p><div class="pv-tiles">' + a.caselles.map((c) => '<div class="pv-tile">' + (ICONS[c.icona] ? svgOf(ICONS[c.icona]) : "") + '<span class="big">' + esc(c.etiqueta) + "</span>" + (c.pista ? '<span class="small">' + esc(c.pista) + "</span>" : "") + "</div>").join("") + "</div>";
+  if (id === "targetes") return '<div class="cut-grid">' + a.targetes.map((c, i) => '<div class="pv-card" style="--dc:' + diffHex(c.dificultat) + '"><div class="hd"><span>Targeta ' + (i + 1) + "</span><span>" + esc(c.dificultat) + '</span></div><div class="bd"><div class="tx"><div class="big">' + esc(c.text) + "</div>" + (c.pista ? '<div class="small">' + esc(c.pista) + "</div>" : "") + "</div>" + svgOf(ICONS[cardIcon(c, a)]) + "</div></div>").join("") + "</div>";
+  if (id === "registre") return '<div class="table-scroll"><table class="rub pv-reg"><thead><tr><th>N.º</th><th>Targeta</th><th>Predicció</th><th>Resultat</th><th>Correcte</th></tr></thead><tbody>' + a.targetes.map((c, i) => "<tr><td>" + (i + 1) + "</td><td><b>" + esc(c.text) + "</b></td><td></td><td></td><td>☐ Sí &nbsp; ☐ No</td></tr>").join("") + "</tbody></table></div>";
+  if (id === "solucionari") return '<ol class="solu">' + a.targetes.map((c) => "<li><b>" + esc(c.text) + (c.solucio ? " = " + esc(c.solucio) : "") + "</b>" + (c.pista ? "<small>Pista: " + esc(c.pista) + "</small>" : "") + (c.ordres ? "<small>Robot: " + esc(c.ordres) + "</small>" : "") + "</li>").join("") + "</ol>";
+  if (id === "reptes") return '<div class="cut-grid wide">' + a.reptes.map((x) => '<div class="pv-card" style="--dc:' + diffHex(x.nivell) + '"><div class="hd"><span>' + esc(x.nivell) + '</span></div><div class="bd"><div class="tx"><div class="big">' + esc(x.titol) + '</div><div class="small">' + esc(x.enunciat) + "</div>" + (x.ordres.length ? '<div class="cmds">' + x.ordres.map((o) => '<span class="cmd">' + esc(o) + "</span>").join("") + "</div>" : "") + "</div>" + svgOf(ICONS.flag) + "</div></div>").join("") + "</div>";
+  if (id === "rols") return '<div class="cut-grid wide">' + ROLES.map((r) => '<div class="pv-card pv-role" style="--dc:' + r.color + ";--c:" + r.color + '"><div class="hd"><span>' + esc(r.nom) + '</span><span>Rol</span></div><div class="bd"><span class="av">' + svgOf(r.art) + '</span><div class="tx"><div class="small">' + esc(r.text) + "</div></div></div></div>").join("") + "</div>";
+  return "";
+}
+
+/* PDF (jsPDF; lletra estàndard, el text es neteja perquè hi càpiga) */
+const PW = 210, PH = 297, PM = 12, HB = 20, TOP = 26;
+let PDF_ACC = "#0B7A66";
+function pdfSafe(s) {
+  return str(s).replace(/\s+/g, " ").replace(/ŀ/g, "l·").replace(/[→⇒]/g, "->").replace(/←/g, "<-").replace(/≥/g, ">=").replace(/≤/g, "<=").replace(/≠/g, "!=").replace(/−/g, "-").replace(/[✓✔]/g, "v")
+    .replace(/[^ -ÿ–—‘’“”•…€]/g, "").trim();
+}
+function rgb(h) { const x = String(h).replace("#", ""); return [parseInt(x.slice(0, 2), 16), parseInt(x.slice(2, 4), 16), parseInt(x.slice(4, 6), 16)]; }
+function mixRgb(c, p) { return c.map((v) => Math.round(v + (255 - v) * p)); }
+function pdfDraw(doc, shapes, x, y, size, accent) {
+  const k = size / 100, col = (c) => rgb(c === "A" ? accent : PAL[c] || c);
+  const rel = (pts) => pts.slice(1).map((p, i) => [(p[0] - pts[i][0]) * k, (p[1] - pts[i][1]) * k]);
+  doc.setLineCap("round"); doc.setLineJoin("round"); doc.setLineDashPattern([], 0);
+  shapes.forEach((s) => {
+    const t = s[0];
+    if (t === "c") { doc.setFillColor(...col(s[4])); doc.circle(x + s[1] * k, y + s[2] * k, s[3] * k, "F"); }
+    else if (t === "e") { doc.setFillColor(...col(s[5])); doc.ellipse(x + s[1] * k, y + s[2] * k, s[3] * k, s[4] * k, "F"); }
+    else if (t === "r") { doc.setFillColor(...col(s[6])); doc.roundedRect(x + s[1] * k, y + s[2] * k, s[3] * k, s[4] * k, s[5] * k, s[5] * k, "F"); }
+    else if (t === "p") { doc.setFillColor(...col(s[2])); doc.lines(rel(s[1]), x + s[1][0][0] * k, y + s[1][0][1] * k, [1, 1], "F", true); }
+    else if (t === "l") { doc.setDrawColor(...col(s[2])); doc.setLineWidth(s[3] * k); doc.lines(rel(s[1]), x + s[1][0][0] * k, y + s[1][0][1] * k, [1, 1], "S", false); }
+    else if (t === "o") { doc.setDrawColor(...col(s[4])); doc.setLineWidth(s[5] * k); doc.circle(x + s[1] * k, y + s[2] * k, s[3] * k, "S"); }
+    else if (t === "s") { doc.setDrawColor(...col(s[6])); doc.setLineWidth(s[7] * k); doc.roundedRect(x + s[1] * k, y + s[2] * k, s[3] * k, s[4] * k, s[5] * k, s[5] * k, "S"); }
+    else if (t === "d") { doc.setDrawColor(...col(s[2])); doc.setLineWidth(s[3] * k); doc.setLineCap("butt"); doc.setLineDashPattern([s[4][0] * k, s[4][1] * k], 0); doc.lines(rel(s[1]), x + s[1][0][0] * k, y + s[1][0][1] * k, [1, 1], "S", false); doc.setLineDashPattern([], 0); doc.setLineCap("round"); }
+    else if (t === "t") { doc.setTextColor(...col(s[5])); doc.setFont("helvetica", "bold"); doc.setFontSize(s[3] * k / 0.3528); doc.text(pdfSafe(s[4]), x + s[1] * k, y + s[2] * k, { align: "center" }); }
+  });
+  doc.setDrawColor(0, 0, 0); doc.setTextColor(0, 0, 0); doc.setLineWidth(0.2);
+}
+function pdfHeader(doc, title, sub) {
+  const c = rgb(PDF_ACC);
+  doc.setFillColor(...c); doc.rect(0, 0, PW, HB, "F");
+  doc.setFillColor(...mixRgb(c, 0.45)); doc.rect(0, HB, PW, 1.6, "F");
+  pdfDraw(doc, ART.mascot, PW - PM - 15, 2.6, 15, PDF_ACC);
+  const maxW = PW - 2 * PM - 20;
+  doc.setFont("helvetica", "bold"); doc.setFontSize(15); doc.setTextColor(255, 255, 255);
+  doc.text(doc.splitTextToSize(pdfSafe(title), maxW)[0] || "", PM, 9.5);
+  if (sub) { doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.text(doc.splitTextToSize(pdfSafe(sub), maxW)[0] || "", PM, 15.5); }
+  doc.setTextColor(0, 0, 0);
+  return TOP;
+}
+function fitText(doc, text, maxW, maxH, start, min, style) {
+  doc.setFont("helvetica", style || "bold");
+  const t = pdfSafe(text);
+  for (let size = start; size >= min; size -= 1) {
+    doc.setFontSize(size);
+    const lines = doc.splitTextToSize(t, maxW), lh = size * 0.3528 * 1.18;
+    if (lines.length * lh <= maxH) return { lines, size, lh };
+  }
+  doc.setFontSize(min);
+  const lh = min * 0.3528 * 1.18, lines = doc.splitTextToSize(t, maxW);
+  return { lines: lines.slice(0, Math.max(1, Math.floor(maxH / lh))), size: min, lh };
+}
+function putLines(doc, f, x, y, opts) {
+  doc.setFontSize(f.size);
+  const y0 = y + f.size * 0.3528 * 0.9;
+  f.lines.forEach((ln, i) => doc.text(ln, x, y0 + i * f.lh, opts));
+  return y + f.lines.length * f.lh;
+}
+function dashedBox(doc, x, y, w, h) {
+  doc.setLineDashPattern([1.6, 1.4], 0); doc.setLineWidth(0.4); doc.setDrawColor(90, 90, 90);
+  doc.roundedRect(x, y, w, h, 2.5, 2.5);
+  doc.setLineDashPattern([], 0); doc.setDrawColor(0, 0, 0);
+}
+function gridPages(doc, title, sub, items, cols, rows, gap, drawCell) {
+  const per = cols * rows;
+  const w = (PW - 2 * PM - (cols - 1) * gap) / cols, h = (PH - TOP - PM - 8 - (rows - 1) * gap) / rows;
+  items.forEach((it, i) => {
+    if (i % per === 0) { if (i > 0) doc.addPage(); pdfHeader(doc, title, sub); }
+    const k = i % per, x = PM + (k % cols) * (w + gap), y = TOP + Math.floor(k / cols) * (h + gap);
+    drawCell(it, x, y, w, h, i);
+  });
+}
+
+/* Caselles a mida real: el costat en mm és el valor de l'activitat (cm × 10). El traç de tall fa exactament aquesta mida. */
+function drawTiles(doc, a) {
+  const cm = activityCm(a), s = cm * 10, gap = 4, top = TOP + 6, acc = rgb(PDF_ACC);
+  const cols = Math.max(1, Math.floor((PW - 2 * PM + gap) / (s + gap)));
+  const rows = Math.max(1, Math.floor((PH - top - PM - 8 + gap) / (s + gap)));
+  const per = cols * rows, x0 = (PW - (cols * s + (cols - 1) * gap)) / 2;
+  const sizeTxt = cm + " × " + cm + " cm";
+  a.caselles.forEach((c, i) => {
+    if (i % per === 0) {
+      if (i > 0) doc.addPage();
+      pdfHeader(doc, "Caselles · cada casella mesura " + sizeTxt, "Imprimeix al 100% (mida real), sense «ajustar a la pàgina». Retalla pel traç discontinu.");
+      const rx = PW - PM - 50, ry = TOP + 1.5;
+      doc.setDrawColor(0, 0, 0); doc.setLineWidth(0.4);
+      doc.line(rx, ry, rx + 50, ry); doc.line(rx, ry - 1.5, rx, ry + 1.5); doc.line(rx + 50, ry - 1.5, rx + 50, ry + 1.5);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(7); doc.setTextColor(90, 90, 90);
+      doc.text("Aquesta barra ha de mesurar 5 cm", rx + 25, ry + 4, { align: "center" }); doc.setTextColor(0, 0, 0);
+    }
+    const k = i % per, x = x0 + (k % cols) * (s + gap), y = top + Math.floor(k / cols) * (s + gap);
+    doc.setLineDashPattern([2, 1.6], 0); doc.setLineWidth(0.5); doc.setDrawColor(60, 60, 60); doc.rect(x, y, s, s); doc.setLineDashPattern([], 0);
+    doc.setFillColor(...mixRgb(acc, 0.88)); doc.roundedRect(x + 3, y + 3, s - 6, s - 6, 5, 5, "F");
+    doc.setDrawColor(...acc); doc.setLineWidth(1.6); doc.roundedRect(x + 3, y + 3, s - 6, s - 6, 5, 5, "S");
+    doc.setFillColor(...acc);
+    [[9, 9], [s - 9, 9], [9, s - 9], [s - 9, s - 9]].forEach((d) => doc.circle(x + d[0], y + d[1], 1.8, "F"));
+    doc.setDrawColor(0, 0, 0);
+    const hasIcon = !!ICONS[c.icona], hasHint = !!c.pista, isz = s * 0.24, inner = s - 28;
+    if (hasIcon) pdfDraw(doc, ICONS[c.icona], x + (s - isz) / 2, y + 12, isz, PDF_ACC);
+    const topOff = hasIcon ? 12 + isz + 2 : 12, bottom = hasHint ? 24 : 10, region = s - topOff - bottom;
+    const f = fitText(doc, c.etiqueta, inner, region, Math.round(s * 0.8), 14, "bold");
+    const th = f.lines.length * f.lh;
+    doc.setTextColor(29, 43, 47); putLines(doc, f, x + s / 2, y + topOff + Math.max(0, (region - th) / 2), { align: "center" });
+    if (hasHint) {
+      const p = fitText(doc, c.pista, inner, 14, 16, 8, "normal");
+      doc.setTextColor(70, 80, 84); putLines(doc, p, x + s / 2, y + s - 9 - p.lines.length * p.lh, { align: "center" });
+    }
+    doc.setTextColor(0, 0, 0);
+  });
+}
+
+function drawSet(doc, id, a) {
+  const sub = a.titol, acc = rgb(PDF_ACC);
+  if (id === "caselles") {
+    drawTiles(doc, a);
+  } else if (id === "tapis") {
+    const m = buildMat(a.tapis, a.meta.area, a.titol), y0 = pdfHeader(doc, "Tapís · versió reduïda", a.tapis.titol || sub) + 2;
+    const sc = Math.min((PW - 2 * PM) / (m.W * 10), (PH - y0 - 22) / (m.H * 10));
+    pdfDraw(doc, m.shapes, (PW - m.W * 10 * sc) / 2, y0, 1000 * sc, PDF_ACC);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(90, 90, 90);
+    doc.text(pdfSafe("Versió reduïda, no és a escala. Mida real: " + m.W + " x " + m.H + " cm."), PW / 2, y0 + m.H * 10 * sc + 6, { align: "center" }); doc.setTextColor(0, 0, 0);
+  } else if (id === "tapis-real") {
+    const m = buildMat(a.tapis, a.meta.area, a.titol), cols = Math.ceil(m.W * 10 / 190), rows = Math.ceil(m.H * 10 / 277); let nn = 0;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      if (nn++ > 0) doc.addPage();
+      pdfDraw(doc, m.shapes, 10 - c * 190, 10 - r * 277, 1000, PDF_ACC);
+      doc.setFillColor(255, 255, 255);
+      [[0, 0, PW, 10], [0, PH - 10, PW, 10], [0, 0, 10, PH], [PW - 10, 0, 10, PH]].forEach((b) => doc.rect(b[0], b[1], b[2], b[3], "F"));
+      doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(90, 90, 90);
+      doc.text(pdfSafe("Tapís a mida real " + m.W + " x " + m.H + " cm · tros " + nn + " de " + cols * rows + " (fila " + (r + 1) + ", columna " + (c + 1) + "). Imprimeix al 100% i enganxa pels costats."), PW / 2, 6.5, { align: "center" });
+      doc.setTextColor(0, 0, 0);
+    }
+  } else if (id === "fitxes") {
+    gridPages(doc, "Fitxes de treball", sub, a.fitxes, 1, 2, 6, (fx, x, y, w, h, i) => {
+      dashedBox(doc, x, y, w, h);
+      doc.setFillColor(...mixRgb(acc, 0.94)); doc.roundedRect(x + 1.5, y + 1.5, w - 3, h - 3, 2.5, 2.5, "F");
+      doc.setFillColor(...acc); doc.roundedRect(x + 1.5, y + 1.5, w - 3, 9, 2.5, 2.5, "F"); doc.rect(x + 1.5, y + 6, w - 3, 4.5, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(255, 255, 255);
+      doc.text("Fitxa " + (i + 1), x + 5, y + 7.3); doc.text(pdfSafe(FITXA_TIPUS[fx.tipus]), x + w - 5, y + 7.3, { align: "right" });
+      doc.setTextColor(29, 43, 47);
+      const t = fitText(doc, fx.titol || "Fitxa " + (i + 1), w - 12, 9, 17, 11, "bold"); let ey = putLines(doc, t, x + 6, y + 14);
+      const b = fitText(doc, fx.enunciat, w - 12, 28, 12, 9, "normal"); ey = putLines(doc, b, x + 6, ey + 2) + 3;
+      const bot = y + h - 6, bh = bot - ey, line = mixRgb(acc, 0.4);
+      doc.setDrawColor(...line); doc.setLineWidth(0.3);
+      if (fx.tipus === "escriu") { for (let ly = ey + 9; ly < bot; ly += 10) doc.line(x + 6, ly, x + w - 6, ly); }
+      else if (fx.tipus === "dibuixa") { doc.setFillColor(255, 255, 255); doc.setLineDashPattern([1.4, 1.4], 0); doc.roundedRect(x + 6, ey, w - 12, bh, 3, 3, "FD"); doc.setLineDashPattern([], 0); doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(150, 150, 150); doc.text("Dibuixa aquí", x + w - 9, bot - 3, { align: "right" }); }
+      else if (fx.tipus === "taula") {
+        const cw = (w - 12) / fx.columnes.length, nr = Math.max(2, Math.min(6, Math.floor((bh - 9) / 11))), rh = Math.min(12, (bh - 9) / nr);
+        doc.setFillColor(...acc); doc.rect(x + 6, ey, w - 12, 9, "F"); doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(255, 255, 255);
+        fx.columnes.forEach((c, k) => doc.text(doc.splitTextToSize(pdfSafe(c), cw - 4)[0] || "", x + 6 + k * cw + 2.5, ey + 6));
+        doc.setFillColor(255, 255, 255);
+        for (let r = 0; r < nr; r++) fx.columnes.forEach((c, k) => doc.rect(x + 6 + k * cw, ey + 9 + r * rh, cw, rh, "FD"));
+      } else {
+        doc.setFont("helvetica", "normal"); doc.setFontSize(12); doc.setTextColor(29, 43, 47);
+        fx.opcions.forEach((o, k) => { const oy = ey + 3 + k * 10; if (oy + 6 > bot) return; doc.setDrawColor(...acc); doc.setLineWidth(0.5); doc.rect(x + 8, oy, 5, 5); doc.text(doc.splitTextToSize(pdfSafe(o), w - 30)[0] || "", x + 17, oy + 4); });
+      }
+      doc.setTextColor(0, 0, 0); doc.setDrawColor(0, 0, 0);
+    });
+  } else if (id === "targetes") {
+    gridPages(doc, "Targetes de repte", sub, a.targetes, 2, 4, 4, (c, x, y, w, h, i) => {
+      const dc = rgb(diffHex(c.dificultat));
+      dashedBox(doc, x, y, w, h);
+      doc.setFillColor(...mixRgb(dc, 0.93)); doc.roundedRect(x + 1.5, y + 1.5, w - 3, h - 3, 2.5, 2.5, "F");
+      doc.setFillColor(...dc); doc.roundedRect(x + 1.5, y + 1.5, w - 3, 9, 2.5, 2.5, "F"); doc.rect(x + 1.5, y + 6, w - 3, 4.5, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(255, 255, 255);
+      doc.text("Targeta " + (i + 1), x + 5, y + 7.3); doc.text(pdfSafe(c.dificultat), x + w - 5, y + 7.3, { align: "right" });
+      const isz = 20;
+      pdfDraw(doc, ICONS[cardIcon(c, a)], x + w - isz - 4, y + 13, isz, PDF_ACC);
+      doc.setTextColor(29, 43, 47);
+      const f = fitText(doc, c.text, w - 14 - isz, h * 0.4, 26, 12, "bold"); const e = putLines(doc, f, x + 5, y + 14);
+      if (c.pista) { const p = fitText(doc, "Pista: " + c.pista, w - 10, y + h - 4 - Math.max(e + 3, y + 14 + isz + 2), 10.5, 7.5, "italic"); doc.setTextColor(70, 80, 84); putLines(doc, p, x + 5, Math.max(e + 3, y + 14 + isz + 2)); }
+      doc.setTextColor(0, 0, 0);
+    });
+  } else if (id === "rols") {
+    gridPages(doc, "Rols de l'equip", sub, ROLES.concat(ROLES), 2, 4, 4, (r, x, y, w, h) => {
+      const rc = rgb(r.color);
+      dashedBox(doc, x, y, w, h);
+      doc.setFillColor(...mixRgb(rc, 0.9)); doc.roundedRect(x + 1.5, y + 1.5, w - 3, h - 3, 2.5, 2.5, "F");
+      doc.setFillColor(...rc); doc.roundedRect(x + 1.5, y + 1.5, w - 3, 11, 2.5, 2.5, "F"); doc.rect(x + 1.5, y + 7, w - 3, 5.5, "F");
+      doc.setTextColor(255, 255, 255); const t = fitText(doc, r.nom, w - 14, 8, 14, 9, "bold"); putLines(doc, t, x + 5, y + 4.2);
+      doc.setFillColor(255, 255, 255); doc.circle(x + 24, y + 33, 18, "F");
+      pdfDraw(doc, r.art, x + 6, y + 15, 36, r.color);
+      doc.setTextColor(29, 43, 47); const p = fitText(doc, r.text, w - 52, h - 20, 11, 8, "normal"); putLines(doc, p, x + 46, y + 17);
+      doc.setTextColor(0, 0, 0);
+    });
+  } else if (id === "reptes") {
+    gridPages(doc, "Fitxes de reptes", sub, a.reptes, 1, 3, 5, (r, x, y, w, h) => {
+      const dc = rgb(diffHex(r.nivell));
+      doc.setFillColor(...mixRgb(dc, 0.92)); doc.roundedRect(x, y, w, h, 4, 4, "F");
+      doc.setDrawColor(...dc); doc.setLineWidth(0.8); doc.roundedRect(x, y, w, h, 4, 4, "S");
+      doc.setFillColor(...dc); doc.roundedRect(x, y, 28, h, 4, 4, "F"); doc.rect(x + 20, y, 8, h, "F");
+      pdfDraw(doc, ICONS.flag, x + 4, y + h / 2 - 16, 20, PDF_ACC);
+      doc.setTextColor(255, 255, 255); const nv = fitText(doc, r.nivell, 24, 12, 10, 6, "bold"); putLines(doc, nv, x + 14, y + h / 2 + 6, { align: "center" });
+      const cx0 = x + 34, cw = w - 40;
+      doc.setTextColor(29, 43, 47);
+      const t = fitText(doc, r.titol, cw, 14, 16, 11, "bold"); const e1 = putLines(doc, t, cx0, y + 7);
+      const b = fitText(doc, r.enunciat, cw, 28, 13, 9, "normal"); const e2 = putLines(doc, b, cx0, e1 + 3);
+      let px = cx0, py = e2 + 4; doc.setFont("helvetica", "normal"); doc.setFontSize(9);
+      r.ordres.forEach((o) => {
+        const tx = pdfSafe(o), tw = doc.getTextWidth(tx) + 5;
+        if (px + tw > x + w - 6) { px = cx0; py += 8; }
+        if (py + 6.5 > y + h - 3) return;
+        doc.setFillColor(255, 255, 255); doc.setDrawColor(...dc); doc.setLineWidth(0.4); doc.roundedRect(px, py, tw, 6.5, 2, 2, "FD");
+        doc.setTextColor(40, 40, 40); doc.text(tx, px + 2.5, py + 4.6); px += tw + 2;
+      });
+      doc.setTextColor(0, 0, 0); doc.setDrawColor(0, 0, 0);
+    });
+  } else if (id === "solucionari") {
+    let y = pdfHeader(doc, "Solucionari (per al mestre)", sub);
+    const tw = PW - 2 * PM - 9;
+    a.targetes.forEach((c, i) => {
+      doc.setFont("helvetica", "bold"); doc.setFontSize(12);
+      const hl = doc.splitTextToSize(pdfSafe(c.text + (c.solucio ? "   =   " + c.solucio : "")), tw);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+      const det = pdfSafe([c.pista && "Pista: " + c.pista, c.ordres && "Robot: " + c.ordres].filter(Boolean).join("   |   "));
+      const dl = det ? doc.splitTextToSize(det, tw) : [];
+      if (y + hl.length * 5.2 + dl.length * 4.4 + 6 > PH - PM - 8) { doc.addPage(); y = pdfHeader(doc, "Solucionari (continuació)", sub); }
+      doc.setFillColor(...acc); doc.circle(PM + 3.6, y + 3.4, 3.6, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255); doc.text(String(i + 1), PM + 3.6, y + 4.6, { align: "center" });
+      doc.setFontSize(12); doc.setTextColor(29, 43, 47);
+      hl.forEach((ln, k) => doc.text(ln, PM + 9, y + 4.2 + k * 5.2)); y += hl.length * 5.2;
+      doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(70, 80, 84);
+      dl.forEach((ln, k) => doc.text(ln, PM + 9, y + 4 + k * 4.4)); y += dl.length * 4.4 + 5;
+      doc.setTextColor(0, 0, 0); doc.setDrawColor(...mixRgb(acc, 0.75)); doc.setLineWidth(0.3); doc.line(PM, y - 1.5, PW - PM, y - 1.5); doc.setDrawColor(0, 0, 0);
+    });
+  } else if (id === "registre") {
+    const cw = [14, 60, 44, 44, 24], heads = ["N.º", "Targeta", "Predicció", "Resultat", "Correcte"], rh = 12;
+    const drawHead = (y0) => {
+      let x = PM; doc.setFillColor(...acc); doc.rect(PM, y0, PW - 2 * PM, 9, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(255, 255, 255);
+      heads.forEach((h, k) => { doc.text(h, x + 2.5, y0 + 6); x += cw[k]; });
+      doc.setTextColor(0, 0, 0); return y0 + 9;
+    };
+    let y = pdfHeader(doc, "Fitxa de registre", sub);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(11); doc.setTextColor(29, 43, 47);
+    doc.text("Grup: ______________________________      Data: ________________", PM, y + 3); y += 10;
+    y = drawHead(y);
+    a.targetes.forEach((c, i) => {
+      if (y + rh > PH - PM - 8) { doc.addPage(); y = drawHead(pdfHeader(doc, "Fitxa de registre (continuació)", sub)); }
+      if (i % 2 === 0) { doc.setFillColor(...mixRgb(acc, 0.92)); doc.rect(PM, y, PW - 2 * PM, rh, "F"); }
+      let x = PM; doc.setDrawColor(...mixRgb(acc, 0.5)); doc.setLineWidth(0.3);
+      cw.forEach((w) => { doc.rect(x, y, w, rh); x += w; });
+      doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(29, 43, 47);
+      doc.text(String(i + 1), PM + 2.5, y + 7.5);
+      doc.setFont("helvetica", "bold"); doc.text(doc.splitTextToSize(pdfSafe(c.text), cw[1] - 5)[0] || "", PM + cw[0] + 2.5, y + 7.5);
+      const bx = PM + cw[0] + cw[1] + cw[2] + cw[3];
+      doc.setFont("helvetica", "normal"); doc.setDrawColor(...acc); doc.setLineWidth(0.4);
+      doc.rect(bx + 2.5, y + 4, 3.5, 3.5); doc.text("Sí", bx + 7, y + 7.2); doc.rect(bx + 13, y + 4, 3.5, 3.5); doc.text("No", bx + 17.5, y + 7.2);
+      y += rh;
+    });
+    doc.setDrawColor(0, 0, 0); doc.setTextColor(0, 0, 0);
+  }
+}
+function buildPdf(a, ids) {
+  PDF_ACC = areaHex(a.meta.area);
+  const doc = new window.jspdf.jsPDF({ unit: "mm", format: "a4" });
+  ids.forEach((id, k) => { if (k > 0) doc.addPage(); drawSet(doc, id, a); });
+  const n = doc.getNumberOfPages(), acc = rgb(PDF_ACC);
+  for (let p = 1; p <= n; p++) {
+    doc.setPage(p);
+    doc.setDrawColor(...acc); doc.setLineWidth(0.6); doc.line(PM, PH - 9.5, PW - PM, PH - 9.5);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(110, 110, 110);
+    doc.text(pdfSafe("RoboAula Primària · " + a.titol), PM, PH - 5.5); doc.text("Pàgina " + p + " de " + n, PW - PM, PH - 5.5, { align: "right" });
+  }
+  return doc;
+}
+
+async function downloadPdf(a, ids, suffix) {
+  await ensureCaps();
+  if (!downloads) { toast("Aquesta vista no permet descarregar fitxers."); return; }
+  if (!(window.jspdf && window.jspdf.jsPDF)) { toast("No s'ha pogut carregar el generador de PDF. Prova de recarregar la pàgina."); return; }
+  try {
+    const buf = buildPdf(a, ids).output("arraybuffer");
+    await downloads.save({ filename: slug(a.titol) + "-" + suffix + ".pdf", data: buf });
+    toast("PDF descarregat.");
+  } catch (e) {
+    if (e && e.code === "declined") return;
+    toast("No s'ha pogut crear el PDF.");
+  }
+}
+function matEntries() {
+  const out = [];
+  if (state.current) out.push({ key: "current", a: state.current, label: "Activitat oberta: " + state.current.titol });
+  state.lib.forEach((x) => { if (!state.current || x.id !== state.current.id) out.push({ key: x.id, a: x.activity, label: x.activity.titol }); });
+  return out;
+}
+function renderMaterials() {
+  const el = $("view-materials"), list = matEntries();
+  if (!list.length) { el.innerHTML = '<div class="panel empty"><h3>Encara no hi ha cap proposta</h3><p>Genera una activitat i aquí en trobaràs els materials.</p></div>'; return; }
+  const sel = list.find((e) => e.key === matSel) || list[0]; matSel = sel.key;
+  const a = sel.a, sets = materialSets(a), pdfOk = !!(window.jspdf && window.jspdf.jsPDF), dis = pdfOk ? "" : " disabled";
+  el.innerHTML = '<p class="lead">Els materials es construeixen a partir de cada proposta. Consulta la vista prèvia i descarrega\'ls en PDF per imprimir-los i retallar-los.</p>' +
+    (pdfOk ? "" : '<div class="banner warn">No s\'ha pogut carregar el generador de PDF. Recarrega la pàgina per tornar-ho a provar.</div>') +
+    '<div class="panel mat-head"><div class="field" style="margin:0;flex:1;min-width:240px"><label for="matSel">Proposta</label><select id="matSel">' +
+    list.map((e) => '<option value="' + esc(e.key) + '"' + (e.key === sel.key ? " selected" : "") + ">" + esc(e.label) + "</option>").join("") +
+    '</select></div><button type="button" class="btn" data-pdf-all="1"' + dis + ">Descarrega-ho tot en PDF</button></div>" +
+    sets.map((s) => { const pv = setPreview(s.id, a); return '<div class="panel"><div class="mat-set-head"><div><h3>' + esc(s.title) + '</h3><p class="hint">' + esc(s.desc) + '</p></div><button type="button" class="btn sm" data-pdf="' + s.id + '"' + dis + '>Descarrega PDF</button></div>' + (pv ? '<details class="prev area-' + a.meta.area + '" open><summary>Vista prèvia</summary>' + pv + "</details>" : "") + "</div>"; }).join("");
+}
+
+/* ---------- Vistes i esdeveniments ---------- */
+function heroScene() {
+  const sh = [["e", 60, 66, 70, 7, "#00000014"], ["l", [[0, 62], [240, 62]], "#47555B", 9], ["d", [[0, 62], [240, 62]], "#FFFFFF", 0.7, [4, 4]]];
+  const put = (n, x, y, sc) => sh.push(...xf(n === "mascot" ? ART.mascot : ICONS[n], x, y, sc));
+  put("planet", 196, 4, 0.3); put("rocket", 118, 2, 0.3); put("star", 18, 8, 0.2); put("star", 92, 30, 0.12); put("star", 160, 24, 0.14); put("heart", 62, 6, 0.14); put("book", 20, 40, 0.16); put("flag", 224, 36, 0.24); put("cloud", 138, 28, 0.2);
+  put("mascot", 52, 8, 0.56); put("mascot", 150, 24, 0.34);
+  sh.push(["c", 79, 52, 4, "D"], ["c", 79, 52, 1.6, "K"], ["c", 61, 52, 4, "D"], ["c", 61, 52, 1.6, "K"]);
+  return svgOf(sh, 240, 72, "hero-svg");
+}
+function setView(v) {
+  const VIEWS = ["generador", "materials", "biblioteca", "robots"];
+  if (VIEWS.indexOf(v) < 0) v = "generador";
+  state.view = v;
+  VIEWS.forEach((n) => { $("view-" + n).hidden = n !== v; });
+  document.querySelectorAll("nav.tabs button").forEach((b) => { if (b.dataset.view === v) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
+  if (v === "biblioteca") renderLibrary();
+  if (v === "materials") renderMaterials();
+  if (location.hash.slice(1) !== v) { try { history.replaceState(null, "", "#" + v); } catch (e) { location.hash = v; } }
+}
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.view) { if (t.dataset.cur) matSel = "current"; setView(t.dataset.view); return; }
+  if (t.dataset.pdf || t.dataset.pdfAll) {
+    const en = matEntries().find((x) => x.key === matSel) || matEntries()[0];
+    if (en) { const ids = materialSets(en.a).map((s) => s.id); downloadPdf(en.a, t.dataset.pdfAll ? ids : [t.dataset.pdf], t.dataset.pdfAll ? "materials" : t.dataset.pdf); }
+    return;
+  }
+  if (t.dataset.tab) { state.tab = t.dataset.tab; renderResult(); return; }
+  if (t.dataset.open) { const x = state.lib.find((y) => y.id === t.dataset.open); if (x) { state.current = x.activity; state.source = "desada"; state.guard = null; state.error = null; state.tab = "proposta"; guardToken++; renderResult(); setView("generador"); scrollToResult(); } return; }
+  if (t.dataset.del) { state.lib = state.lib.filter((y) => y.id !== t.dataset.del); saveLib(); renderLibrary(); toast("Activitat eliminada."); return; }
+  if (t.dataset.robotGo) { state.robotId = t.dataset.robotGo; renderForm(); setView("generador"); window.scrollTo({ top: 0 }); return; }
+  const act = t.dataset.act;
+  if (act === "stop" && ctl) ctl.abort();
+  else if (act === "save") saveCurrent();
+  else if (act === "download") downloadActivity();
+  else if (act === "regen") generate();
+});
+$("form").addEventListener("submit", (e) => { e.preventDefault(); generate(); });
+document.addEventListener("change", (e) => { if (e.target && e.target.id === "matSel") { matSel = e.target.value; renderMaterials(); } });
+$("form").addEventListener("change", (e) => {
+  const t = e.target;
+  if (t.name === "robot") { state.robotId = t.value; renderMats(); updateHints(); }
+  else if (t.name === "cycle") { state.cycle = t.value; updateHints(); }
+  else if (t.id === "area") { updateHints(); t.classList.remove("invalid"); $("areaErr").hidden = true; }
+});
+$("topic").addEventListener("input", () => { $("topic").classList.remove("invalid"); $("topicErr").hidden = true; });
+window.addEventListener("hashchange", () => setView(location.hash.slice(1)));
+
+/* ---------- Inici ---------- */
+loadLib(); $("libCount").textContent = state.lib.length ? "(" + state.lib.length + ")" : "";
+renderForm(); renderRobots();
+state.current = EXAMPLE; try { $("heroArt").innerHTML = heroScene(); } catch (e) {}; state.source = "exemple";
+renderResult();
+setView(location.hash.slice(1) || "generador");
+ensureCaps();
+</script>
+</body></html>
