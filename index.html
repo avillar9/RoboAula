@@ -240,6 +240,9 @@ body{margin:0}
 .logos { background: #fff; border-top: 1px solid var(--line); padding-block: 14px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .logos-in { max-width: 760px; margin: 0 auto; }
 .logos img { display: block; width: 100%; height: auto; max-width: 725px; margin: 0 auto; }
+.refine h3 { margin: 0 0 4px; }
+.refine textarea { width: 100%; margin-top: 8px; }
+.refine-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 </style></head><body>
 
 <header class="top">
@@ -655,7 +658,7 @@ function normFitxes(list) {
 function normalize(d, f) {
   const s = (x) => str(x).trim();
   return {
-    format: s(d.format_activitat).slice(0, 60), tapis: normTapis(d.tapis, f), fitxes: normFitxes(d.fitxes),
+    form: f, format: s(d.format_activitat).slice(0, 60), tapis: normTapis(d.tapis, f), fitxes: normFitxes(d.fitxes),
     meta: { robotId: f.robotId, cycle: f.cycle, area: f.area, area2: f.area2, topic: f.topic, duration: f.duration, org: f.org },
     titol: s(d.titol) || "Activitat de robòtica", subtitol: s(d.subtitol), dinamica: s(d.dinamica), rol_robot: s(d.rol_robot), mida_cm: cellCm(d.mida_caselles_cm, f.robotId),
     competencies: arr(d.competencies).map(s).filter(Boolean),
@@ -710,6 +713,12 @@ function repairJson(t) {
   return o;
 }
 async function geminiJson(prompt, opts) {
+  for (let k = 0; ; k++) {
+    try { return await geminiOnce(prompt, opts); }
+    catch (e) { if (e && e.code === "invalid_json" && k < 2 && !(opts && opts.signal && opts.signal.aborted)) continue; throw e; }
+  }
+}
+async function geminiOnce(prompt, opts) {
   opts = opts || {};
   if (/POSA-AQUI/.test(WORKER_URL)) throw { code: "no_key" };
   const ic = new AbortController(); let timer;
@@ -785,6 +794,7 @@ async function generate() {
   if (!sample) { const m = $("availMsg"); m.textContent = "Aquesta vista no pot generar activitats. Obre l'app des de Claude per poder-ne crear de noves."; m.hidden = false; return; }
   $("availMsg").hidden = true;
   ctl = new AbortController();
+  state.refining = false; state.prev = null; state.refineText = "";
   state.busy = true; state.progress = 0; state.error = null; state.guard = null; guardToken++;
   renderResult(); scrollToResult();
   try {
@@ -868,7 +878,7 @@ function evalCta(a) { return (a.rubrica.length || a.dua.length) ? '<div class="c
 function renderResult() {
   const root = $("result");
   if (state.busy) {
-    root.innerHTML = '<div class="panel busy-box"><h2 id="busyLabel">Pensant l\'activitat…</h2><p>Pot trigar entre un i dos minuts. Es genera de zero només amb les dades del formulari.</p><div class="progress" aria-hidden="true"><i style="width:' + Math.max(4, state.progress) + '%"></i></div><p style="margin-top:16px"><button type="button" class="btn sm" data-act="stop">Atura</button></p></div>';
+    root.innerHTML = '<div class="panel busy-box"><h2 id="busyLabel">Pensant l\'activitat…</h2><p>' + (state.refining ? "Aplicant els canvis demanats a l\'activitat actual." : "Pot trigar entre un i dos minuts. Es genera de zero només amb les dades del formulari.") + '</p><div class="progress" aria-hidden="true"><i style="width:' + Math.max(4, state.progress) + '%"></i></div><p style="margin-top:16px"><button type="button" class="btn sm" data-act="stop">Atura</button></p></div>';
     $("genBtn").disabled = true; return;
   }
   $("genBtn").disabled = false;
@@ -880,6 +890,65 @@ function renderResult() {
   if (state.source === "exemple") top.push('<div class="banner info"><span><b>Exemple.</b> Mira com queda una activitat i després genera la teva amb el formulari.</span></div>');
   root.innerHTML = top.join("") + '<div id="guardSlot"></div><article class="panel"><div class="dossier-head"><div><h2>' + esc(a.titol) + '</h2><p class="sub">' + esc(a.subtitol) + '</p><div class="chips">' + areaChip(a.meta.area) + (a.meta.area2 ? areaChip(a.meta.area2) : "") + (a.format ? '<span class="chip">' + esc(a.format) + "</span>" : "") + '<span class="chip">' + esc(r.name) + '</span><span class="chip">' + esc(CYCLE_NAME[a.meta.cycle] || "") + '</span><span class="chip">' + esc(a.meta.duration) + '</span><span class="chip">' + esc(a.meta.org) + '</span></div></div><div class="actions"><button type="button" class="btn" data-act="save">' + (saved ? "Desada" : "Desa a la biblioteca") + '</button><button type="button" class="btn" data-act="download">Descarrega la proposta</button></div></div><div class="dtabs" role="tablist"><button type="button" role="tab" data-tab="proposta" aria-selected="' + (state.tab === "proposta") + '">Proposta</button><button type="button" role="tab" data-tab="materials" aria-selected="' + (state.tab === "materials") + '">Materials per imprimir</button><button type="button" role="tab" class="hl" data-tab="avaluacio" aria-selected="' + (state.tab === "avaluacio") + '">★ Avaluació i DUA</button></div><div role="tabpanel">' + (state.tab === "proposta" ? dossierProposta(a) + evalCta(a) : state.tab === "materials" ? dossierMaterials(a) + evalCta(a) : dossierAvaluacio(a)) + "</div></article>";
   renderGuard();
+  root.insertAdjacentHTML("beforeend", refineHTML());
+}
+
+/* ---------- Modificar l'activitat ---------- */
+function toRaw(a) {
+  return { titol: a.titol, subtitol: a.subtitol, dinamica: a.dinamica, format_activitat: a.format || "", mida_caselles_cm: a.mida_cm, rol_robot: a.rol_robot, competencies: a.competencies, objectius: a.objectius, materials: a.materials, sessions: a.sessions, reptes: a.reptes, targetes: a.targetes, caselles: a.caselles, tapis: a.tapis || null, fitxes: a.fitxes || [], dua: a.dua, rubrica: a.rubrica };
+}
+function formFor(a) {
+  if (a.form) return a.form;
+  const f = readForm(); Object.assign(f, a.meta);
+  if (a.meta.robotId !== state.robotId) f.mats = [];
+  f.dua = a.dua.length > 0; f.rubric = a.rubrica.length > 0;
+  return f;
+}
+function refineHTML() {
+  if (!state.current || state.source === "exemple" || state.busy) return "";
+  return '<section class="panel refine"><h3>Vols canviar alguna cosa?</h3><p class="hint">Escriu què s\'ha de modificar. L\'assistent ajustarà tota l\'activitat (proposta, materials i avaluació) i mantindrà la resta tal com està.</p><textarea id="refineText" rows="3" placeholder="Per exemple: a classe encara anem per la taula del 6, que no passi d\'aquí.">' + esc(state.refineText || "") + '</textarea><div class="refine-btns"><button type="button" class="btn primary" data-refine="go">Modifica l\'activitat</button><button type="button" class="btn" data-refine="new">Genera\'n una de nova</button>' + (state.prev ? '<button type="button" class="btn" data-refine="undo">Torna a la versió anterior</button>' : "") + "</div></section>";
+}
+async function refine() {
+  const a = state.current, ta = $("refineText"), txt = ta ? ta.value.trim() : "";
+  if (!a) return;
+  if (!txt) { if (ta) ta.focus(); return; }
+  await ensureCaps();
+  const f = formFor(a);
+  ctl = new AbortController();
+  state.refining = true; state.busy = true; state.progress = 0; state.error = null; state.guard = null; guardToken++;
+  renderResult(); scrollToResult();
+  try {
+    const p = buildPrompt(f) + "\n\nMODIFICACIÓ D'UNA ACTIVITAT JA GENERADA\nAquesta és l'activitat actual, en el mateix format JSON:\n" + JSON.stringify(toRaw(a)) + "\n\nCANVIS DEMANATS PEL MESTRE: «" + txt + "»\n\nAplica exactament aquests canvis a tota l'activitat (sessions, reptes, targetes, caselles, tapís, fitxes, rúbrica i qualsevol altre apartat on afecti) perquè tot sigui coherent. Mantén sense canviar tot allò que el mestre no ha demanat canviar. Si els canvis contradiuen el contingut concret indicat abans, preval el que demana el mestre. Respecta la resta de regles (àrea, materials, mides, format). Retorna l'activitat COMPLETA, amb el mateix format JSON.";
+    const data = await sample.json(p, { signal: ctl.signal, cache: false, onText: (u) => { state.progress = Math.min(95, Math.round(u.text.length / 110)); const bar = document.querySelector(".progress i"); if (bar) bar.style.width = Math.max(4, state.progress) + "%"; } });
+    if (!data || typeof data !== "object") throw { code: "invalid_json", detail: "no és un objecte" };
+    const act = normalize(unwrapAct(data), f);
+    if (!act.objectius.length && !act.sessions.length) throw { code: "invalid_json", detail: "resposta sense contingut" };
+    state.prev = a; state.current = act; state.source = "modificada"; state.tab = "proposta"; state.refineText = ""; state.busy = false; state.refining = false;
+    renderResult(); scrollToResult();
+    checkArea(act);
+  } catch (e) {
+    state.busy = false; state.refining = false;
+    if (e && e.code === "cancelled") { state.error = null; }
+    else { state.error = (ERR[e && e.code] || ERR.upstream_error) + (e && e.detail ? " (" + e.detail + ")" : ""); }
+    renderResult();
+  } finally { ctl = null; }
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-refine]"); if (!b) return;
+  const k = b.dataset.refine;
+  if (k === "go") refine();
+  else if (k === "new") generate();
+  else if (k === "undo" && state.prev) { state.current = state.prev; state.prev = null; state.source = "generada"; state.guard = null; state.error = null; renderResult(); }
+});
+document.addEventListener("input", (e) => { if (e.target && e.target.id === "refineText") state.refineText = e.target.value; });
+
+/* ---------- Versió del servidor ---------- */
+const APP_VERSION = "2026-11-14";
+async function checkServer() {
+  const foot = document.querySelector(".foot"); if (!foot || /POSA-AQUI/.test(WORKER_URL)) return;
+  const s = document.createElement("div"); s.style.cssText = "margin-top:6px;font-size:12px;opacity:.85"; foot.appendChild(s);
+  try { const j = await (await fetch(WORKER_URL)).json(); s.textContent = j.versio === APP_VERSION ? "Servidor al dia (" + j.versio + ")" : "⚠ El servidor no està actualitzat: cal enganxar el worker.js nou a Cloudflare."; }
+  catch (e) { s.textContent = "⚠ No es pot contactar amb el servidor."; }
 }
 
 /* ---------- Descàrrega imprimible ---------- */
@@ -1499,7 +1568,7 @@ window.addEventListener("hashchange", () => setView(location.hash.slice(1)));
 /* ---------- Inici ---------- */
 loadLib(); $("libCount").textContent = state.lib.length ? "(" + state.lib.length + ")" : "";
 renderForm(); renderRobots();
-state.current = EXAMPLE; try { $("heroArt").innerHTML = heroScene(); } catch (e) {}; state.source = "exemple";
+state.current = EXAMPLE; try { $("heroArt").innerHTML = heroScene(); } catch (e) {} checkServer();; state.source = "exemple";
 renderResult();
 setView(location.hash.slice(1) || "generador");
 ensureCaps();
