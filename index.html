@@ -946,7 +946,7 @@ document.addEventListener("click", (e) => {
 document.addEventListener("input", (e) => { if (e.target && e.target.id === "refineText") state.refineText = e.target.value; });
 
 /* ---------- Versió del servidor ---------- */
-const APP_VERSION = "2026-11-15";
+const APP_VERSION = "2026-11-15b";
 async function checkServer() {
   const foot = document.querySelector(".foot"); if (!foot || /POSA-AQUI/.test(WORKER_URL)) return;
   const s = document.createElement("div"); s.style.cssText = "margin-top:6px;font-size:12px;opacity:.85"; foot.appendChild(s);
