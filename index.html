@@ -243,6 +243,9 @@ body{margin:0}
 .refine h3 { margin: 0 0 4px; }
 .refine textarea { width: 100%; margin-top: 8px; }
 .refine-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.guide h4 { margin: 14px 0 6px; }
+.guide ol, .guide ul { margin: 4px 0 8px; padding-left: 22px; }
+.guide .gt { border-top: 1px solid var(--line); padding-top: 4px; margin-top: 10px; }
 </style></head><body>
 
 <header class="top">
@@ -729,7 +732,7 @@ async function geminiOnce(prompt, opts) {
   const end = () => { clearTimeout(timer); clearInterval(tick); };
   let resp;
   try {
-    resp = await fetch(WORKER_URL, { method: "POST", signal: ic.signal, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt }) });
+    resp = await fetch(WORKER_URL, { method: "POST", signal: ic.signal, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt, kind: opts.kind }) });
   } catch (e) { end(); if (ic._to) throw { code: "timeout" }; if (e && e.name === "AbortError") throw { code: "cancelled" }; throw { code: "upstream_error" }; }
   if (!resp.ok) {
     end();
@@ -943,13 +946,69 @@ document.addEventListener("click", (e) => {
 document.addEventListener("input", (e) => { if (e.target && e.target.id === "refineText") state.refineText = e.target.value; });
 
 /* ---------- Versió del servidor ---------- */
-const APP_VERSION = "2026-11-14";
+const APP_VERSION = "2026-11-15";
 async function checkServer() {
   const foot = document.querySelector(".foot"); if (!foot || /POSA-AQUI/.test(WORKER_URL)) return;
   const s = document.createElement("div"); s.style.cssText = "margin-top:6px;font-size:12px;opacity:.85"; foot.appendChild(s);
   try { const j = await (await fetch(WORKER_URL)).json(); s.textContent = j.versio === APP_VERSION ? "Servidor al dia (" + j.versio + ")" : "⚠ El servidor no està actualitzat: cal enganxar el worker.js nou a Cloudflare."; }
   catch (e) { s.textContent = "⚠ No es pot contactar amb el servidor."; }
 }
+
+/* ---------- Guia de programació per al mestre ---------- */
+function normGuia(d) {
+  const s = (x) => str(x).trim(), o = d && typeof d === "object" && !Array.isArray(d) ? d : {};
+  return {
+    intro: s(o.intro), preparacio: arr(o.preparacio).map(s).filter(Boolean),
+    tasques: arr(o.tasques).map((t) => ({ sessio: s(t && t.sessio), titol: s(t && t.titol), objectiu: s(t && t.objectiu), passos: arr(t && t.passos).map(s).filter(Boolean), blocs: arr(t && t.blocs).map(s).filter(Boolean), prova: s(t && t.prova), errors: arr(t && t.errors).map(s).filter(Boolean) })).filter((t) => t.titol || t.passos.length),
+    consells: arr(o.consells).map(s).filter(Boolean)
+  };
+}
+function guidePrompt(a) {
+  const r = robotById(a.meta.robotId), ar = areaById(a.meta.area);
+  const resum = [
+    "TÍTOL: " + a.titol, "ROL DEL ROBOT: " + a.rol_robot,
+    "SESSIONS:\n" + a.sessions.map((x, i) => "Sessió " + (i + 1) + " «" + x.titol + "»: " + x.fases.map((p) => p.fase + " (" + p.minuts + " min): " + p.descripcio).join(" | ")).join("\n"),
+    a.reptes.length ? "REPTES:\n" + a.reptes.map((x) => x.nivell + " · " + x.titol + ": " + x.enunciat + (x.ordres.length ? " [ordres: " + x.ordres.join("; ") + "]" : "")).join("\n") : "",
+    a.tapis ? "TAPÍS (" + a.tapis.tipus + ") amb estacions: " + a.tapis.estacions.map((e, i) => (i + 1) + ". " + e.etiqueta + (e.pista ? " (" + e.pista + ")" : "")).join("; ") : "",
+    a.targetes.length ? "TARGETES AMB ORDRES SUGGERIDES: " + a.targetes.slice(0, 5).map((x) => x.text + (x.ordres ? " → " + x.ordres : "")).join(" | ") : ""
+  ].filter(Boolean).join("\n");
+  return [
+    "Ets un formador de robòtica educativa que ajuda mestres de Primària que gairebé no coneixen el robot. Escriu en català una GUIA DE PROGRAMACIÓ PAS A PAS perquè el mestre pugui fer ell mateix, abans de la sessió, tot el que l'activitat demana al robot.",
+    "ROBOT: " + r.name + " (" + r.brand + "). Entorn de programació: " + r.app + ". Sensors reals: " + r.sensors.join("; ") + ". Actuadors reals: " + r.actuators.join("; ") + ". Cicle: " + (CYCLE_NAME[a.meta.cycle] || a.meta.cycle) + ". Àrea: " + ar.label + ".",
+    "ACTIVITAT:\n" + resum,
+    "NORMES: (1) Cobreix cada part de l'activitat on el robot ha de fer alguna cosa programada, sessió per sessió, de 3 a 8 tasques. (2) Fes servir només l'entorn de programació indicat i funcions que el robot té de debò. (3) Cada pas és una sola acció, curta i concreta. Per a robots sense pantalla explica els botons o les fitxes físiques i l'ordre de la seqüència. (4) A blocs escriu els blocs o instruccions tal com apareixen a l'aplicació; si no estàs segur del nom exacte d'un bloc o d'un menú, descriu què fa en lloc d'inventar-te el nom. (5) Inclou com comprovar que funciona i els errors habituals dels principiants. (6) A preparacio explica què cal fer abans de la primera tasca (obrir l'entorn, connectar o carregar el programa, calibrar si cal). (7) No parlis d'altres àrees ni canviïs l'activitat.",
+    "Respon NOMÉS amb un JSON vàlid amb aquesta estructura:",
+    JSON.stringify({ intro: "<2 frases: què farà el mestre i quant triga>", preparacio: ["<pas previ>"], tasques: [{ sessio: "<Sessió 1, 2…>", titol: "<tasca de programació>", objectiu: "<què ha de fer el robot>", passos: ["<pas concret>"], blocs: ["<bloc o instrucció>"], prova: "<com comprovar-ho>", errors: ["<error habitual i com solucionar-lo>"] }], consells: ["<consell per a l'aula>"] }, null, 1)
+  ].join("\n\n");
+}
+function guideBody(g) {
+  const ol = (l) => (l.length ? "<ol>" + l.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ol>" : "");
+  const ul = (l) => (l.length ? "<ul>" + l.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul>" : "");
+  return '<div class="guide">' + (g.intro ? "<p>" + esc(g.intro) + "</p>" : "") + (g.preparacio.length ? "<h4>Abans de començar</h4>" + ol(g.preparacio) : "") +
+    g.tasques.map((t, i) => '<section class="gt"><h4>' + (i + 1) + ". " + esc(t.titol) + (t.sessio ? ' <span class="chip">' + esc(t.sessio) + "</span>" : "") + "</h4>" + (t.objectiu ? "<p><b>Objectiu:</b> " + esc(t.objectiu) + "</p>" : "") + ol(t.passos) + (t.blocs.length ? "<p><b>Blocs o instruccions:</b></p>" + ul(t.blocs) : "") + (t.prova ? "<p><b>Com comprovar-ho:</b> " + esc(t.prova) + "</p>" : "") + (t.errors.length ? "<p><b>Errors habituals:</b></p>" + ul(t.errors) : "") + "</section>").join("") +
+    (g.consells.length ? "<h4>Consells per a l'aula</h4>" + ul(g.consells) : "") + '<p class="hint">Guia generada per una IA: prova-la amb el robot abans de la sessió, perquè els noms dels blocs o dels menús poden variar segons la versió de l\'aplicació.</p></div>';
+}
+function guideHTML(a) {
+  const err = state.guideErr ? '<div class="banner err"><span>' + esc(state.guideErr) + "</span></div>" : "";
+  const r = robotById(a.meta.robotId);
+  return '<div class="panel"><div class="mat-set-head"><div><h3>Guia de programació per al mestre</h3><p class="hint">' + (state.guideBusy ? "Preparant la guia… pot trigar uns minuts." : "Pas a pas per programar " + esc(r.name) + " en cada part d\'aquesta activitat, pensada per a docents que no coneixen el robot.") + '</p></div><button type="button" class="btn sm' + (a.guia ? "" : " primary") + '" data-guide="go"' + (state.guideBusy ? " disabled" : "") + ">" + (a.guia ? "Torna-la a generar" : "Genera la guia") + "</button></div>" + err + "</div>";
+}
+async function makeGuide() {
+  const en = matEntries().find((e) => e.key === matSel) || matEntries()[0];
+  if (!en || state.guideBusy) return;
+  const a = en.a;
+  await ensureCaps();
+  state.guideBusy = true; state.guideErr = ""; renderMaterials();
+  try {
+    const g = normGuia(await sample.json(guidePrompt(a), { kind: "guia", cache: false }));
+    if (!g.tasques.length) throw { code: "invalid_json", detail: "guia buida" };
+    a.guia = g;
+    state.lib.forEach((x) => { if (x.id && x.id === a.id && x.activity) x.activity.guia = g; });
+    try { saveLib(); } catch (e) {}
+  } catch (e) { state.guideErr = (ERR[e && e.code] || ERR.upstream_error) + (e && e.detail ? " (" + e.detail + ")" : ""); }
+  state.guideBusy = false; renderMaterials();
+}
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-guide]"); if (b) makeGuide(); });
 
 /* ---------- Descàrrega imprimible ---------- */
 function printableHTML(a) {
@@ -1002,6 +1061,7 @@ function slug(t) { return (t || "activitat").toLowerCase().normalize("NFD").repl
 function materialSets(a) {
   const s = [];
   const sq = !!robotById(a.meta.robotId).pas;
+  if (a.guia) s.push({ id: "guia", title: "Guia de programació per al mestre", desc: "Pas a pas per programar el robot en cada part de l'activitat. Per a consulta del docent." });
   if (a.tapis) {
     const pg = Math.ceil(a.tapis.ample_cm * 10 / 190) * Math.ceil(a.tapis.alt_cm * 10 / 277);
     s.push({ id: "tapis-real", title: a.tapis.titol || "Tapís lliure", desc: a.tapis.ample_cm + " × " + a.tapis.alt_cm + " cm a mida real, en " + pg + " pàgines A4 per enganxar." });
@@ -1208,6 +1268,7 @@ function fitxaHTML(x, i, a) {
 }
 
 function setPreview(id, a) {
+  if (id === "guia") return guideBody(a.guia);
   if (id === "tapis-real") return '<p class="hint" style="margin-bottom:10px">' + esc(a.tapis.instruccions) + " Mida real: " + a.tapis.ample_cm + " × " + a.tapis.alt_cm + " cm.</p>" + tapisSVG(a);
   if (id === "fitxes") return '<div class="cut-grid wide">' + a.fitxes.map((x, i) => fitxaHTML(x, i, a)).join("") + "</div>";
   if (id === "caselles") return '<p class="hint" style="margin-bottom:10px">Al PDF cada casella fa ' + activityCm(a) + " × " + activityCm(a) + ' cm reals. Aquesta vista prèvia està reduïda.</p><div class="pv-tiles">' + a.caselles.map((c) => '<div class="pv-tile">' + (ICONS[c.icona] ? svgOf(ICONS[c.icona]) : "") + '<span class="big">' + esc(c.etiqueta) + "</span>" + (c.pista ? '<span class="small">' + esc(c.pista) + "</span>" : "") + "</div>").join("") + "</div>";
@@ -1331,7 +1392,37 @@ function drawTiles(doc, a) {
 
 function drawSet(doc, id, a) {
   const sub = a.titol, acc = rgb(PDF_ACC);
-  if (id === "caselles") {
+  if (id === "guia") {
+    const g = a.guia, W = PW - 2 * PM, bottom = PH - 14, T = "Guia de programació per al mestre";
+    let y = pdfHeader(doc, T, sub) + 2;
+    const page = () => { doc.addPage(); y = pdfHeader(doc, T, sub) + 2; };
+    const text = (t, o) => {
+      o = o || {}; const size = o.size || 10, ind = o.indent || 0, lh = size * 0.3528 * 1.35;
+      const lines = doc.splitTextToSize(pdfSafe(t), W - ind);
+      lines.forEach((ln) => { if (y + lh > bottom) page(); doc.setFont("helvetica", o.bold ? "bold" : "normal"); doc.setFontSize(size); doc.setTextColor(...(o.color || [29, 43, 47])); doc.text(ln, PM + ind, y + size * 0.3528 * 0.9); y += lh; });
+      y += o.after == null ? 1.2 : o.after;
+    };
+    const head = (t) => {
+      if (y + 16 > bottom) page();
+      doc.setFillColor(...mixRgb(acc, 0.86)); doc.roundedRect(PM, y, W, 8.5, 2, 2, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(...acc);
+      doc.text(doc.splitTextToSize(pdfSafe(t), W - 6)[0] || "", PM + 3, y + 5.9); y += 11;
+    };
+    if (g.intro) text(g.intro, { after: 3 });
+    if (g.preparacio.length) { head("Abans de començar"); g.preparacio.forEach((p, i) => text((i + 1) + ". " + p, { indent: 3 })); y += 3; }
+    g.tasques.forEach((t, i) => {
+      head((i + 1) + ". " + (t.titol || "Tasca") + (t.sessio ? "  (" + t.sessio + ")" : ""));
+      if (t.objectiu) text("Objectiu: " + t.objectiu, { bold: true, after: 2 });
+      t.passos.forEach((p, k) => text((k + 1) + ". " + p, { indent: 3 }));
+      if (t.blocs.length) { text("Blocs o instruccions a fer servir:", { bold: true, after: 0.6 }); t.blocs.forEach((b) => text("- " + b, { indent: 5 })); }
+      if (t.prova) text("Com comprovar-ho: " + t.prova, { after: 1.5 });
+      if (t.errors.length) { text("Errors habituals:", { bold: true, after: 0.6 }); t.errors.forEach((b) => text("- " + b, { indent: 5 })); }
+      y += 3;
+    });
+    if (g.consells.length) { head("Consells per a l'aula"); g.consells.forEach((c) => text("- " + c, { indent: 3 })); y += 2; }
+    text("Guia generada per una IA: prova-la amb el robot abans de la sessió, perquè els noms dels blocs o dels menús poden variar segons la versió de l'aplicació.", { size: 8.5, color: [110, 110, 110] });
+    doc.setTextColor(0, 0, 0);
+  } else if (id === "caselles") {
     drawTiles(doc, a);
   } else if (id === "tapis") {
     const m = buildMat(a.tapis, a.meta.area, a.titol), y0 = pdfHeader(doc, "Tapís · versió reduïda", a.tapis.titol || sub) + 2;
@@ -1514,6 +1605,7 @@ function renderMaterials() {
     '<div class="panel mat-head"><div class="field" style="margin:0;flex:1;min-width:240px"><label for="matSel">Proposta</label><select id="matSel">' +
     list.map((e) => '<option value="' + esc(e.key) + '"' + (e.key === sel.key ? " selected" : "") + ">" + esc(e.label) + "</option>").join("") +
     '</select></div><button type="button" class="btn" data-pdf-all="1"' + dis + ">Descarrega-ho tot en PDF</button></div>" +
+    guideHTML(a) +
     sets.map((s) => { const pv = setPreview(s.id, a); return '<div class="panel"><div class="mat-set-head"><div><h3>' + esc(s.title) + '</h3><p class="hint">' + esc(s.desc) + '</p></div><button type="button" class="btn sm" data-pdf="' + s.id + '"' + dis + '>Descarrega PDF</button></div>' + (pv ? '<details class="prev area-' + a.meta.area + '" open><summary>Vista prèvia</summary>' + pv + "</details>" : "") + "</div>"; }).join("");
 }
 
