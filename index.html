@@ -246,6 +246,7 @@ body{margin:0}
 .guide h4 { margin: 14px 0 6px; }
 .guide ol, .guide ul { margin: 4px 0 8px; padding-left: 22px; }
 .guide .gt { border-top: 1px solid var(--line); padding-top: 4px; margin-top: 10px; }
+.prog h4 { margin: 16px 0 6px; color: var(--accent, #0B7A66); }
 </style></head><body>
 
 <header class="top">
@@ -259,6 +260,7 @@ body{margin:0}
     <nav class="tabs" aria-label="Seccions">
       <button type="button" data-view="generador">Generador</button>
       <button type="button" data-view="materials">Materials</button>
+      <button type="button" data-view="programacio">Programació</button>
       <button type="button" data-view="biblioteca">La meva biblioteca <span id="libCount"></span></button>
       <button type="button" data-view="robots">Guia de robots</button>
     </nav>
@@ -357,6 +359,7 @@ body{margin:0}
   </section>
 
   <section class="view" id="view-materials" aria-label="Materials" hidden></section>
+  <section class="view" id="view-programacio" aria-label="Programació" hidden></section>
   <section class="view" id="view-biblioteca" aria-label="Biblioteca" hidden></section>
   <section class="view" id="view-robots" aria-label="Guia de robots" hidden></section>
   <footer class="foot">Revisa sempre l'activitat abans de portar-la a l'aula: el contingut el genera una IA.</footer>
@@ -946,7 +949,7 @@ document.addEventListener("click", (e) => {
 document.addEventListener("input", (e) => { if (e.target && e.target.id === "refineText") state.refineText = e.target.value; });
 
 /* ---------- Versió del servidor ---------- */
-const APP_VERSION = "2026-11-15b";
+const APP_VERSION = "2026-11-17";
 async function checkServer() {
   const foot = document.querySelector(".foot"); if (!foot || /POSA-AQUI/.test(WORKER_URL)) return;
   const s = document.createElement("div"); s.style.cssText = "margin-top:6px;font-size:12px;opacity:.85"; foot.appendChild(s);
@@ -1009,6 +1012,113 @@ async function makeGuide() {
   state.guideBusy = false; renderMaterials();
 }
 document.addEventListener("click", (e) => { const b = e.target.closest("[data-guide]"); if (b) makeGuide(); });
+
+/* ---------- Programació: unitat / situació d'aprenentatge ---------- */
+let progSel = "current";
+const CURS = { inicial: ["1r", "2n"], mitja: ["3r", "4t"], superior: ["5è", "6è"] };
+const CURR_REF = {
+  mates: "MATEMÀTIQUES (Primària). Competències específiques: CE1 Traduir problemes i interpretar situacions quotidianes fent-ne una representació matemàtica personal; CE2 Resoldre problemes aplicant diferents tècniques, estratègies i formes de raonament; CE3 Explorar, formular i comprovar conjectures senzilles, reconeixent el valor del raonament espacial; CE4 Utilitzar el pensament computacional, descompondre en parts més petites, automatitzar i generalitzar; CE5 Utilitzar connexions entre idees matemàtiques i identificar les matemàtiques en altres contextos; CE6 Comunicar i representar conceptes, procediments i resultats matemàtics; CE7 Desenvolupar destreses personals que ajudin a identificar i gestionar emocions; CE8 Desenvolupar destreses socials participant activament en els equips de treball. Els criteris porten el codi X.Y (X = número de la CE). Sabers de pensament computacional (bloc Sentit algebraic): 1r-2n «Descoberta i comprensió d'estratègies quan s'interpreten, modifiquen o creen algorismes senzills»; 3r-4t «Comprensió i aplicació d'estratègies quan s'interpreten, modifiquen o creen algorismes senzills de programació per blocs»; 5è-6è «Aplicació d'estratègies quan s'interpreten, modifiquen o creen algorismes de programació per blocs». Exemples de criteris de la CE4: 1r-2n 4.1 «Descriure rutines i activitats senzilles que es realitzin pas a pas», 4.4 «Explicar instruccions pas a pas per resoldre un problema»; 3r-4t 4.2 «Descompondre un problema o situació de la vida quotidiana en tasques concretes», 4.4 «Definir instruccions pas a pas per resoldre un problema»; 5è-6è 4.1 «Descompondre un problema o situació de la vida quotidiana en tasques», 4.3 «Trobar els principis que generen els patrons d'un problema, descartant les dades irrellevants».",
+  medi: "CONEIXEMENT DEL MEDI NATURAL, SOCIAL I CULTURAL (Primària). Competències específiques: CE1 Seleccionar i utilitzar dispositius i recursos digitals de forma responsable i eficient; CE2 Plantejar-se preguntes sobre el món aplicant formes de raonament i mètodes del pensament científic; CE3 Solucionar problemes i reptes generant cooperativament un producte creatiu i innovador a partir de projectes; CE4 Conèixer el propi cos, les emocions i els sentiments; CE5 Analitzar les característiques d'elements o sistemes del medi natural, social i cultural; CE6 Analitzar críticament les causes i conseqüències de la intervenció humana en l'entorn; CE7 Observar i interpretar canvis i continuïtats del medi; CE8 Conèixer, valorar i defensar la diversitat i la igualtat de gènere; CE9 Participar en la vida social de manera eficaç i constructiva; CE10 Valorar el funcionament de les administracions públiques. Blocs de sabers (iguals a tots els cicles): Cultura científica (Iniciació a l'activitat científica; La vida al nostre planeta; Matèria, forces i energia); Tecnologia i digitalització (Digitalització de l'entorn personal d'aprenentatge; Projectes de disseny i pensament computacional); Societats i territoris (Reptes del món actual; Lliçons del passat; Alfabetització cívica; Consciència ecosocial). Els criteris porten el codi X.Y (X = número de la CE) amb text diferent segons el cicle. Exemples: 3.3 (1r-2n) «Construir un producte final senzill que solucioni un repte o necessitat»; 3.2 (3r-4t) «Proposar possibles solucions que puguin donar resposta a un problema o necessitat»; 3.3 (5è-6è) «Elaborar i desenvolupar un producte final que solucioni un repte o necessitat». Un saber de robòtica (1r-2n, Tecnologia i digitalització): plataformes digitals d'iniciació a la programació, robòtica educativa.",
+  llengua: "LLENGÜES I LITERATURA (Primària; Llengua catalana i literatura). 10 competències específiques: CE1 Prendre consciència de la diversitat lingüística i cultural a partir del reconeixement de les llengües de l'alumnat; CE2 Comprendre i interpretar textos orals i multimodals; CE3 Produir textos orals i multimodals amb coherència, claredat i registre adequats; CE4 Comprendre i interpretar textos escrits i multimodals; CE5 Produir textos escrits i multimodals amb adequació, coherència i cohesió; CE6 Cercar, seleccionar i contrastar informació procedent de diverses fonts; CE7 Seleccionar i llegir de manera autònoma obres diverses com a font de plaer i coneixement; CE8 Llegir, interpretar i analitzar obres o fragments literaris; CE9 Reflexionar de forma guiada sobre el llenguatge i usar els repertoris lingüístics personals; CE10 Utilitzar un llenguatge no discriminatori i posar la llengua al servei de la convivència democràtica. Blocs de sabers (iguals a tots els cicles): Les llengües i els seus parlants; Comunicació oral; Comprensió lectora; Expressió escrita; Alfabetització informacional; Educació literària; Reflexió sobre la llengua. Criteris amb codi X.Y (X = número de la CE), text segons el cicle. Exemples: 4.1 (1r-2n) «Llegir textos propers, de la vida quotidiana, dels mitjans de comunicació i textos escolars»; 4.1 (5è-6è) «Llegir tot tipus de textos de manera silenciosa i en veu alta amb bona fluïdesa»; 5.1 (1r-2n) «Redactar textos escrits i multimodals propers i viscuts»; 5.1 (5è-6è) «Redactar textos escrits i multimodals, de tipus divers, amb suports puntuals».",
+  angles: "LLENGUA ESTRANGERA (Primària). 10 competències específiques: CE1 Comprendre la diversitat lingüística i cultural; CE2 Comprendre i interpretar textos orals i multimodals breus i senzills; CE3 Produir textos orals i multimodals amb coherència, claredat i registre adequats; CE4 Comprendre i interpretar textos escrits i multimodals; CE5 Produir textos escrits i multimodals; CE6 Cercar, seleccionar i contrastar informació de diverses fonts; CE7 Seleccionar i llegir de manera autònoma obres diverses segons els propis gustos i interessos; CE8 Mediar entre diferents llengües en situacions predictibles; CE9 Reflexionar de forma guiada sobre el llenguatge i usar els repertoris lingüístics personals; CE10 Posar la llengua al servei de la convivència democràtica, la resolució dialogada dels conflictes i la igualtat de drets. Blocs de sabers: Les llengües i els seus parlants; Comunicació oral; Comprensió lectora; Expressió escrita; Alfabetització informacional; Educació literària; Reflexió sobre la llengua. Criteris amb codi X.Y. Exemples: 2.1 (1r-2n) «Reconèixer i comprendre paraules i expressions habituals en textos orals i multimodals breus i senzills»; 2.1 (3r-4t) «Reconèixer i comprendre paraules, frases i el sentit global de textos orals i multimodals breus»; 2.1 (5è-6è) «Reconèixer i interpretar el sentit global, així com paraules i frases específiques de textos orals».",
+  artistica: "EDUCACIÓ ARTÍSTICA (Primària). 4 competències específiques: CE1 Descobrir propostes artístiques de diferents cultures, èpoques i estils, mitjançant la percepció i la vivència; CE2 Investigar i analitzar diferents manifestacions culturals i artístiques i els seus contextos; CE3 Experimentar i crear amb les possibilitats del so, la imatge, el cos i els mitjans digitals i multimodals per expressar i comunicar idees, sentiments i emocions; CE4 Dissenyar, elaborar i difondre creacions culturals i artístiques col·laboratives, assumint diferents rols. Blocs de sabers: educació musical, educació visual i plàstica, educació audiovisual i educació en arts escèniques i performatives (la dansa dins les arts escèniques); cada bloc s'organitza en Percepció i anàlisi i en Creació i interpretació. Criteris amb codi X.Y. Exemples: 1.1 (1r-2n) «Descobrir obres de manifestacions culturals i artístiques de diferents gèneres i estils»; 1.1 (3r-4t) «Reconèixer obres…»; 1.1 (5è-6è) «Distingir i valorar obres…»; 2.1 «Utilitzar de forma col·laborativa les estratègies treballades per a la cerca» (1r-2n).",
+  valors: "EDUCACIÓ EN VALORS CÍVICS I ÈTICS (Primària). 4 competències específiques: CE1 Identificar aspectes vinculats a la pròpia identitat i a les qüestions ètiques relatives a un mateix, en el seu entorn proper, per promoure l'autoconeixement i el desenvolupament de l'autonomia moral; CE2 Actuar i interactuar atenent a normes i valors cívics i ètics, reflexionant sobre la seva importància per a la vida individual i col·lectiva, per promoure una convivència pacífica, respectuosa, democràtica i justa; CE3 Interpretar les relacions sistèmiques entre l'individu, la societat i la natura, i la importància de l'acció local, per desenvolupar un paper actiu amb el respecte, la cura i la protecció de les persones i del planeta; CE4 Desenvolupar l'autoestima i l'estima de l'entorn, a partir de la identificació, expressió i gestió de les emocions i sentiments propis i reconeixent i valorant els dels altres. Blocs de sabers: Autoconeixement i autonomia moral; Societat, justícia i democràcia; Sostenibilitat i ètica ambiental; Educació emocional. Criteris amb codi X.Y (X = número de la CE). Criteris oficials de 5è-6è: 1.1 Reconèixer les pròpies capacitats físiques, sensorials i cognitives tenint en compte els punts forts i febles de la pròpia identitat; 1.2 Identificar trets personals que facilitin la construcció de la pròpia identitat amb responsabilitat i autonomia; 1.3 Interpretar críticament la informació de l'entorn; 1.4 Mostrar conductes que evidenciïn autonomia moral en un context social amb gran diversitat d'interessos; 1.5 Mostrar una actitud responsable, respectuosa i assertiva amb relació als riscos de l'ús acrític i de l'abús de les xarxes socials (prevenció del ciberassetjament); 2.1 Investigar sobre la naturalesa social i política de l'ésser humà en el marc d'una convivència democràtica; 2.2 Interactuar amb els altres adoptant conductes cíviques i democràtiques amb respecte i empatia; 2.3 Manifestar actituds alineades amb la justícia, la pau, el rebuig a la violència, la solidaritat i el respecte per les minories; 2.4 Analitzar el paper de les institucions públiques, els organismes internacionals i les ONG en la promoció de la pau, la solidaritat i la cooperació; 2.5 Reflexionar sobre la defensa d'una efectiva igualtat de gènere i la violència contra les dones; 3.1 Identificar propostes per afavorir l'aturada del canvi climàtic a partir de problemàtiques locals; 3.2 Realitzar accions que afavoreixen els objectius de desenvolupament sostenible; 3.3 Desenvolupar actituds de compromís basades en el respecte, la cura i la protecció de les persones, els animals i el planeta (consum responsable, aigua, energia, mobilitat, residus); 4.1 Expressar de manera respectuosa les pròpies emocions manifestant una ajustada autoestima en activitats creatives; 4.2 Regular adequadament les pròpies emocions a partir de la identificació d'aquestes i les dels altres; 4.3 Manifestar una actitud empàtica i respectuosa envers un mateix, els altres i la natura; 4.4 Identificar i prendre consciència de fets i accions que poden derivar en situacions d'assetjament entre iguals i prendre-hi partit de forma proactiva. Sabers de 5è-6è, exemples: «Desenvolupament del pensament crític i ètic en situacions de debat a l'aula» (Autoconeixement); «Valoració del diàleg i de l'argumentació en la presa democràtica de decisions i en la resolució pacífica de conflictes» (Societat, justícia i democràcia); «Realització d'accions individuals vinculades a l'economia circular, al consum responsable, a l'ús sostenible de l'aigua i de l'energia i a la gestió dels residus» (Sostenibilitat); «Presa de consciència, expressió i regulació de les emocions pròpies i alienes» i «Reconeixement de l'empatia com una habilitat emocional» (Educació emocional). Només tens el text literal de 5è-6è: per a 1r-4t fes servir les mateixes CE i blocs, però escriu els criteris adaptats i deixa buit el codi si no n\'estàs segur.",
+  computacional: "PENSAMENT COMPUTACIONAL I ROBÒTICA no és una àrea pròpia a Primària: es treballa a MATEMÀTIQUES (CE4 i el saber de pensament computacional del bloc Sentit algebraic) i a CONEIXEMENT DEL MEDI (CE1 i CE3, bloc Tecnologia i digitalització: Projectes de disseny i pensament computacional), i la competència clau digital (CD). Utilitza aquestes dues àrees com a referència."
+};
+const CLAUS = "Les 8 competències clau del perfil de sortida: CCL (comunicació lingüística), CP (plurilingüe), STEM (matemàtica i competència en ciència, tecnologia i enginyeria), CD (digital), CPSAA (personal, social i d'aprendre a aprendre), CC (ciutadana), CE (emprenedora), CCEC (consciència i expressió culturals).";
+function normProg(d) {
+  const s = (x) => str(x).trim(), l = (x) => arr(x).map(s).filter(Boolean), o = d && typeof d === "object" && !Array.isArray(d) ? d : {};
+  return {
+    etapa: s(o.etapa_cicle_curs), arees: l(o.arees), temporitzacio: s(o.temporitzacio), descripcio: s(o.descripcio), producte_final: s(o.producte_final),
+    clau: arr(o.competencies_clau).map((c) => ({ codi: s(c && c.codi), nom: s(c && c.nom), descriptor: s(c && c.descriptor) })).filter((c) => c.nom || c.codi),
+    ce: arr(o.competencies_especifiques).map((c) => ({ area: s(c && c.area), numero: s(c && c.numero), text: s(c && c.text), criteris: arr(c && c.criteris).map((k) => ({ codi: s(k && k.codi), text: s(k && k.text) })).filter((k) => k.text), sabers: l(c && c.sabers) })).filter((c) => c.text),
+    sequencia: arr(o.sequencia).map((q) => ({ sessio: s(q && q.sessio), titol: s(q && q.titol), objectius: s(q && q.objectius), activitats: l(q && q.activitats), agrupament: s(q && q.agrupament), recursos: s(q && q.recursos), avaluacio: s(q && q.avaluacio) })).filter((q) => q.titol || q.activitats.length),
+    metodologia: l(o.metodologia), instruments: l(o.instruments_avaluacio), dua: l(o.mesures_dua), connexions: l(o.connexions), recursos: l(o.recursos)
+  };
+}
+function progPrompt(a, curs, notes) {
+  const ar = areaById(a.meta.area), ar2 = a.meta.area2 ? areaById(a.meta.area2) : null, r = robotById(a.meta.robotId);
+  const refs = [a.meta.area, a.meta.area2].filter(Boolean).map((k) => CURR_REF[k]).filter(Boolean);
+  const cicle = CYCLE_NAME[a.meta.cycle] || a.meta.cycle;
+  const act = [
+    "TÍTOL: " + a.titol, a.subtitol ? "SUBTÍTOL: " + a.subtitol : "", "ROBOT: " + r.name, "DURADA: " + a.meta.duration + " (" + a.sessions.length + " sessions)", "ROL DEL ROBOT: " + a.rol_robot,
+    a.objectius.length ? "OBJECTIUS DE L'ACTIVITAT: " + a.objectius.join("; ") : "",
+    "SESSIONS:\n" + a.sessions.map((x, i) => "Sessió " + (i + 1) + " «" + x.titol + "»: " + x.fases.map((p) => p.fase + " (" + p.minuts + " min)").join(", ")).join("\n"),
+    a.rubrica.length ? "CRITERIS DE LA RÚBRICA: " + a.rubrica.map((x) => x.criteri).join("; ") : "",
+    a.dua.length ? "DUA PREVIST: " + a.dua.map((x) => x.dimensio + " — " + x.estrategies).join(" | ") : ""
+  ].filter(Boolean).join("\n");
+  return [
+    "Ets un assessor pedagògic del Departament d'Educació de Catalunya. Redacta en català una UNITAT DE PROGRAMACIÓ / SITUACIÓ D'APRENENTATGE per a Educació Primària que el mestre pugui incorporar a la programació del centre, seguint el currículum vigent (Decret 175/2022, d'ordenació dels ensenyaments de l'educació bàsica, LOMLOE).",
+    "CONTEXT: Etapa Educació Primària · " + cicle + (curs ? " · curs " + curs : "") + " · Àrea principal: " + ar.label + (ar2 ? " · Segona àrea: " + ar2.label : "") + ".",
+    "ACTIVITAT DE ROBÒTICA QUE ES CONVERTEIX EN SITUACIÓ D'APRENENTATGE:\n" + act,
+    "REFERÈNCIA CURRICULAR OFICIAL (fes-la servir literalment per a numeració i formulació; no la contradiguis):\n" + (refs.length ? refs.join("\n\n") : "Per a aquesta àrea fes servir la teva coneixença del Decret 175/2022, Annex 2.") + "\n\n" + CLAUS,
+    notes ? "INDICACIONS DEL DOCENT (tenen prioritat): " + notes : "",
+    "NORMES: (1) Escull 2 a 4 competències específiques de l'àrea (o àrees) que l'activitat treballa de debò, amb el número oficial. (2) Per a cada una, posa'n 1 a 3 criteris d'avaluació amb el codi X.Y oficial i el text adequat al cicle, i 1 a 3 sabers, indicant el bloc o sentit. (3) Si no estàs segur d'un codi o d'una formulació, deixa el codi buit en lloc d'inventar-lo. No inventis codis ni sabers. (4) A competencies_clau posa de 3 a 6 competències clau amb el seu codi i el descriptor operatiu o la seva concreció en aquesta situació. (5) La seqüència didàctica ha de seguir les sessions de l'activitat, amb activitats concretes, agrupaments, recursos i com s'avalua cada sessió. (6) Descripció: context, repte o situació motivadora i producte final. (7) Mesures DUA i instruments d'avaluació (observació, rúbrica, autoavaluació, coavaluació…). (8) Connexions amb altres àrees i amb els eixos o valors (sostenibilitat, igualtat, benestar emocional) només si són naturals. (9) Mantén-te dins de l'àrea; no barregis continguts d'altres àrees llevat de les connexions.",
+    "Respon NOMÉS amb un JSON vàlid amb aquesta estructura:",
+    JSON.stringify({ titol: "<títol de la situació d'aprenentatge>", etapa_cicle_curs: "<Educació Primària · cicle · curs>", arees: ["<àrea>"], temporitzacio: "<sessions i durada>", descripcio: "<context i repte>", producte_final: "<producte>", competencies_clau: [{ codi: "STEM", nom: "<nom>", descriptor: "<concreció>" }], competencies_especifiques: [{ area: "<àrea>", numero: "<n>", text: "<formulació>", criteris: [{ codi: "<X.Y>", text: "<criteri>" }], sabers: ["<bloc: saber>"] }], sequencia: [{ sessio: "<Sessió 1>", titol: "<títol>", objectius: "<objectius>", activitats: ["<activitat>"], agrupament: "<agrupament>", recursos: "<recursos>", avaluacio: "<com s'avalua>" }], metodologia: ["<opció metodològica>"], instruments_avaluacio: ["<instrument>"], mesures_dua: ["<mesura>"], connexions: ["<connexió>"], recursos: ["<recurs>"] }, null, 1)
+  ].filter(Boolean).join("\n\n");
+}
+function progBody(g) {
+  const ul = (l) => (l.length ? "<ul>" + l.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul>" : "");
+  const sec = (t, b) => (b ? "<h4>" + t + "</h4>" + b : "");
+  const row = (l, v) => (v ? "<p><b>" + l + ":</b> " + esc(v) + "</p>" : "");
+  return '<div class="guide prog">' + row("Etapa, cicle i curs", g.etapa) + row("Àrees", g.arees.join(", ")) + row("Temporització", g.temporitzacio) +
+    sec("Descripció i context", (g.descripcio ? "<p>" + esc(g.descripcio) + "</p>" : "") + (g.producte_final ? "<p><b>Producte final:</b> " + esc(g.producte_final) + "</p>" : "")) +
+    sec("Competències clau", g.clau.length ? "<ul>" + g.clau.map((c) => "<li><b>" + esc(c.codi) + "</b> " + esc(c.nom) + (c.descriptor ? ": " + esc(c.descriptor) : "") + "</li>").join("") + "</ul>" : "") +
+    sec("Competències específiques, criteris d'avaluació i sabers", g.ce.map((c) => '<section class="gt"><p><b>' + (c.area ? esc(c.area) + " · " : "") + "CE " + esc(c.numero) + ".</b> " + esc(c.text) + "</p>" + (c.criteris.length ? "<p><b>Criteris d'avaluació</b></p><ul>" + c.criteris.map((k) => "<li>" + (k.codi ? "<b>" + esc(k.codi) + "</b> " : "") + esc(k.text) + "</li>").join("") + "</ul>" : "") + (c.sabers.length ? "<p><b>Sabers</b></p>" + ul(c.sabers) : "") + "</section>").join("")) +
+    sec("Seqüència didàctica", g.sequencia.map((q, i) => '<section class="gt"><p><b>' + esc(q.sessio || "Sessió " + (i + 1)) + (q.titol ? " · " + esc(q.titol) : "") + "</b></p>" + (q.objectius ? "<p><b>Objectius:</b> " + esc(q.objectius) + "</p>" : "") + ul(q.activitats) + (q.agrupament ? "<p><b>Agrupament:</b> " + esc(q.agrupament) + "</p>" : "") + (q.recursos ? "<p><b>Recursos:</b> " + esc(q.recursos) + "</p>" : "") + (q.avaluacio ? "<p><b>Avaluació:</b> " + esc(q.avaluacio) + "</p>" : "") + "</section>").join("")) +
+    sec("Metodologia", ul(g.metodologia)) + sec("Instruments d'avaluació", ul(g.instruments)) + sec("Mesures i suports universals (DUA)", ul(g.dua)) + sec("Connexions amb altres àrees i eixos", ul(g.connexions)) + sec("Recursos i materials", ul(g.recursos)) +
+    '<p class="hint">Esborrany generat amb IA: contrasta les competències, els criteris i els sabers amb el currículum vigent (Decret 175/2022, Annex 2) abans d\'incorporar-lo a la programació del centre.</p></div>';
+}
+function progText(a) {
+  const g = a.prog, o = [(g.etapa ? g.etapa + "\n" : "") + a.titol, ""], sec = (t, l) => { if (l.length) { o.push(t.toUpperCase()); l.forEach((x) => o.push("- " + x)); o.push(""); } };
+  if (g.arees.length) o.push("Àrees: " + g.arees.join(", "));
+  if (g.temporitzacio) o.push("Temporització: " + g.temporitzacio);
+  if (g.descripcio) o.push("", "DESCRIPCIÓ I CONTEXT", g.descripcio);
+  if (g.producte_final) o.push("Producte final: " + g.producte_final);
+  o.push(""); sec("Competències clau", g.clau.map((c) => (c.codi ? c.codi + " · " : "") + c.nom + (c.descriptor ? ": " + c.descriptor : "")));
+  if (g.ce.length) { o.push("COMPETÈNCIES ESPECÍFIQUES, CRITERIS I SABERS"); g.ce.forEach((c) => { o.push((c.area ? c.area + " · " : "") + "CE " + c.numero + ". " + c.text); c.criteris.forEach((k) => o.push("   " + (k.codi ? k.codi + " " : "") + k.text)); c.sabers.forEach((k) => o.push("   Saber: " + k)); }); o.push(""); }
+  if (g.sequencia.length) { o.push("SEQÜÈNCIA DIDÀCTICA"); g.sequencia.forEach((q) => { o.push((q.sessio || "") + (q.titol ? " · " + q.titol : "")); if (q.objectius) o.push("   Objectius: " + q.objectius); q.activitats.forEach((k) => o.push("   - " + k)); if (q.agrupament) o.push("   Agrupament: " + q.agrupament); if (q.recursos) o.push("   Recursos: " + q.recursos); if (q.avaluacio) o.push("   Avaluació: " + q.avaluacio); }); o.push(""); }
+  sec("Metodologia", g.metodologia); sec("Instruments d'avaluació", g.instruments); sec("Mesures i suports universals (DUA)", g.dua); sec("Connexions", g.connexions); sec("Recursos i materials", g.recursos);
+  return o.join("\n");
+}
+function renderProg() {
+  const el = $("view-programacio"), list = matEntries();
+  if (!list.length) { el.innerHTML = '<div class="panel empty"><h3>Encara no hi ha cap proposta</h3><p>Genera una activitat i aquí en podràs fer la unitat de programació amb competències, criteris i sabers.</p></div>'; return; }
+  const sel = list.find((e) => e.key === progSel) || list[0]; progSel = sel.key;
+  const a = sel.a, cursos = CURS[a.meta.cycle] || [], pdfOk = !!(window.jspdf && window.jspdf.jsPDF);
+  const err = state.progErr ? '<div class="banner err"><span>' + esc(state.progErr) + "</span></div>" : "";
+  el.innerHTML = '<p class="lead">Converteix una activitat en una unitat de programació o situació d\'aprenentatge amb el format del currículum de Catalunya (Decret 175/2022): competències clau i específiques, criteris d\'avaluació, sabers i seqüència didàctica.</p>' +
+    '<div class="panel"><div class="field"><label for="progSelect">Proposta</label><select id="progSelect">' + list.map((e) => '<option value="' + esc(e.key) + '"' + (e.key === sel.key ? " selected" : "") + ">" + esc(e.label) + "</option>").join("") + "</select></div>" +
+    '<div class="field"><label for="progCurs">Curs</label><select id="progCurs"><option value="">Tot el cicle</option>' + cursos.map((c) => '<option' + (state.progCurs === c ? " selected" : "") + ">" + c + "</option>").join("") + "</select></div>" +
+    '<div class="field"><label for="progNotes">Indicacions per al document (opcional)</label><textarea id="progNotes" rows="2" maxlength="400" placeholder="Per exemple: vincula-ho al projecte de centre sobre sostenibilitat; posa èmfasi en la competència digital">' + esc(state.progNotes || "") + '</textarea></div>' +
+    '<div class="actions"><button type="button" class="btn primary" data-prog="go"' + (state.progBusy ? " disabled" : "") + ">" + (state.progBusy ? "Preparant la unitat… pot trigar uns minuts" : a.prog ? "Torna a generar la unitat" : "Genera la unitat de programació") + "</button></div>" + err + "</div>" +
+    (a.prog ? '<div class="panel"><div class="mat-set-head"><div><h3>' + esc(a.prog.etapa || "Unitat de programació") + '</h3></div><div class="actions"><button type="button" class="btn sm" data-prog="pdf"' + (pdfOk ? "" : " disabled") + '>Descarrega PDF</button><button type="button" class="btn sm" data-prog="copy">Copia el text</button></div></div>' + progBody(a.prog) + "</div>" : "");
+}
+async function makeProg() {
+  const en = matEntries().find((e) => e.key === progSel) || matEntries()[0];
+  if (!en || state.progBusy) return;
+  const a = en.a;
+  await ensureCaps();
+  state.progBusy = true; state.progErr = ""; renderProg();
+  try {
+    const g = normProg(await sample.json(progPrompt(a, state.progCurs, (state.progNotes || "").trim()), { kind: "prog", cache: false }));
+    if (!g.ce.length && !g.sequencia.length) throw { code: "invalid_json", detail: "unitat buida" };
+    a.prog = g;
+    state.lib.forEach((x) => { if (x.id && x.id === a.id && x.activity) x.activity.prog = g; });
+    try { saveLib(); } catch (e) {}
+  } catch (e) { state.progErr = (ERR[e && e.code] || ERR.upstream_error) + (e && e.detail ? " (" + e.detail + ")" : ""); }
+  state.progBusy = false; renderProg();
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-prog]"); if (!b) return;
+  const en = matEntries().find((x) => x.key === progSel) || matEntries()[0]; if (!en) return;
+  if (b.dataset.prog === "go") makeProg();
+  else if (b.dataset.prog === "pdf" && en.a.prog) downloadPdf(en.a, ["prog"], "programacio");
+  else if (b.dataset.prog === "copy" && en.a.prog) { try { navigator.clipboard.writeText(progText(en.a)).then(() => toast("Text copiat."), () => toast("No s'ha pogut copiar.")); } catch (x) { toast("No s'ha pogut copiar."); } }
+});
+document.addEventListener("change", (e) => { if (e.target && e.target.id === "progSelect") { progSel = e.target.value; renderProg(); } if (e.target && e.target.id === "progCurs") state.progCurs = e.target.value; });
+document.addEventListener("input", (e) => { if (e.target && e.target.id === "progNotes") state.progNotes = e.target.value; });
 
 /* ---------- Descàrrega imprimible ---------- */
 function printableHTML(a) {
@@ -1392,6 +1502,54 @@ function drawTiles(doc, a) {
 
 function drawSet(doc, id, a) {
   const sub = a.titol, acc = rgb(PDF_ACC);
+  if (id === "prog") {
+    const g = a.prog, W = PW - 2 * PM, bottom = PH - 14, T = "Unitat de programació";
+    let y = pdfHeader(doc, T, sub) + 2;
+    const page = () => { doc.addPage(); y = pdfHeader(doc, T, sub) + 2; };
+    const text = (t, o) => {
+      o = o || {}; const size = o.size || 9.5, ind = o.indent || 0, lh = size * 0.3528 * 1.35;
+      doc.splitTextToSize(pdfSafe(t), W - ind).forEach((ln) => { if (y + lh > bottom) page(); doc.setFont("helvetica", o.bold ? "bold" : "normal"); doc.setFontSize(size); doc.setTextColor(...(o.color || [29, 43, 47])); doc.text(ln, PM + ind, y + size * 0.3528 * 0.9); y += lh; });
+      y += o.after == null ? 1.1 : o.after;
+    };
+    const head = (t) => {
+      if (y + 16 > bottom) page();
+      doc.setFillColor(...mixRgb(acc, 0.86)); doc.roundedRect(PM, y, W, 8.5, 2, 2, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(...acc);
+      doc.text(doc.splitTextToSize(pdfSafe(t), W - 6)[0] || "", PM + 3, y + 5.9); y += 11;
+    };
+    const lab = (l, v) => { if (v) text(l + ": " + v, { after: 1.4 }); };
+    lab("Etapa, cicle i curs", g.etapa); lab("Àrees", g.arees.join(", ")); lab("Temporització", g.temporitzacio); y += 1.5;
+    if (g.descripcio) { head("Descripció i context"); text(g.descripcio, { after: 2 }); }
+    if (g.producte_final) text("Producte final: " + g.producte_final, { bold: true, after: 3 });
+    if (g.clau.length) { head("Competències clau"); g.clau.forEach((c) => text("- " + (c.codi ? c.codi + " · " : "") + c.nom + (c.descriptor ? ": " + c.descriptor : ""), { indent: 3 })); y += 2; }
+    if (g.ce.length) {
+      head("Competències específiques, criteris d'avaluació i sabers");
+      g.ce.forEach((c) => {
+        text((c.area ? c.area + " · " : "") + "CE " + c.numero + ". " + c.text, { bold: true, after: 0.8 });
+        c.criteris.forEach((k) => text((k.codi ? k.codi + "  " : "") + k.text, { indent: 4, after: 0.6 }));
+        if (c.sabers.length) { text("Sabers:", { indent: 4, bold: true, after: 0.4 }); c.sabers.forEach((k) => text("- " + k, { indent: 7, after: 0.4 })); }
+        y += 2;
+      });
+    }
+    if (g.sequencia.length) {
+      head("Seqüència didàctica");
+      g.sequencia.forEach((q, i) => {
+        text((q.sessio || "Sessió " + (i + 1)) + (q.titol ? " · " + q.titol : ""), { bold: true, after: 0.8 });
+        if (q.objectius) text("Objectius: " + q.objectius, { indent: 3, after: 0.6 });
+        q.activitats.forEach((k) => text("- " + k, { indent: 5, after: 0.4 }));
+        if (q.agrupament) text("Agrupament: " + q.agrupament, { indent: 3, after: 0.4 });
+        if (q.recursos) text("Recursos: " + q.recursos, { indent: 3, after: 0.4 });
+        if (q.avaluacio) text("Avaluació: " + q.avaluacio, { indent: 3, after: 0.4 });
+        y += 2;
+      });
+    }
+    [["Metodologia", g.metodologia], ["Instruments d'avaluació", g.instruments], ["Mesures i suports universals (DUA)", g.dua], ["Connexions amb altres àrees i eixos", g.connexions], ["Recursos i materials", g.recursos]].forEach((p) => {
+      if (!p[1].length) return; head(p[0]); p[1].forEach((k) => text("- " + k, { indent: 3 })); y += 2;
+    });
+    text("Document generat amb IA com a esborrany: contrasta les competències, els criteris i els sabers amb el currículum vigent (Decret 175/2022, Annex 2) abans d'incorporar-lo a la programació del centre.", { size: 8.5, color: [110, 110, 110] });
+    doc.setTextColor(0, 0, 0);
+    return;
+  }
   if (id === "guia") {
     const g = a.guia, W = PW - 2 * PM, bottom = PH - 14, T = "Guia de programació per al mestre";
     let y = pdfHeader(doc, T, sub) + 2;
@@ -1619,13 +1777,14 @@ function heroScene() {
   return svgOf(sh, 240, 72, "hero-svg");
 }
 function setView(v) {
-  const VIEWS = ["generador", "materials", "biblioteca", "robots"];
+  const VIEWS = ["generador", "materials", "programacio", "biblioteca", "robots"];
   if (VIEWS.indexOf(v) < 0) v = "generador";
   state.view = v;
   VIEWS.forEach((n) => { $("view-" + n).hidden = n !== v; });
   document.querySelectorAll("nav.tabs button").forEach((b) => { if (b.dataset.view === v) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
   if (v === "biblioteca") renderLibrary();
   if (v === "materials") renderMaterials();
+  if (v === "programacio") renderProg();
   if (location.hash.slice(1) !== v) { try { history.replaceState(null, "", "#" + v); } catch (e) { location.hash = v; } }
 }
 document.addEventListener("click", (e) => {
