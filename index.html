@@ -5,14 +5,15 @@
 <style>
 /* Layout: capçalera amb pestanyes; al generador, formulari a l'esquerra i dossier a la dreta (en columna al mòbil). */
 :root {
-  --bg: #F3F7F6;
+  --bg: #FBF6F0;
   --surface: #FFFFFF;
-  --ink: #12262A;
-  --muted: #4F6468;
-  --line: #D3DEDC;
-  --accent: #0B7A66;
-  --accent-ink: #FFFFFF;
-  --accent-soft: #DCF1EB;
+  --ink: #2A2018;
+  --muted: #6A5B4E;
+  --line: #E8DCCF;
+  --accent: #E58A42;
+  --accent-ink: #2B1604;
+  --accent-soft: #FCEBDA;
+  --accent-text: #A8480A;
   --signal: #E9A800;
   --danger: #B3261E;
   --warn-bg: #FFF3D4;
@@ -30,8 +31,8 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0E1A1D; --surface: #152428; --ink: #E6F0EE; --muted: #9FB5B8; --line: #2A3F44;
-    --accent: #3FC4A8; --accent-ink: #072620; --accent-soft: #17352F; --signal: #F2B93B;
+    --bg: #1B1410; --surface: #261D17; --ink: #F3E8DE; --muted: #BFAE9E; --line: #43352B;
+    --accent: #F0A064; --accent-ink: #2B1604; --accent-soft: #3A2616; --accent-text: #F6B27D; --signal: #F2B93B;
     --danger: #FF8A80; --warn-bg: #3A2F12; --warn-ink: #F6DFA0;
     --a-mates: #8DB0FF; --a-llengua: #FF9486; --a-medi: #86D68F; --a-artistica: #D9A3EC;
     --a-angles: #F2B866; --a-computacional: #62CFDD; --a-valors: #F592B8;
@@ -39,8 +40,8 @@
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0E1A1D; --surface: #152428; --ink: #E6F0EE; --muted: #9FB5B8; --line: #2A3F44;
-  --accent: #3FC4A8; --accent-ink: #072620; --accent-soft: #17352F; --signal: #F2B93B;
+  --bg: #1B1410; --surface: #261D17; --ink: #F3E8DE; --muted: #BFAE9E; --line: #43352B;
+  --accent: #F0A064; --accent-ink: #2B1604; --accent-soft: #3A2616; --accent-text: #F6B27D; --signal: #F2B93B;
   --danger: #FF8A80; --warn-bg: #3A2F12; --warn-ink: #F6DFA0;
   --a-mates: #8DB0FF; --a-llengua: #FF9486; --a-medi: #86D68F; --a-artistica: #D9A3EC;
   --a-angles: #F2B866; --a-computacional: #62CFDD; --a-valors: #F592B8;
@@ -137,13 +138,13 @@ details.adv summary { cursor: pointer; font-weight: 600; font-size: 13px; margin
 .actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; }
 .chip { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); }
-.chip.area { --c: var(--accent); color: var(--c); border-color: color-mix(in srgb, var(--c) 40%, transparent); background: color-mix(in srgb, var(--c) 12%, var(--surface)); }
+.chip.area { --c: var(--accent-text); color: var(--c); border-color: color-mix(in srgb, var(--c) 40%, transparent); background: color-mix(in srgb, var(--c) 12%, var(--surface)); }
 .area-mates { --c: var(--a-mates); } .area-llengua { --c: var(--a-llengua); } .area-medi { --c: var(--a-medi); }
 .area-artistica { --c: var(--a-artistica); } .area-angles { --c: var(--a-angles); } .area-computacional { --c: var(--a-computacional); } .area-valors { --c: var(--a-valors); }
 
 .dtabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 20px; overflow-x: auto; }
 .dtabs button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 10px 14px; cursor: pointer; font-weight: 600; color: var(--muted); white-space: nowrap; }
-.dtabs button.hl { background: var(--accent-soft); color: var(--accent); border-radius: 8px 8px 0 0; }
+.dtabs button.hl { background: var(--accent-soft); color: var(--accent-text); border-radius: 8px 8px 0 0; }
 .dtabs button.hl[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-bottom-color: var(--accent); }
 .cta-eval { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-top: 22px; padding: 14px 16px; border-radius: 12px; background: var(--accent-soft); border: 1px solid var(--accent); }
 .cta-eval p { margin: 0; min-width: 0; flex: 1 1 240px; }
@@ -168,7 +169,7 @@ details.adv summary { cursor: pointer; font-weight: 600; font-size: 13px; margin
 .reptes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 900px) { .reptes { grid-template-columns: minmax(0, 1fr); } }
 .repte { border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
-.repte .lvl { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
+.repte .lvl { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-text); }
 .cmds { display: flex; flex-wrap: wrap; gap: 4px; }
 .cmd { font-family: var(--font-kid); font-size: 12.5px; background: var(--bg); border: 1px solid var(--line); padding: 2px 8px; border-radius: 6px; }
 
@@ -193,6 +194,10 @@ table.rub th { background: var(--bg); font-size: 12px; text-transform: uppercase
 .lib-card h3 { font-size: 16px; }
 .lib-card .meta { color: var(--muted); font-size: 12.5px; }
 .lib-card .actions { margin-top: auto; }
+.welcome { padding: 28px 24px; }
+.welcome h2 { font-size: 22px; margin-bottom: 8px; }
+.welcome p { color: var(--muted); max-width: 56ch; }
+.welcome ol { margin: 14px 0 0; padding-left: 22px; display: grid; gap: 6px; }
 .empty { text-align: center; padding: 48px 16px; color: var(--muted); }
 .empty h3 { color: var(--ink); margin-bottom: 6px; }
 
@@ -246,14 +251,20 @@ body{margin:0}
 .guide h4 { margin: 14px 0 6px; }
 .guide ol, .guide ul { margin: 4px 0 8px; padding-left: 22px; }
 .guide .gt { border-top: 1px solid var(--line); padding-top: 4px; margin-top: 10px; }
-.prog h4 { margin: 16px 0 6px; color: var(--accent, #0B7A66); }
+.prog h4 { margin: 16px 0 6px; color: var(--accent-text); }
+.libtools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; margin-bottom: 14px; }
+.libtools > div:first-child { flex: 1 1 320px; min-width: 0; }
+.libtools h3 { font-size: 16px; margin-bottom: 4px; }
+.codebox { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.codebox input { flex: 1 1 240px; min-width: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; letter-spacing: 0.04em; }
+.filebtn { cursor: pointer; display: inline-flex; align-items: center; }
 </style></head><body>
 
 <header class="top">
   <div class="wrap">
     <div class="brand">
       <div class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3.6" r="1"/><circle cx="9.3" cy="13" r="1.1" fill="#fff"/><circle cx="14.7" cy="13" r="1.1" fill="#fff"/><path d="M9.5 16.3h5"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2B1604" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3.6" r="1"/><circle cx="9.3" cy="13" r="1.1" fill="#fff"/><circle cx="14.7" cy="13" r="1.1" fill="#fff"/><path d="M9.5 16.3h5"/></svg>
       </div>
       <div><h1>RoboAula Primària</h1><small>Activitats de robòtica per a mestres</small></div>
     </div>
@@ -402,12 +413,19 @@ const ROBOTS = [
     acc: ["Tapís interactiu oficial o tapís quadriculat de 10x10 cm", "Targetes de comandament físiques", "Retoladors rentables per dibuixar recorreguts", "Peces d'aparença i disfresses"],
     desc: "Robot sense pantalles amb botons direccionals a la closca. Permet enregistrar la veu de l'infant a cada pas i traçar formes amb un retolador al mig.",
     tip: "Fomenta la narració oral i la comprensió lectora: fes que els infants enregistrin diàlegs del conte abans que el robot avanci." },
-  { id: "matatalab", name: "Matatalab Coding Set", brand: "Matatalab", cycles: ["infantil", "inicial"], pas: 10, app: "Sense pantalles (fitxes físiques de codi)",
-    sensors: ["Torre de lectura òptica per reconèixer blocs físics"],
-    actuators: ["Robot mòbil rodó amb ulls", "Mòdul de música i melodies", "Braços i orifici per a retolador"],
-    acc: ["Blocs físics de moviment, bucles numèrics i funcions", "Tapís quadriculat de 10x10 cm", "Targetes de repte d'angles i música"],
-    desc: "Els infants col·loquen fitxes de plàstic (moviment, bucles, funcions) sobre un tauler de control. La torre escaneja el programa i el transmet al robot per Bluetooth.",
-    tip: "Ideal per introduir el concepte de «bucle» de forma manipulativa abans de passar a pantalles." },
+  { id: "codego", name: "Code & Go Robot Mouse", brand: "Learning Resources", cycles: ["infantil", "inicial"], pas: 12.5, app: "Sense pantalles (botons del robot i targetes de codi)",
+    sensors: ["Cap sensor: es programa amb els botons del propi robot (avançar, retrocedir, girar a l'esquerra, girar a la dreta, GO, CLEAR i ACTION)"],
+    actuators: ["Motors: un pas són 12,5 cm i un gir són 90°, sempre sobre el mateix lloc", "Fins a 40 ordres per programa", "Ulls il·luminats i altaveu (xiulets i sons)", "Botó ACTION amb una acció aleatòria"],
+    acc: ["Laberint de 16 peces de quadrícula (4×4) i 22 parets", "30 targetes de codi", "3 túnels i una peça de formatge", "Targetes d'activitats"],
+    desc: "Ratolí robot (Colby) que es programa amb els botons i es mou sobre un laberint de caselles de 12,5 cm. Introdueix la seqüència, la depuració i l'orientació sobre l'espai.",
+    tip: "Deixa que l'alumnat predigui el recorregut abans de prémer GO i usi les targetes de codi per anotar-lo. Amb CLEAR esborra el programa abans de començar un altre repte." },
+  { id: "mtiny", name: "mTiny", brand: "Makeblock", cycles: ["infantil", "inicial"], app: "Sense pantalles (targetes de codificació i llapis tàctil)",
+    sensors: ["Sensor OID al robot i al llapis tàctil (llegeix els codis de les targetes i els mapes)", "Sensor de moviment de 6 eixos", "Joystick de doble eix al llapis tàctil"],
+    actuators: ["Motors de desplaçament", "Indicador LED", "Més de 10 emocions i més de 300 efectes de so"],
+    acc: ["Mapes d'història i targetes de codificació de Makeblock", "Llapis tàctil", "Compatible amb peces LEGO"],
+    desc: "Robot per a infants petits que es programa tocant targetes amb un llapis tàctil, sense pantalles ni ordinador. Funciona sobre els mapes d'història de Makeblock, que porten els codis impresos.",
+    tip: "Combina'l amb contes i personatges: l'alumnat programa el recorregut del protagonista pel mapa d'història.",
+    nota: "mTiny només llegeix els mapes i les targetes oficials (porten codis impresos). No dissenyis cap tapís propi ni caselles: deixa tapis i caselles a null i basa l'activitat en les targetes, els mapes d'història del kit, les fitxes de treball i les targetes de repte." },
   { id: "dash", name: "Dash & Dot", brand: "Wonder Workshop", cycles: ["inicial", "mitja"], app: "Blockly, Wonder, Path (tauletes iOS/Android)",
     sensors: ["3 sensors d'ultrasons per detecció d'obstacles", "Sensors de so (micròfons direccionals)", "Sensors d'inclinació i xoc"],
     actuators: ["Cap motoritzat independent (gira i mira amunt/avall)", "Dues rodes motrius i roda boja", "Ull central amb 12 LEDs RGB i llums d'orelles", "Altaveu de veus i gravacions"],
@@ -426,6 +444,12 @@ const ROBOTS = [
     acc: ["Cinta aïllant negra per a circuits de línia", "Mòduls mBuild", "Tapís quadriculat de 15x15 cm o lliure"],
     desc: "Dues peces: el controlador Codey (pantalla matriu i botons A/B/C) i el xassís mòbil Rocky. Versàtil per a geometria, música, seguiment de línies i animacions.",
     tip: "El comandament Codey es pot desacoblar i programar com a comandament a distància d'un altre robot mitjançant infrarojos." },
+  { id: "mbot2", name: "mBot2", brand: "Makeblock", cycles: ["mitja", "superior"], app: "mBlock (blocs tipus Scratch i Python), amb el controlador CyberPi",
+    sensors: ["Sensor d'ultrasons 2 (distància i llum ambiental)", "Sensor Quad RGB (4 sensors de color per detectar colors i seguir línies)", "CyberPi: giroscopi i acceleròmetre, micròfon, sensor de llum i botons", "Motors amb encoder (rotació, velocitat i posició)"],
+    actuators: ["2 motors amb encoder per a la tracció", "Pantalla a color del CyberPi", "Altaveu", "LEDs de colors", "Ports per a servos i mòduls d'ampliació"],
+    acc: ["Mòduls mBuild d'ampliació", "Compatible amb peces LEGO i peces Makeblock", "Cinta aïllant negra o pista de colors per al seguiment de línia"],
+    desc: "Robot mòbil amb controlador CyberPi i dos sensors inclosos. Permet passar de la programació per blocs a Python i es pot ampliar amb mòduls i peces de construcció.",
+    tip: "Aprofita el sensor Quad RGB per fer circuits de línia amb colors que indiquin accions, i la pantalla del CyberPi per mostrar dades i resultats." },
   { id: "lego-spike", name: "LEGO SPIKE Prime / Essential", brand: "LEGO Education", cycles: ["mitja", "superior"], app: "LEGO Education SPIKE App (tauletes i PC)",
     sensors: ["Sensor de color i llum", "Sensor de distància per ultrasons", "Sensor de força / polsador", "Giroscopi de 6 eixos al Hub"],
     actuators: ["Matriu 5x5 de LEDs", "Motors angulars amb encoder", "Altaveu per a tons i alertes"],
@@ -465,62 +489,13 @@ function loadLib() {
   try { const raw = localStorage.getItem(LIB_KEY); state.lib = raw ? JSON.parse(raw) : []; } catch (e) { state.lib = memLib; }
   if (!Array.isArray(state.lib)) state.lib = [];
 }
-function saveLib() {
+function saveLib(noSync) {
   memLib = state.lib;
   try { localStorage.setItem(LIB_KEY, JSON.stringify(state.lib)); } catch (e) { toast("No s'ha pogut desar al navegador. L'activitat queda només mentre tingueu la pàgina oberta."); }
   $("libCount").textContent = state.lib.length ? "(" + state.lib.length + ")" : "";
+  if (!noSync) scheduleSync();
 }
 
-/* ---------- Activitat d'exemple ---------- */
-const EXAMPLE = {
-  meta: { robotId: "beebot", cycle: "inicial", area: "mates", area2: "", topic: "Sumes amb resultat fins al 10", duration: "2 sessions de 50 minuts", org: "Grups de 3 o 4 alumnes" },
-  titol: "La Bee-Bot salta a la recta del 10",
-  mida_cm: 15,
-  subtitol: "Sumes amb resultat fins al 10 sobre una recta numèrica a terra",
-  dinamica: "Recta numèrica de l'0 al 10 feta amb 11 cartolines de 15 × 15 cm col·locades en fila. Cada casella és un pas de la Bee-Bot.",
-  rol_robot: "La Bee-Bot avança 15 cm cada cop que es prem «endavant», o sigui una casella. L'alumnat col·loca el robot al primer sumand i programa tants passos com valgui el segon sumand: on s'atura hi ha el resultat.",
-  competencies: ["Resoldre problemes de suma amb materials manipulatius i representacions.", "Comunicar el raonament amb llenguatge matemàtic bàsic."],
-  objectius: ["Representar una suma com un desplaçament sobre la recta numèrica.", "Calcular sumes amb resultat fins al 10 i comprovar-les amb el robot.", "Programar una seqüència d'ordres «endavant» i detectar si s'ha equivocat.", "Explicar en veu alta com han trobat el resultat."],
-  materials: ["1 Bee-Bot per grup", "11 cartolines de 15 × 15 cm numerades de l'0 al 10 (imprimibles a la pestanya Materials)", "Targetes d'operació (imprimibles)", "Cinta de carrosser per fixar la recta", "1 full de registre i llapis per grup"],
-  sessions: [
-    { titol: "Sessió 1: La recta numèrica i els salts", fases: [
-      { fase: "Inici", minuts: 10, descripcio: "Es presenta la Bee-Bot i es munta la recta entre tots. Es demana quants passos caldran per anar del 0 al 4 i es comprova." },
-      { fase: "Desenvolupament", minuts: 30, descripcio: "Cada grup rep tres targetes fàcils (per exemple 3 + 4). Col·loquen el robot al primer número, predicen el resultat i programen els passos del segon. Comproven si el robot s'atura on havien dit." },
-      { fase: "Tancament", minuts: 10, descripcio: "Cada grup explica una suma: «Hem començat al… i hem fet… passos, per això hem arribat al…»." }
-    ] },
-    { titol: "Sessió 2: Reptes i comprovació", fases: [
-      { fase: "Inici", minuts: 10, descripcio: "Repàs ràpid: es mostra una targeta i l'alumnat aixeca la mà per dir quants passos farà la Bee-Bot." },
-      { fase: "Desenvolupament", minuts: 30, descripcio: "Targetes de nivell mitjà i de repte, incloent-hi la que té un sumand amagat. Cada grup anota a la fitxa la predicció i el resultat real." },
-      { fase: "Tancament", minuts: 10, descripcio: "Es comenten els errors més freqüents (per exemple, comptar la casella de sortida) i com s'han corregit." }
-    ] }
-  ],
-  reptes: [
-    { nivell: "Bàsic", titol: "Del 3 al 7", enunciat: "Posa la Bee-Bot al 3. Quants passos ha de fer per arribar al 7? Programa-ho i comprova-ho.", ordres: ["Endavant", "Endavant", "Endavant", "Endavant", "GO"] },
-    { nivell: "Intermedi", titol: "Quin és el resultat?", enunciat: "Agafa una targeta, digues el resultat abans de moure el robot i després comprova-ho.", ordres: ["Endavant × el segon sumand", "GO"] },
-    { nivell: "Repte", titol: "El sumand amagat", enunciat: "4 + ? = 9. Posa la Bee-Bot al 4 i troba quants passos ha de fer per arribar al 9.", ordres: ["Endavant × ?", "GO"] }
-  ],
-  targetes: [
-    { text: "3 + 4", pista: "Comença al 3 i fes 4 passos.", solucio: "7", dificultat: "Fàcil", ordres: "4 × Endavant" },
-    { text: "5 + 2", pista: "Comença al 5 i fes 2 passos.", solucio: "7", dificultat: "Fàcil", ordres: "2 × Endavant" },
-    { text: "6 + 3", pista: "Comença al 6 i fes 3 passos.", solucio: "9", dificultat: "Fàcil", ordres: "3 × Endavant" },
-    { text: "4 + 4", pista: "És un doble.", solucio: "8", dificultat: "Mitjà", ordres: "4 × Endavant" },
-    { text: "2 + 7", pista: "Pots començar pel número més gran?", solucio: "9", dificultat: "Mitjà", ordres: "7 × Endavant (o començar al 7 i fer 2 passos)" },
-    { text: "8 + 2", pista: "Quants passos falten per arribar al 10?", solucio: "10", dificultat: "Mitjà", ordres: "2 × Endavant" },
-    { text: "1 + 3 + 5", pista: "Fes dos programes seguits.", solucio: "9", dificultat: "Repte", ordres: "3 × Endavant, GO; després 5 × Endavant, GO" },
-    { text: "4 + ? = 9", pista: "Quants passos falten del 4 al 9?", solucio: "5", dificultat: "Repte", ordres: "5 × Endavant" }
-  ],
-  caselles: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => ({ etiqueta: String(n), pista: n === 0 ? "Sortida" : n === 10 ? "Meta" : "", icona: n === 0 ? "flag" : n === 10 ? "star" : "" })),
-  dua: [
-    { dimensio: "Representació", estrategies: "Recta numèrica amb números grans i colors alterns; material manipulatiu de comptar (fitxes) a disposició." },
-    { dimensio: "Acció i expressió", estrategies: "L'alumnat pot respondre amb el robot, amb fitxes o dient el resultat; es permet assenyalar la casella." },
-    { dimensio: "Implicació", estrategies: "Rols rotatius (programador, comprovador, secretari) cada targeta; reptes graduats per triar." }
-  ],
-  rubrica: [
-    { criteri: "Càlcul de sumes fins al 10", insuficient: "No relaciona la suma amb els passos del robot.", suficient: "Resol sumes fàcils amb ajuda.", notable: "Resol sumes de forma autònoma i les comprova.", excellent: "Resol també sumes de tres números o amb sumand amagat." },
-    { criteri: "Programació de la seqüència", insuficient: "Necessita ajuda per introduir els passos.", suficient: "Programa seqüències curtes.", notable: "Programa i corregeix errors sol.", excellent: "Anticipa errors i proposa estratègies més curtes." },
-    { criteri: "Treball en equip", insuficient: "Monopolitza el robot o no participa.", suficient: "Respecta els torns amb recordatoris.", notable: "Assumeix el seu rol i escolta.", excellent: "Ajuda els companys sense donar la resposta." }
-  ]
-};
 
 /* ---------- Formulari ---------- */
 function renderForm() {
@@ -533,9 +508,15 @@ function renderForm() {
   $("area").value = "mates"; $("topic").value = "Sumes amb resultat fins al 10";
   renderMats(); updateHints();
 }
+const EXTRA_MATS = [
+  { label: "Matatalab Coding Set (blocs físics de codi per a Tale-Bot)", prompt: "Matatalab Coding Set: tauler de control amb blocs físics de programació (moviment, bucles numèrics, funcions, música i angles) que una torre de lectura òptica escaneja i envia al robot Tale-Bot per Bluetooth. Sense pantalles; ideal per introduir el bucle de forma manipulativa. Tapís quadriculat de 10 × 10 cm i targetes de repte. Només té sentit si el robot triat és Tale-Bot." },
+  { label: "Kit de sensors de primària (maleta amb 37 sensors Arduino)", prompt: "Kit de sensors de primària: maleta amb 37 tipus de mòduls sensors i actuadors per a Arduino. Mòduls disponibles: joystick; relé; brunzidor gran, petit, actiu i passiu; seguidor de línia; evitació d'obstacles; sensor de flama; sensor Hall lineal, analògic i magnètic; sensor de contacte metàl·lic; termòmetre digital, termòmetre 18B20 i sensor de temperatura analògic; LED RGB (normal i SMD); LED bicolor (normal i mini); detector de camp electromagnètic; interruptor reed (magnètic); sensor de ritme cardíac; flaix de 7 colors; emissor làser; polsador; mòdul de cop (shock) i sensor de xoc; encoder; copa de llum (2 unitats, detecció d'inclinació); interruptor de mercuri; interruptor d'inclinació; fotoresistència (llum); sensor d'humitat i temperatura; emissor i receptor d'infrarojos; detector de feix tallat. Aquests mòduls necessiten una placa programable compatible (Arduino, o micro:bit amb una placa d'expansió) que NO inclou el kit: no donis per fet que hi ha una placa si el robot triat no ho és. Fes servir només els mòduls d'aquesta llista." }
+];
+const matDetail = (label) => { const e = EXTRA_MATS.find((x) => x.label === label); return e ? e.prompt : label; };
+const matOptions = (r) => r.acc.concat(EXTRA_MATS.map((x) => x.label));
 function renderMats() {
   const r = robotById(state.robotId); state.mats = new Set();
-  $("matList").innerHTML = r.acc.map((m, i) =>
+  $("matList").innerHTML = matOptions(r).map((m, i) =>
     '<label class="check"><input type="checkbox" data-mat="' + i + '"> <span>' + esc(m) + '</span></label>').join("");
 }
 function updateHints() {
@@ -546,7 +527,7 @@ function updateHints() {
   $("areaHint").textContent = a ? "Abast: " + a.scope + "." : "Tot el contingut curricular de l'activitat serà d'aquesta àrea.";
 }
 function readForm() {
-  const matsChecked = Array.from(document.querySelectorAll("#matList input:checked")).map((el) => robotById(state.robotId).acc[Number(el.dataset.mat)]);
+  const matsChecked = Array.from(document.querySelectorAll("#matList input:checked")).map((el) => matOptions(robotById(state.robotId))[Number(el.dataset.mat)]);
   return {
     robotId: state.robotId, cycle: state.cycle, area: $("area").value, area2: $("area2").value,
     topic: $("topic").value.trim(), mats: matsChecked, extra: $("extraMats").value.trim(),
@@ -567,7 +548,7 @@ function validate(f) {
 function buildPrompt(f) {
   const r = robotById(f.robotId), a = areaById(f.area), a2 = f.area2 && f.area2 !== f.area ? areaById(f.area2) : null;
   const others = AREAS.filter((x) => x.id !== f.area && (!a2 || x.id !== a2.id)).map((x) => x.label).join("; ");
-  const mats = f.mats.length ? f.mats.map((m) => "- " + m).join("\n") : "- (cap complement especial)";
+  const mats = f.mats.length ? f.mats.map((m) => "- " + matDetail(m)).join("\n") : "- (cap complement especial)";
   const lines = [];
   lines.push("Ets assessor de robòtica educativa per a mestres de primària de Catalunya. Dissenya UNA activitat nova a partir només de les dades d'aquest encàrrec. No existeix cap activitat ni conversa anterior: no n'aprofitis cap contingut.");
   lines.push("");
@@ -591,6 +572,7 @@ function buildPrompt(f) {
   lines.push("");
   lines.push("ROBOT: " + r.name + " (" + r.brand + "). Programació: " + r.app + ".");
   lines.push("Sensors reals: " + r.sensors.join("; ") + ".");
+  if (r.nota) lines.push("NOTA IMPORTANT SOBRE AQUEST ROBOT: " + r.nota);
   lines.push("Actuadors reals: " + r.actuators.join("; ") + ".");
   lines.push("Només pots demanar al robot accions possibles amb aquests sensors i actuadors i amb aquest sistema de programació. No inventis funcions, mesures ni botons.");
   lines.push("");
@@ -603,7 +585,7 @@ function buildPrompt(f) {
   if (r.pas) {
     lines.push("MIDA DE LES CASELLES: " + r.pas + " cm de costat exactament (és el pas del robot, que es mou per caselles). Si en algun text esmentes la mida de les caselles, ha de ser aquesta. El camp tapis ha de ser null.");
   } else {
-    lines.push("MATERIAL SENSE QUADRÍCULA: aquest robot NO es mou per passos fixos, així que NO has de plantejar l'activitat sobre caselles quadrades ni quadrícules. Dissenya un TAPÍS O CIRCUIT LLIURE al camp tapis. Només tries el tipus, la mida i les estacions; el programa dibuixa la forma. Tipus possibles: circuit (recorregut tancat, estacions al llarg del camí), cami (recorregut serpentejant d'inici a final), mapa (estacions disperses unides per camins), radial (centre amb camins en estrella i cercles de distància), diana (cercles concentrics amb zones). Tria el que millor encaixi amb el tema i amb els sensors del robot i varia'l. ample_cm entre 30 i 57, alt_cm entre 20 i 55. De 4 a 8 estacions ordenades: són els llocs on el robot s'atura o fa una acció, i el seu contingut (etiqueta curta de màxim 3 paraules) ha de ser de l'àrea i el tema. A instruccions explica en 1 o 2 frases com es munta i com es fa servir el tapís (per exemple si cal cinta o retolador), sense demanar res que el robot no pugui fer. El camp caselles només serveix per a peces soltes (objectes o targetes per col·locar sobre el tapís): deixa-ho buit si no calen. mida_caselles_cm és el costat d'aquestes peces (entre 8 i 12).");
+    lines.push("MATERIAL SENSE QUADRÍCULA: aquest robot NO es mou per passos fixos, així que NO has de plantejar l'activitat sobre caselles quadrades ni quadrícules. " + TAPIS_OPCIONAL + (r.id === "microbit" ? "Amb micro:bit només fas tapís si l'activitat fa servir un cotxe (Cutebot o Maqueen) que es desplaça. " : "") + (r.id === "lego-spike" ? "Amb LEGO planteja una construcció d'un model o mecanisme i programa el que han construït, i omple SEMPRE el camp muntatge; el tapís només si el model es desplaça. " : "") + "Si decideixes fer tapís, dissenya un TAPÍS O CIRCUIT LLIURE al camp tapis. Només tries el tipus, la mida i les estacions; el programa dibuixa la forma. Tipus possibles: circuit (recorregut tancat, estacions al llarg del camí), cami (recorregut serpentejant d'inici a final), mapa (estacions disperses unides per camins), radial (centre amb camins en estrella i cercles de distància), diana (cercles concentrics amb zones). Tria el que millor encaixi amb el tema i amb els sensors del robot i varia'l. ample_cm entre 30 i 57, alt_cm entre 20 i 55. De 4 a 8 estacions ordenades: són els llocs on el robot s'atura o fa una acció, i el seu contingut (etiqueta curta de màxim 3 paraules) ha de ser de l'àrea i el tema. A instruccions explica en 1 o 2 frases com es munta i com es fa servir el tapís (per exemple si cal cinta o retolador), sense demanar res que el robot no pugui fer. El camp caselles només serveix per a peces soltes (objectes o targetes per col·locar sobre el tapís): deixa-ho buit si no calen. mida_caselles_cm és el costat d'aquestes peces (entre 8 i 12).");
   }
   lines.push("");
   lines.push("FORMAT D'ACTIVITAT: tria UN format que encaixi amb el tema, el cicle i el robot, i escriu-ne el nom (2 a 5 paraules) a format_activitat. Opcions, neutres respecte a l'àrea: gimcana d'estacions; missió sobre un mapa; escape room de reptes; taller on l'alumnat dissenya el seu propi circuit; investigació amb mesures i registre de dades; representació o teatre amb el robot de protagonista; joc de cartes i recorregut; relleu o competició cooperativa entre equips; gimcana de preguntes que donen pistes per obrir un cadenat o una caixa; narració d'una història per escenes amb moviments, sons, llums o emocions del robot; laberint o recorregut a seguir o evitar línies; dibuix de figures amb recorreguts; el robot com a eina manipulativa per representar quantitats o idees; comunicació entre dos robots o plaques (només si el robot ho permet). Els formats són només una guia d'estructura: el contingut ha de ser sempre de l'àrea i del tema triats. No triïs sempre el més previsible. A fitxes inclou 3 o 4 fitxes de treball de tipus diferents (escriu, dibuixa, taula, marca) que s'adaptin a l'àrea i al format.");
@@ -626,12 +608,13 @@ function buildPrompt(f) {
     reptes: [{ nivell: "Bàsic | Intermedi | Repte", titol: "<títol>", enunciat: "<text per a l'alumnat>", ordres: ["<ordre del robot>"] }],
     targetes: [{ text: "<enunciat curt per a l'alumne>", pista: "<ajuda>", solucio: "<resposta correcta>", dificultat: "Fàcil | Mitjà | Repte", ordres: "<seqüència suggerida per al robot>", icona: "<id d'icona o none>" }],
     caselles: [{ etiqueta: "<text curt o número gran>", pista: "<pista breu o buit>", icona: "<id d'icona o none>" }],
-    tapis: r.pas ? null : { tipus: "circuit | cami | mapa | radial | diana", titol: "<nom del tapís>", ample_cm: "<número>", alt_cm: "<número>", instruccions: "<com es munta i s'usa>", estacions: [{ etiqueta: "<màxim 3 paraules>", pista: "<què cal fer en aquesta estació>", icona: "<id d'icona o none>" }] },
+    muntatge: r.pas ? null : { titol: "<nom del model; tot el camp muntatge és null si no cal construir>", objectiu: "<què construeixen i per a què>", peces: ["<peça i quantitat>"], passos: [{ text: "<pas de muntatge curt>", comprovacio: "<com comprovar-ho, opcional>" }] },
+    tapis: r.pas ? null : { tipus: "circuit | cami | mapa | radial | diana", titol: "<nom del tapís; si no cal tapís, posa tot el camp tapis a null>", ample_cm: "<número>", alt_cm: "<número>", instruccions: "<com es munta i s'usa>", estacions: [{ etiqueta: "<màxim 3 paraules>", pista: "<què cal fer en aquesta estació>", icona: "<id d'icona o none>" }] },
     fitxes: [{ tipus: "escriu | dibuixa | taula | marca", titol: "<títol>", enunciat: "<consigna per a l'alumne>", columnes: ["<capçalera, només si tipus és taula>"], opcions: ["<opció, només si tipus és marca>"] }],
     dua: f.dua ? [{ dimensio: "Representació | Acció i expressió | Implicació", estrategies: "<estratègies concretes>" }] : [],
     rubrica: f.rubric ? [{ criteri: "<criteri>", insuficient: "<descriptor>", suficient: "<descriptor>", notable: "<descriptor>", excellent: "<descriptor>" }] : []
   }, null, 1));
-  lines.push("Quantitats: 2 o 3 sessions segons la durada, 3 reptes (un per nivell), 8 targetes, 3 o 4 fitxes de treball, " + (r.pas ? "entre 8 i 12 caselles (elements per imprimir, retallar i col·locar a terra o a la taula, adequats al tema; si el tema no en necessita, deixa-ho buit), " : "tapis amb 4 a 8 estacions i entre 0 i 6 peces soltes a caselles, ") + (f.dua ? "3 estratègies DUA, " : "dua buit, ") + (f.rubric ? "3 o 4 criteris de rúbrica." : "rubrica buida."));
+  lines.push("Quantitats: 2 o 3 sessions segons la durada, 3 reptes (un per nivell), 8 targetes, 3 o 4 fitxes de treball, " + (r.pas ? "entre 8 i 12 caselles (elements per imprimir, retallar i col·locar a terra o a la taula, adequats al tema; si el tema no en necessita, deixa-ho buit), " : "si fas tapís, 4 a 8 estacions i entre 0 i 6 peces soltes a caselles; si no en fas, tapis null, ") + (f.dua ? "3 estratègies DUA, " : "dua buit, ") + (f.rubric ? "3 o 4 criteris de rúbrica." : "rubrica buida."));
   return lines.join("\n");
 }
 
@@ -641,9 +624,22 @@ function cellCm(v, robotId) {
   return isFinite(n) && n >= 5 && n <= 18 ? Math.round(n * 2) / 2 : 15;
 }
 function activityCm(a) { return a.mida_cm || robotById(a.meta.robotId).pas || 15; }
+const TAPIS_OPCIONAL = "EL TAPÍS ÉS OPCIONAL (camp tapis: posa null si no cal). Només té sentit si el robot es desplaça per una superfície (rodes, motors, seguiment de línia) i el recorregut forma part del repte. Posa tapis a null, i NO te n'inventis un, quan l'activitat sigui d'una altra naturalesa: per exemple amb micro:bit sense motors (estació meteorològica, termòmetre, alarma, dau o comptador electrònic, joc amb botons i sensors), amb Codey Rocky que només fa servir llums, sons o sensors, amb Dash que balla o explica una història, o amb LEGO quan l'alumnat ha de construir un model o mecanisme. Quan no hi ha tapís, el material per imprimir són les fitxes de treball (inclou una fitxa «dibuixa» per planificar o documentar el disseny, el circuit o la construcció) i les targetes (de repte, de muntatge pas a pas, de preguntes o de dades per registrar); a caselles només posa peces soltes si cal. Les sessions han de descriure el que fa l'alumnat de debò: construir, connectar, programar, mesurar, provar. MUNTATGE (camp muntatge, opcional, null si no cal): si l'alumnat ha de construir un model, mecanisme, estructura o muntatge amb les peces del seu kit (LEGO, components de micro:bit, kit Edison, Codey…), omple muntatge amb el títol del model, l'objectiu, la llista de peces amb quantitats (només peces que el kit té de debò) i de 4 a 10 passos curts de muntatge, cadascun amb una comprovació opcional (per exemple «la roda ha de poder girar»). Descriu-ho amb text, sense inventar números de peça ni copiar les instruccions d'un model oficial: ha de ser un model senzill i obert que l'alumnat pugui reinterpretar. ";
 const TAPIS_TIPUS = { circuit: "Circuit", cami: "Camí", mapa: "Mapa", radial: "Radial", diana: "Diana" };
 const FITXA_TIPUS = { escriu: "Escriu", dibuixa: "Dibuixa", taula: "Completa la taula", marca: "Marca" };
 function clampNum(v, lo, hi, def) { const n = Number(String(v).replace(",", ".")); return isFinite(n) && n > 0 ? Math.min(hi, Math.max(lo, Math.round(n))) : def; }
+function normMuntatge(m) {
+  if (!m || typeof m !== "object") return null;
+  const s = (x) => str(x).trim();
+  const passos = arr(m.passos).map((p) => (typeof p === "string" ? { text: s(p), comprovacio: "" } : { text: s(p && p.text), comprovacio: s(p && p.comprovacio) })).filter((p) => p.text).slice(0, 12);
+  if (passos.length < 3) return null;
+  return { titol: s(m.titol), objectiu: s(m.objectiu), peces: arr(m.peces).map(s).filter(Boolean).slice(0, 14), passos };
+}
+function muntatgeBody(m) {
+  return '<div class="guide">' + (m.titol ? "<h4>" + esc(m.titol) + "</h4>" : "") + (m.objectiu ? "<p>" + esc(m.objectiu) + "</p>" : "") +
+    (m.peces.length ? "<p><b>Peces que necessites</b></p><ul>" + m.peces.map((x) => "<li>☐ " + esc(x) + "</li>").join("") + "</ul>" : "") +
+    "<p><b>Passos</b></p><ol>" + m.passos.map((p) => "<li>" + esc(p.text) + (p.comprovacio ? ' <i>Comprova: ' + esc(p.comprovacio) + "</i>" : "") + "</li>").join("") + "</ol></div>";
+}
 function normTapis(t, f) {
   if (robotById(f.robotId).pas || !t || typeof t !== "object") return null;
   const s = (x) => str(x).trim();
@@ -664,7 +660,7 @@ function normFitxes(list) {
 function normalize(d, f) {
   const s = (x) => str(x).trim();
   return {
-    form: f, format: s(d.format_activitat).slice(0, 60), tapis: normTapis(d.tapis, f), fitxes: normFitxes(d.fitxes),
+    form: f, format: s(d.format_activitat).slice(0, 60), tapis: normTapis(d.tapis, f), muntatge: robotById(f.robotId).pas ? null : normMuntatge(d.muntatge), fitxes: normFitxes(d.fitxes),
     meta: { robotId: f.robotId, cycle: f.cycle, area: f.area, area2: f.area2, topic: f.topic, duration: f.duration, org: f.org },
     titol: s(d.titol) || "Activitat de robòtica", subtitol: s(d.subtitol), dinamica: s(d.dinamica), rol_robot: s(d.rol_robot), mida_cm: cellCm(d.mida_caselles_cm, f.robotId),
     competencies: arr(d.competencies).map(s).filter(Boolean),
@@ -768,7 +764,7 @@ async function geminiOnce(prompt, opts) {
 function browserSave(o) {
   return new Promise((ok, ko) => {
     try {
-      const blob = new Blob([o.data], { type: /\.pdf$/.test(o.filename) ? "application/pdf" : "text/html" });
+      const blob = new Blob([o.data], { type: /\.pdf$/.test(o.filename) ? "application/pdf" : /\.json$/.test(o.filename) ? "application/json" : "text/html" });
       const u = URL.createObjectURL(blob), a = document.createElement("a");
       a.href = u; a.download = o.filename; document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(u), 4000); ok({ status: "saved" });
@@ -868,10 +864,11 @@ function dossierMaterials(a) {
   const s = [];
   s.push('<div class="banner info"><span>Tot el que hi ha aquí es pot imprimir i retallar. A la secció Materials el tens en PDF.</span><button type="button" class="btn sm" data-view="materials" data-cur="1">Obre a Materials</button></div>');
   if (a.tapis) s.push('<div class="sec"><h3>' + esc(a.tapis.titol || "Tapís lliure") + '</h3><p class="hint" style="margin-bottom:10px">' + esc(a.tapis.instruccions) + " Mida real: " + a.tapis.ample_cm + " × " + a.tapis.alt_cm + " cm.</p>" + tapisSVG(a) + "</div>");
+  if (a.muntatge) s.push('<div class="sec"><h3>Targetes de muntatge</h3>' + muntatgeBody(a.muntatge) + '</div>');
   if (a.fitxes && a.fitxes.length) s.push('<div class="sec"><h3>Fitxes de treball</h3><div class="cut-grid wide">' + a.fitxes.map((x, i) => fitxaHTML(x, i, a)).join("") + "</div></div>");
   if (a.caselles.length) s.push('<div class="sec"><h3>' + (robotById(a.meta.robotId).pas ? "Caselles per al terra o la taula" : "Peces soltes") + "</h3>" + '<p class="hint" style="margin-bottom:10px">Mida real de cada casella: ' + activityCm(a) + " × " + activityCm(a) + " cm. " + esc(a.dinamica || "") + "</p>" + '<div class="tiles">' + a.caselles.map((c) => '<div class="tile"><span class="big">' + esc(c.etiqueta) + "</span>" + (c.pista ? '<span class="small">' + esc(c.pista) + "</span>" : "") + "</div>").join("") + "</div></div>");
   if (a.targetes.length) s.push('<div class="sec"><h3>Targetes de repte</h3><div class="cut-grid">' + a.targetes.map((c, i) => '<div class="cut"><div class="n"><span>Targeta ' + (i + 1) + "</span><span>" + esc(c.dificultat) + '</span></div><div class="big">' + esc(c.text) + "</div>" + (c.pista ? '<div class="small">' + esc(c.pista) + "</div>" : "") + (c.solucio || c.ordres ? '<div class="sol">' + (c.solucio ? "<b>Solució:</b> " + esc(c.solucio) : "") + (c.ordres ? "<br>" + esc(c.ordres) : "") + "</div>" : "") + "</div>").join("") + "</div></div>");
-  if (!a.caselles.length && !a.targetes.length && !a.tapis && !(a.fitxes && a.fitxes.length)) s.push('<div class="empty">Aquesta activitat no té materials per imprimir.</div>');
+  if (!a.caselles.length && !a.targetes.length && !a.tapis && !a.muntatge && !(a.fitxes && a.fitxes.length)) s.push('<div class="empty">Aquesta activitat no té materials per imprimir.</div>');
   return s.join("");
 }
 function dossierAvaluacio(a) {
@@ -888,12 +885,15 @@ function renderResult() {
     $("genBtn").disabled = true; return;
   }
   $("genBtn").disabled = false;
-  const a = state.current; if (!a) { root.innerHTML = ""; return; }
+  const a = state.current;
+  if (!a) {
+    root.innerHTML = (state.error ? '<div class="banner err"><span>' + esc(state.error) + "</span></div>" : "") + '<div class="panel welcome"><h2>Genera la teva primera activitat</h2><p>Aquí apareixerà la proposta completa, amb sessions, reptes, materials per imprimir, avaluació i DUA.</p><ol><li>Tria el robot, el cicle i l\'àrea.</li><li>Escriu el tema concret que vols treballar.</li><li>Prem «Genera l\'activitat».</li></ol></div>';
+    return;
+  }
   const r = robotById(a.meta.robotId);
   const saved = state.lib.some((x) => x.id === a.id);
   const top = [];
   if (state.error) top.push('<div class="banner err"><span>' + esc(state.error) + "</span></div>");
-  if (state.source === "exemple") top.push('<div class="banner info"><span><b>Exemple.</b> Mira com queda una activitat i després genera la teva amb el formulari.</span></div>');
   root.innerHTML = top.join("") + '<div id="guardSlot"></div><article class="panel"><div class="dossier-head"><div><h2>' + esc(a.titol) + '</h2><p class="sub">' + esc(a.subtitol) + '</p><div class="chips">' + areaChip(a.meta.area) + (a.meta.area2 ? areaChip(a.meta.area2) : "") + (a.format ? '<span class="chip">' + esc(a.format) + "</span>" : "") + '<span class="chip">' + esc(r.name) + '</span><span class="chip">' + esc(CYCLE_NAME[a.meta.cycle] || "") + '</span><span class="chip">' + esc(a.meta.duration) + '</span><span class="chip">' + esc(a.meta.org) + '</span></div></div><div class="actions"><button type="button" class="btn" data-act="save">' + (saved ? "Desada" : "Desa a la biblioteca") + '</button><button type="button" class="btn" data-act="download">Descarrega la proposta</button></div></div><div class="dtabs" role="tablist"><button type="button" role="tab" data-tab="proposta" aria-selected="' + (state.tab === "proposta") + '">Proposta</button><button type="button" role="tab" data-tab="materials" aria-selected="' + (state.tab === "materials") + '">Materials per imprimir</button><button type="button" role="tab" class="hl" data-tab="avaluacio" aria-selected="' + (state.tab === "avaluacio") + '">★ Avaluació i DUA</button></div><div role="tabpanel">' + (state.tab === "proposta" ? dossierProposta(a) + evalCta(a) : state.tab === "materials" ? dossierMaterials(a) + evalCta(a) : dossierAvaluacio(a)) + "</div></article>";
   renderGuard();
   root.insertAdjacentHTML("beforeend", refineHTML());
@@ -901,7 +901,7 @@ function renderResult() {
 
 /* ---------- Modificar l'activitat ---------- */
 function toRaw(a) {
-  return { titol: a.titol, subtitol: a.subtitol, dinamica: a.dinamica, format_activitat: a.format || "", mida_caselles_cm: a.mida_cm, rol_robot: a.rol_robot, competencies: a.competencies, objectius: a.objectius, materials: a.materials, sessions: a.sessions, reptes: a.reptes, targetes: a.targetes, caselles: a.caselles, tapis: a.tapis || null, fitxes: a.fitxes || [], dua: a.dua, rubrica: a.rubrica };
+  return { titol: a.titol, subtitol: a.subtitol, dinamica: a.dinamica, format_activitat: a.format || "", mida_caselles_cm: a.mida_cm, rol_robot: a.rol_robot, competencies: a.competencies, objectius: a.objectius, materials: a.materials, sessions: a.sessions, reptes: a.reptes, targetes: a.targetes, caselles: a.caselles, tapis: a.tapis || null, muntatge: a.muntatge || null, fitxes: a.fitxes || [], dua: a.dua, rubrica: a.rubrica };
 }
 function formFor(a) {
   if (a.form) return a.form;
@@ -949,7 +949,7 @@ document.addEventListener("click", (e) => {
 document.addEventListener("input", (e) => { if (e.target && e.target.id === "refineText") state.refineText = e.target.value; });
 
 /* ---------- Versió del servidor ---------- */
-const APP_VERSION = "2026-11-17";
+const APP_VERSION = "2026-11-18";
 async function checkServer() {
   const foot = document.querySelector(".foot"); if (!foot || /POSA-AQUI/.test(WORKER_URL)) return;
   const s = document.createElement("div"); s.style.cssText = "margin-top:6px;font-size:12px;opacity:.85"; foot.appendChild(s);
@@ -979,6 +979,7 @@ function guidePrompt(a) {
     "Ets un formador de robòtica educativa que ajuda mestres de Primària que gairebé no coneixen el robot. Escriu en català una GUIA DE PROGRAMACIÓ PAS A PAS perquè el mestre pugui fer ell mateix, abans de la sessió, tot el que l'activitat demana al robot.",
     "ROBOT: " + r.name + " (" + r.brand + "). Entorn de programació: " + r.app + ". Sensors reals: " + r.sensors.join("; ") + ". Actuadors reals: " + r.actuators.join("; ") + ". Cicle: " + (CYCLE_NAME[a.meta.cycle] || a.meta.cycle) + ". Àrea: " + ar.label + ".",
     "ACTIVITAT:\n" + resum,
+    a.form && a.form.mats && a.form.mats.length ? "MATERIALS DE L'AULA QUE ES FAN SERVIR:\n" + a.form.mats.map((m) => "- " + matDetail(m)).join("\n") : "",
     "NORMES: (1) Cobreix cada part de l'activitat on el robot ha de fer alguna cosa programada, sessió per sessió, de 3 a 8 tasques. (2) Fes servir només l'entorn de programació indicat i funcions que el robot té de debò. (3) Cada pas és una sola acció, curta i concreta. Per a robots sense pantalla explica els botons o les fitxes físiques i l'ordre de la seqüència. (4) A blocs escriu els blocs o instruccions tal com apareixen a l'aplicació; si no estàs segur del nom exacte d'un bloc o d'un menú, descriu què fa en lloc d'inventar-te el nom. (5) Inclou com comprovar que funciona i els errors habituals dels principiants. (6) A preparacio explica què cal fer abans de la primera tasca (obrir l'entorn, connectar o carregar el programa, calibrar si cal). (7) No parlis d'altres àrees ni canviïs l'activitat.",
     "Respon NOMÉS amb un JSON vàlid amb aquesta estructura:",
     JSON.stringify({ intro: "<2 frases: què farà el mestre i quant triga>", preparacio: ["<pas previ>"], tasques: [{ sessio: "<Sessió 1, 2…>", titol: "<tasca de programació>", objectiu: "<què ha de fer el robot>", passos: ["<pas concret>"], blocs: ["<bloc o instrucció>"], prova: "<com comprovar-ho>", errors: ["<error habitual i com solucionar-lo>"] }], consells: ["<consell per a l'aula>"] }, null, 1)
@@ -1006,7 +1007,7 @@ async function makeGuide() {
     const g = normGuia(await sample.json(guidePrompt(a), { kind: "guia", cache: false }));
     if (!g.tasques.length) throw { code: "invalid_json", detail: "guia buida" };
     a.guia = g;
-    state.lib.forEach((x) => { if (x.id && x.id === a.id && x.activity) x.activity.guia = g; });
+    state.lib.forEach((x) => { if (x.id && x.id === a.id && x.activity) { x.activity.guia = g; x.upd = Date.now(); } });
     try { saveLib(); } catch (e) {}
   } catch (e) { state.guideErr = (ERR[e && e.code] || ERR.upstream_error) + (e && e.detail ? " (" + e.detail + ")" : ""); }
   state.guideBusy = false; renderMaterials();
@@ -1105,7 +1106,7 @@ async function makeProg() {
     const g = normProg(await sample.json(progPrompt(a, state.progCurs, (state.progNotes || "").trim()), { kind: "prog", cache: false }));
     if (!g.ce.length && !g.sequencia.length) throw { code: "invalid_json", detail: "unitat buida" };
     a.prog = g;
-    state.lib.forEach((x) => { if (x.id && x.id === a.id && x.activity) x.activity.prog = g; });
+    state.lib.forEach((x) => { if (x.id && x.id === a.id && x.activity) { x.activity.prog = g; x.upd = Date.now(); } });
     try { saveLib(); } catch (e) {}
   } catch (e) { state.progErr = (ERR[e && e.code] || ERR.upstream_error) + (e && e.detail ? " (" + e.detail + ")" : ""); }
   state.progBusy = false; renderProg();
@@ -1119,6 +1120,95 @@ document.addEventListener("click", (e) => {
 });
 document.addEventListener("change", (e) => { if (e.target && e.target.id === "progSelect") { progSel = e.target.value; renderProg(); } if (e.target && e.target.id === "progCurs") state.progCurs = e.target.value; });
 document.addEventListener("input", (e) => { if (e.target && e.target.id === "progNotes") state.progNotes = e.target.value; });
+
+/* ---------- Biblioteca: exportar, importar i sincronitzar entre dispositius ---------- */
+const SYNC_KEY = "roboaula.sync.v1";
+const syncOK = () => typeof WORKER_URL === "string" && !/POSA-AQUI/.test(WORKER_URL);
+let syncSt = { code: "", last: 0, del: {} }, syncBusy = false, syncMsg = "", syncTimer = 0;
+try { const r = localStorage.getItem(SYNC_KEY); if (r) { const o = JSON.parse(r); if (o && typeof o === "object") syncSt = { code: String(o.code || ""), last: Number(o.last) || 0, del: o.del && typeof o.del === "object" ? o.del : {} }; } } catch (e) {}
+function saveSync() { try { localStorage.setItem(SYNC_KEY, JSON.stringify(syncSt)); } catch (e) {} }
+const stampOf = (x) => Number(x && x.upd) || Date.parse(x && x.savedAt) || 0;
+function mergeItems(local, remote, del) {
+  const map = new Map();
+  [].concat(local, remote).forEach((x) => {
+    if (!x || typeof x.id !== "string" || !validAct(x.activity)) return;
+    const o = map.get(x.id); if (!o || stampOf(x) > stampOf(o)) map.set(x.id, x);
+  });
+  return [...map.values()].filter((x) => !(del[x.id] && del[x.id] >= stampOf(x))).sort((p, q) => stampOf(q) - stampOf(p)).slice(0, 200);
+}
+function validAct(a) {
+  return !!(a && typeof a === "object" && typeof a.titol === "string" && a.meta && typeof a.meta === "object" && a.meta.robotId && a.meta.area && ["sessions", "reptes", "targetes", "caselles", "materials", "objectius"].every((k) => Array.isArray(a[k])));
+}
+function genSyncCode() {
+  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", b = new Uint8Array(16); crypto.getRandomValues(b);
+  const c = Array.from(b, (v) => A[v % 32]).join("");
+  return "ROBO-" + c.slice(0, 4) + "-" + c.slice(4, 8) + "-" + c.slice(8, 12) + "-" + c.slice(12, 16);
+}
+function cleanSyncCode(s) {
+  const c = String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, "").replace(/^ROBO/, "");
+  return c.length === 16 ? "ROBO-" + c.slice(0, 4) + "-" + c.slice(4, 8) + "-" + c.slice(8, 12) + "-" + c.slice(12) : "";
+}
+async function syncNow(manual) {
+  if (!syncOK() || !syncSt.code || syncBusy) return;
+  syncBusy = true; syncMsg = "Sincronitzant…"; if (state.view === "biblioteca") renderLibrary();
+  try {
+    const r = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind: "lib", op: "sync", code: syncSt.code, data: { items: state.lib, del: syncSt.del } }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.ok) throw new Error(r.status === 501 ? "nokv" : r.status === 429 ? "limit" : "err");
+    state.lib = mergeItems(j.items || [], [], j.del || {}); syncSt.del = j.del || {}; syncSt.last = Date.now(); saveSync();
+    saveLib(true); syncMsg = "Sincronitzat a les " + new Date(syncSt.last).toLocaleTimeString("ca-ES", { hour: "2-digit", minute: "2-digit" }) + ".";
+    if (manual) toast("Biblioteca sincronitzada.");
+  } catch (e) {
+    syncMsg = e.message === "nokv" ? "El servidor encara no té activada la sincronització." : e.message === "limit" ? "Massa peticions. Torna-ho a provar d'aquí a una estona." : "No s'ha pogut sincronitzar. Les activitats continuen desades en aquest dispositiu.";
+    if (manual) toast(syncMsg);
+  }
+  syncBusy = false; if (state.view === "biblioteca") renderLibrary();
+}
+function scheduleSync() { if (!syncOK() || !syncSt.code) return; clearTimeout(syncTimer); syncTimer = setTimeout(() => syncNow(false), 1800); }
+function libToolsHTML() {
+  const exp = '<div class="panel libtools"><div><h3>Còpia en fitxer</h3><p class="hint">Descarrega la biblioteca en un fitxer i importa\'l a qualsevol altre navegador o ordinador.</p></div><div class="actions"><button type="button" class="btn sm" data-lib="export"' + (state.lib.length ? "" : " disabled") + '>Exporta la biblioteca</button><label class="btn sm filebtn">Importa un fitxer<input type="file" id="libFile" accept=".json,application/json" hidden></label></div></div>';
+  if (!syncOK()) return exp;
+  let sy;
+  if (syncSt.code) {
+    sy = '<div class="panel libtools"><div><h3>Sincronització activada</h3><p class="hint">Escriu aquest codi en un altre ordinador per veure-hi la mateixa biblioteca. Qui tingui el codi pot veure les teves activitats: guarda\'l i no hi posis dades de l\'alumnat.</p><div class="codebox"><input type="text" readonly id="syncCode" value="' + esc(syncSt.code) + '" aria-label="Codi de sincronització"><button type="button" class="btn sm" data-lib="copy">Copia</button></div><p class="hint" id="syncMsg" role="status">' + esc(syncMsg) + '</p></div><div class="actions"><button type="button" class="btn sm" data-lib="sync"' + (syncBusy ? " disabled" : "") + '>Sincronitza ara</button><button type="button" class="btn sm danger" data-lib="off">Desconnecta aquest dispositiu</button></div></div>';
+  } else {
+    sy = '<div class="panel libtools"><div><h3>Sincronització entre dispositius</h3><p class="hint">Sense registre ni contrasenya: s\'activa un codi personal que pots escriure a un altre ordinador per tenir-hi la mateixa biblioteca.</p><div class="codebox"><input type="text" id="syncIn" placeholder="Ja tinc un codi: ROBO-XXXX-XXXX-XXXX-XXXX" aria-label="Codi de sincronització" autocomplete="off" spellcheck="false"><button type="button" class="btn sm" data-lib="join">Connecta</button></div><p class="hint" id="syncMsg" role="status">' + esc(syncMsg) + '</p></div><div class="actions"><button type="button" class="btn sm primary" data-lib="on">Activa la sincronització</button></div></div>';
+  }
+  return exp + sy;
+}
+async function exportLib() {
+  await ensureCaps();
+  if (!downloads) { toast("Aquesta vista no permet descarregar fitxers."); return; }
+  const data = JSON.stringify({ format: "roboaula-biblioteca", versio: 1, data: new Date().toISOString(), items: state.lib });
+  try { await downloads.save({ filename: "roboaula-biblioteca-" + new Date().toISOString().slice(0, 10) + ".json", data }); toast("Biblioteca descarregada."); }
+  catch (e) { if (!e || e.code !== "declined") toast("No s'ha pogut descarregar el fitxer."); }
+}
+async function importLib(file) {
+  if (!file) return;
+  if (file.size > 8000000) { toast("El fitxer és massa gran."); return; }
+  try {
+    const o = JSON.parse(await file.text()), list = Array.isArray(o) ? o : o && Array.isArray(o.items) ? o.items : null;
+    if (!list) throw new Error("format");
+    const ok = list.filter((x) => x && typeof x.id === "string" && validAct(x.activity)), before = new Set(state.lib.map((x) => x.id));
+    if (!ok.length) { toast("Aquest fitxer no conté activitats vàlides."); return; }
+    state.lib = mergeItems(state.lib, ok.map((x) => ({ id: x.id, savedAt: x.savedAt || new Date().toISOString(), upd: x.upd, activity: x.activity })), {});
+    ok.forEach((x) => { delete syncSt.del[x.id]; }); saveSync(); saveLib();
+    const nou = ok.filter((x) => !before.has(x.id)).length;
+    toast("Importades " + nou + " activitats noves" + (ok.length < list.length ? " (" + (list.length - ok.length) + " ignorades)" : "") + ".");
+    renderLibrary();
+  } catch (e) { toast("No s'ha pogut llegir el fitxer."); }
+}
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-lib]"); if (!b) return;
+  const k = b.dataset.lib;
+  if (k === "export") exportLib();
+  else if (k === "on") { syncSt = { code: genSyncCode(), last: 0, del: syncSt.del || {} }; saveSync(); syncMsg = ""; renderLibrary(); syncNow(true); }
+  else if (k === "join") { const c = cleanSyncCode($("syncIn") && $("syncIn").value); if (!c) { syncMsg = "El codi no és vàlid. Ha de tenir aquest format: ROBO-XXXX-XXXX-XXXX-XXXX."; renderLibrary(); return; } syncSt = { code: c, last: 0, del: syncSt.del || {} }; saveSync(); syncMsg = ""; renderLibrary(); syncNow(true); }
+  else if (k === "sync") syncNow(true);
+  else if (k === "off") { syncSt = { code: "", last: 0, del: {} }; saveSync(); syncMsg = ""; renderLibrary(); toast("Sincronització desactivada en aquest dispositiu. Les activitats hi continuen desades."); }
+  else if (k === "copy") { const c = syncSt.code; try { await navigator.clipboard.writeText(c); toast("Codi copiat."); } catch (x) { const i = $("syncCode"); if (i) { i.select(); } toast("Selecciona el codi i copia'l."); } }
+});
+document.addEventListener("change", (e) => { if (e.target && e.target.id === "libFile") { importLib(e.target.files && e.target.files[0]); e.target.value = ""; } });
 
 /* ---------- Descàrrega imprimible ---------- */
 function printableHTML(a) {
@@ -1154,8 +1244,8 @@ function saveCurrent() {
 }
 function renderLibrary() {
   const el = $("view-biblioteca");
-  if (!state.lib.length) { el.innerHTML = '<div class="panel empty"><h3>Encara no tens cap activitat desada</h3><p>Genera una activitat i prem «Desa a la biblioteca». Es guarda en aquest navegador.</p><p style="margin-top:14px"><button type="button" class="btn" data-view="generador">Anar al generador</button></p></div>'; return; }
-  el.innerHTML = '<p class="lead">Les activitats es guarden només en aquest navegador i aquest dispositiu. Descarrega\'n una còpia si la vols conservar o compartir.</p><div class="lib-grid">' + state.lib.map((x) => {
+  if (!state.lib.length) { el.innerHTML = libToolsHTML() + '<div class="panel empty"><h3>Encara no tens cap activitat desada</h3><p>Genera una activitat i prem «Desa a la biblioteca». Es guarda en aquest navegador.</p><p style="margin-top:14px"><button type="button" class="btn" data-view="generador">Anar al generador</button></p></div>'; return; }
+  el.innerHTML = '<p class="lead">Les activitats es guarden en aquest navegador. Per tenir-les a altres ordinadors, descarrega la biblioteca en un fitxer o activa la sincronització.</p>' + libToolsHTML() + '<div class="lib-grid">' + state.lib.map((x) => {
     const a = x.activity, r = robotById(a.meta.robotId), d = new Date(x.savedAt);
     return '<div class="lib-card"><div class="chips" style="margin:0">' + areaChip(a.meta.area) + '</div><h3>' + esc(a.titol) + '</h3><p class="meta">' + esc(r.name) + " · " + esc(CYCLE_NAME[a.meta.cycle] || "") + " · " + (isNaN(d) ? "" : d.toLocaleDateString("ca-ES")) + '</p><p>' + esc(a.subtitol) + '</p><div class="actions"><button type="button" class="btn sm" data-open="' + esc(x.id) + '">Obre</button><button type="button" class="btn sm danger" data-del="' + esc(x.id) + '">Elimina</button></div></div>';
   }).join("") + "</div>";
@@ -1171,6 +1261,7 @@ function slug(t) { return (t || "activitat").toLowerCase().normalize("NFD").repl
 function materialSets(a) {
   const s = [];
   const sq = !!robotById(a.meta.robotId).pas;
+  if (a.muntatge) s.push({ id: "muntatge", title: "Targetes de muntatge", desc: a.muntatge.passos.length + " passos de construcció, llista de peces i espai per al model." });
   if (a.guia) s.push({ id: "guia", title: "Guia de programació per al mestre", desc: "Pas a pas per programar el robot en cada part de l'activitat. Per a consulta del docent." });
   if (a.tapis) {
     const pg = Math.ceil(a.tapis.ample_cm * 10 / 190) * Math.ceil(a.tapis.alt_cm * 10 / 277);
@@ -1191,7 +1282,7 @@ function materialSets(a) {
 /* ---------- Il·lustracions vectorials (les mateixes formes serveixen per a la vista prèvia i per al PDF) ---------- */
 const AREA_HEX = { mates: "#2457C5", llengua: "#B83A2E", medi: "#2C7A31", artistica: "#8A3AA3", angles: "#96590A", computacional: "#00758A", valors: "#BC1A5A" };
 const AREA_ICON = { mates: "numbers", llengua: "letters", medi: "tree", artistica: "note", angles: "letters", computacional: "rocket", valors: "heart" };
-const areaHex = (id) => AREA_HEX[id] || "#0B7A66";
+const areaHex = (id) => AREA_HEX[id] || "#C9641A";
 const PAL = { D: "#1D2B2F", W: "#FFFFFF", Y: "#FFC83D", G: "#3FAE6A", R: "#E4574B", B: "#4C8DF6", K: "#A3B0B4", S: "#F2C9A0", P: "#F4A6A0" };
 function polyStar(cx, cy, R, r) {
   const p = [];
@@ -1202,6 +1293,7 @@ const SUN_RAYS = Array.from({ length: 8 }, (_, i) => { const an = i * Math.PI / 
 const PETALS = Array.from({ length: 5 }, (_, i) => { const an = -Math.PI / 2 + i * 2 * Math.PI / 5; return ["c", 50 + 19 * Math.cos(an), 38 + 19 * Math.sin(an), 12, "#F28CB1"]; });
 const RING = Array.from({ length: 33 }, (_, i) => { const t = i / 32 * 2 * Math.PI, x = 40 * Math.cos(t), y = 11 * Math.sin(t), c = Math.cos(-0.35), s = Math.sin(-0.35); return [50 + x * c - y * s, 52 + x * s + y * c]; });
 const ICONS = {
+  brick: [["r", 14, 44, 72, 38, 6, "A"], ["r", 22, 30, 16, 16, 4, "A"], ["r", 42, 30, 16, 16, 4, "A"], ["r", 62, 30, 16, 16, 4, "A"], ["r", 14, 44, 72, 7, 3, "#FFFFFF55"]],
   star: [["p", polyStar(50, 54, 42, 18), "Y"]],
   heart: [["c", 34, 38, 18, "R"], ["c", 66, 38, 18, "R"], ["p", [[17, 46], [83, 46], [50, 86]], "R"]],
   flag: [["r", 24, 10, 6, 82, 3, "D"], ["p", [[30, 14], [82, 30], [30, 48]], "R"]],
@@ -1251,7 +1343,7 @@ function diffHex(d) {
 }
 function cardIcon(c, a) { return ICONS[c.icona] ? c.icona : (AREA_ICON[a.meta.area] || "star"); }
 function svgOf(shapes, W, H, cls) {
-  const col = (k) => (k === "A" ? "var(--c,#0B7A66)" : PAL[k] || k);
+  const col = (k) => (k === "A" ? "var(--c,#E58A42)" : PAL[k] || k);
   const pts = (p) => p.map((q) => q[0].toFixed(1) + "," + q[1].toFixed(1)).join(" ");
   const body = shapes.map((s) => {
     const t = s[0];
@@ -1379,6 +1471,7 @@ function fitxaHTML(x, i, a) {
 
 function setPreview(id, a) {
   if (id === "guia") return guideBody(a.guia);
+  if (id === "muntatge") return muntatgeBody(a.muntatge);
   if (id === "tapis-real") return '<p class="hint" style="margin-bottom:10px">' + esc(a.tapis.instruccions) + " Mida real: " + a.tapis.ample_cm + " × " + a.tapis.alt_cm + " cm.</p>" + tapisSVG(a);
   if (id === "fitxes") return '<div class="cut-grid wide">' + a.fitxes.map((x, i) => fitxaHTML(x, i, a)).join("") + "</div>";
   if (id === "caselles") return '<p class="hint" style="margin-bottom:10px">Al PDF cada casella fa ' + activityCm(a) + " × " + activityCm(a) + ' cm reals. Aquesta vista prèvia està reduïda.</p><div class="pv-tiles">' + a.caselles.map((c) => '<div class="pv-tile">' + (ICONS[c.icona] ? svgOf(ICONS[c.icona]) : "") + '<span class="big">' + esc(c.etiqueta) + "</span>" + (c.pista ? '<span class="small">' + esc(c.pista) + "</span>" : "") + "</div>").join("") + "</div>";
@@ -1392,7 +1485,7 @@ function setPreview(id, a) {
 
 /* PDF (jsPDF; lletra estàndard, el text es neteja perquè hi càpiga) */
 const PW = 210, PH = 297, PM = 12, HB = 20, TOP = 26;
-let PDF_ACC = "#0B7A66";
+let PDF_ACC = "#C9641A";
 function pdfSafe(s) {
   return str(s).replace(/\s+/g, " ").replace(/ŀ/g, "l·").replace(/[→⇒]/g, "->").replace(/←/g, "<-").replace(/≥/g, ">=").replace(/≤/g, "<=").replace(/≠/g, "!=").replace(/−/g, "-").replace(/[✓✔]/g, "v")
     .replace(/[^ -ÿ–—‘’“”•…€]/g, "").trim();
@@ -1599,6 +1692,41 @@ function drawSet(doc, id, a) {
       doc.text(pdfSafe("Tapís a mida real " + m.W + " x " + m.H + " cm · tros " + nn + " de " + cols * rows + " (fila " + (r + 1) + ", columna " + (c + 1) + "). Imprimeix al 100% i enganxa pels costats."), PW / 2, 6.5, { align: "center" });
       doc.setTextColor(0, 0, 0);
     }
+  } else if (id === "muntatge") {
+    const m = a.muntatge, acc = rgb(PDF_ACC), W = PW - 2 * PM;
+    let y = pdfHeader(doc, "Targetes de muntatge", sub) + 4;
+    doc.setTextColor(29, 43, 47);
+    const t = fitText(doc, m.titol || "Muntatge", W, 14, 20, 12, "bold"); y = putLines(doc, t, PM, y) + 2;
+    if (m.objectiu) { const o = fitText(doc, m.objectiu, W, 16, 11, 8.5, "normal"); y = putLines(doc, o, PM, y) + 3; }
+    if (m.peces.length) {
+      doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.setTextColor(...acc); doc.text("Peces que necessites", PM, y + 4); y += 7;
+      const half = Math.ceil(m.peces.length / 2), cw = W / 2;
+      m.peces.forEach((p, i) => {
+        const cx = PM + (i < half ? 0 : cw), cy = y + (i % half) * 6.4;
+        doc.setDrawColor(...acc); doc.setLineWidth(0.4); doc.rect(cx, cy + 0.6, 3.8, 3.8);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor(29, 43, 47);
+        doc.text(doc.splitTextToSize(pdfSafe(p), cw - 8)[0] || "", cx + 6, cy + 3.8);
+      });
+      y += half * 6.4 + 4;
+    }
+    doc.setTextColor(0, 0, 0);
+    const bh = PH - PM - 8 - y;
+    if (bh > 30) { dashedBox(doc, PM, y, W, bh); doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(110, 110, 110); doc.text("El meu model: dibuixa'l o enganxa-hi una foto", PM + 4, y + 7); doc.setTextColor(0, 0, 0); }
+    doc.addPage();
+    gridPages(doc, "Targetes de muntatge", sub, m.passos, 2, 4, 4, (p, x, y2, w, h, i) => {
+      dashedBox(doc, x, y2, w, h);
+      doc.setFillColor(...mixRgb(acc, 0.93)); doc.roundedRect(x + 1.5, y2 + 1.5, w - 3, h - 3, 2.5, 2.5, "F");
+      doc.setFillColor(...acc); doc.roundedRect(x + 1.5, y2 + 1.5, w - 3, 9, 2.5, 2.5, "F"); doc.rect(x + 1.5, y2 + 6, w - 3, 4.5, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(9.5); doc.setTextColor(255, 255, 255);
+      doc.text("Pas " + (i + 1) + " de " + m.passos.length, x + 5, y2 + 7.3);
+      const isz = 18; pdfDraw(doc, ICONS.brick, x + w - isz - 4, y2 + 13, isz, PDF_ACC);
+      doc.setTextColor(29, 43, 47);
+      const f = fitText(doc, p.text, w - 14 - isz, h * 0.46, 17, 9.5, "bold"); const e = putLines(doc, f, x + 5, y2 + 14);
+      if (p.comprovacio) { const top2 = Math.max(e + 3, y2 + 14 + isz + 2), c = fitText(doc, "Comprova: " + p.comprovacio, w - 10, y2 + h - 12 - top2, 10, 7.5, "italic"); doc.setTextColor(70, 80, 84); putLines(doc, c, x + 5, top2); }
+      doc.setDrawColor(...acc); doc.setLineWidth(0.4); doc.rect(x + 5, y2 + h - 9, 4, 4);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(29, 43, 47); doc.text("Fet", x + 11, y2 + h - 5.8);
+      doc.setTextColor(0, 0, 0);
+    });
   } else if (id === "fitxes") {
     gridPages(doc, "Fitxes de treball", sub, a.fitxes, 1, 2, 6, (fx, x, y, w, h, i) => {
       dashedBox(doc, x, y, w, h);
@@ -1797,7 +1925,7 @@ document.addEventListener("click", (e) => {
   }
   if (t.dataset.tab) { state.tab = t.dataset.tab; renderResult(); return; }
   if (t.dataset.open) { const x = state.lib.find((y) => y.id === t.dataset.open); if (x) { state.current = x.activity; state.source = "desada"; state.guard = null; state.error = null; state.tab = "proposta"; guardToken++; renderResult(); setView("generador"); scrollToResult(); } return; }
-  if (t.dataset.del) { state.lib = state.lib.filter((y) => y.id !== t.dataset.del); saveLib(); renderLibrary(); toast("Activitat eliminada."); return; }
+  if (t.dataset.del) { syncSt.del[t.dataset.del] = Date.now(); saveSync(); state.lib = state.lib.filter((y) => y.id !== t.dataset.del); saveLib(); renderLibrary(); toast("Activitat eliminada."); return; }
   if (t.dataset.robotGo) { state.robotId = t.dataset.robotGo; renderForm(); setView("generador"); window.scrollTo({ top: 0 }); return; }
   const act = t.dataset.act;
   if (act === "stop" && ctl) ctl.abort();
@@ -1817,9 +1945,9 @@ $("topic").addEventListener("input", () => { $("topic").classList.remove("invali
 window.addEventListener("hashchange", () => setView(location.hash.slice(1)));
 
 /* ---------- Inici ---------- */
-loadLib(); $("libCount").textContent = state.lib.length ? "(" + state.lib.length + ")" : "";
+loadLib(); $("libCount").textContent = state.lib.length ? "(" + state.lib.length + ")" : ""; setTimeout(() => syncNow(false), 800);
 renderForm(); renderRobots();
-state.current = EXAMPLE; try { $("heroArt").innerHTML = heroScene(); } catch (e) {} checkServer();; state.source = "exemple";
+state.current = null; state.source = ""; try { $("heroArt").innerHTML = heroScene(); } catch (e) {} checkServer();
 renderResult();
 setView(location.hash.slice(1) || "generador");
 ensureCaps();
